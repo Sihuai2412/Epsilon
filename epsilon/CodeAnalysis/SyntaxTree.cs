@@ -1,4 +1,10 @@
-sealed class SyntaxTree {
+public sealed class SyntaxTree {
+    //  1 + 2 * 3          Expression
+    //     +                   |
+    //    / \            The Syntax Tree
+    //   1   *
+    //      / \
+    //     2   3
     public SyntaxTree(IEnumerable<string> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken) {
         Diagnostics = diagnostics.ToArray();
         Root = root;

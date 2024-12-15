@@ -1,6 +1,6 @@
-﻿class Program {
-    public static void Main(string[] args){
-        bool showTree = false;
+﻿internal static class Program {
+    private static void Main(){
+        var showTree = false;
         
         while (true){
             Console.Write("> ");
