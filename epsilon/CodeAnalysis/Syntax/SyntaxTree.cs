@@ -1,6 +1,6 @@
 public sealed class SyntaxTree {
     //  1 + 2 * 3          Expression
-    //     +                   |
+    //     +                   |   to
     //    / \            The Syntax Tree
     //   1   *
     //      / \

@@ -10,6 +10,11 @@ public enum SyntaxKind {
     CloseParenthesisToken,
     BadToken,
     EndOfFileToken,
+    IdentifierToken,
+
+    //Keywords
+    FalseKeyword,
+    TrueKeyword,
 
     // Expressions
     LiteralExpression,
