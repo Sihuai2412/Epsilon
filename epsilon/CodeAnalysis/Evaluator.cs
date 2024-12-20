@@ -17,7 +17,7 @@ internal sealed class Evaluator {
         if (node is BoundUnaryExpression u){
             var operand = EvaluateExpression(u.Operand);
 
-            switch (u.OperatorKind){
+            switch (u.Op.Kind){
                 case BoundUnaryOperatorKind.Identity:
                     return (int) operand;
                 case BoundUnaryOperatorKind.Negation:
@@ -25,7 +25,7 @@ internal sealed class Evaluator {
                 case BoundUnaryOperatorKind.LogicalNegation:
                     return !(bool) operand;
                 default:
-                    throw new Exception($"Unexpected unary operator {u.OperatorKind}");
+                    throw new Exception($"Unexpected unary operator {u.Op}");
             }
         }
 
@@ -33,7 +33,7 @@ internal sealed class Evaluator {
             var left = EvaluateExpression(b.Left);
             var right = EvaluateExpression(b.Right);
 
-            switch (b.OperatorKind){
+            switch (b.Op.Kind){
                 case BoundBinaryOperatorKind.Addition:
                     return (int) left + (int) right;
                 case BoundBinaryOperatorKind.Subtraction:
@@ -47,7 +47,7 @@ internal sealed class Evaluator {
                 case BoundBinaryOperatorKind.LogicalOr:
                     return (bool) left || (bool) right;
                 default:
-                    throw new Exception($"Unexpected binary operator {b.OperatorKind}");
+                    throw new Exception($"Unexpected binary operator {b.Op}");
             }
         }
 
