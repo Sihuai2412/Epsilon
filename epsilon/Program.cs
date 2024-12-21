@@ -9,8 +9,6 @@
                 return;
             }
 
-            var binder = new Binder();
-
             if (line == "#showTree"){
                 showTree = !showTree;
                 Console.WriteLine(showTree ? "Showing parse trees" : "Not showing parse trees");
@@ -18,16 +16,13 @@
             } else if (line == "#cls"){
                 Console.Clear();
                 continue;
-            } else if (line == "#debug"){
-                Binder.isDebug = !Binder.isDebug;
-                Console.WriteLine(Binder.isDebug ? "It is in debug mode" : "It is not in debug mode");
-                continue;
             }
 
             var syntaxTree = SyntaxTree.Parse(line);
-            var boundExpression = binder.BindExpression(syntaxTree.Root);
+            var compilation = new Compilation(syntaxTree);
+            var result = compilation.Evaluate();
 
-            var diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
+            var diagnostics = result.Diagnostics;
 
             if (showTree){
                 var color = Console.ForegroundColor;
@@ -37,16 +32,32 @@
             }
 
             if (!diagnostics.Any()){
-                var e = new Evaluator(boundExpression);
-                var result = e.Evaluate();
-                Console.WriteLine(result);
+                Console.WriteLine(result.Value);
             } else {
-                var color = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.DarkRed;
                 foreach (var diagnostic in diagnostics){
+                    Console.WriteLine();
+
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     Console.WriteLine(diagnostic);
+                    Console.ResetColor(); 
+
+                    var prefix = line.Substring(0, diagnostic.Span.Start);
+                    var error = line.Substring(diagnostic.Span.Start, diagnostic.Span.Length);
+                    var suffix = line.Substring(diagnostic.Span.End);
+
+                    Console.Write("    ");
+                    Console.Write(prefix);
+
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.Write(error);
+                    Console.ResetColor(); 
+
+                    Console.Write(suffix);
+
+                    Console.WriteLine();
                 }
-                Console.ForegroundColor = color; 
+
+                Console.WriteLine();
             }
         }
     }
