@@ -9,6 +9,8 @@
                 return;
             }
 
+            var binder = new Binder();
+
             if (line == "#showTree"){
                 showTree = !showTree;
                 Console.WriteLine(showTree ? "Showing parse trees" : "Not showing parse trees");
@@ -16,10 +18,13 @@
             } else if (line == "#cls"){
                 Console.Clear();
                 continue;
+            } else if (line == "#debug"){
+                Binder.isDebug = !Binder.isDebug;
+                Console.WriteLine(Binder.isDebug ? "It is in debug mode" : "It is not in debug mode");
+                continue;
             }
 
             var syntaxTree = SyntaxTree.Parse(line);
-            var binder = new Binder();
             var boundExpression = binder.BindExpression(syntaxTree.Root);
 
             var diagnostics = syntaxTree.Diagnostics.Concat(binder.Diagnostics).ToArray();
@@ -60,7 +65,7 @@
 
         Console.WriteLine();
 
-        indent += isLast ? "    " : "│   ";
+        indent += isLast ? "    " : "│  ";
 
         var lastChild = node.GetChildren().LastOrDefault();
 
