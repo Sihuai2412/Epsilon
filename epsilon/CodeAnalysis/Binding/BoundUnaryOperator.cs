@@ -13,13 +13,13 @@ internal sealed class BoundUnaryOperator {
         SyntaxKind = syntaxKind;
         Kind = kind;
         OperandType = operandType;
-        ResultType = resultType;
+        Type = resultType;
     }
 
     public SyntaxKind SyntaxKind { get; }
     public BoundUnaryOperatorKind Kind { get; }
     public Type OperandType { get; }
-    public Type ResultType { get; }
+    public Type Type { get; }
 
     private static BoundUnaryOperator[] _operators = {
         new BoundUnaryOperator(SyntaxKind.BangToken, 

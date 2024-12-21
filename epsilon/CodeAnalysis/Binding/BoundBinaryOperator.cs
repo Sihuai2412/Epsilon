@@ -8,6 +8,14 @@ internal sealed class BoundBinaryOperator {
 
     private BoundBinaryOperator(SyntaxKind syntaxKind,
                                BoundBinaryOperatorKind kind,
+                               Type operandType,
+                               Type resultType)
+            : this(syntaxKind, kind, operandType, operandType, resultType)
+    {
+    }
+
+    private BoundBinaryOperator(SyntaxKind syntaxKind,
+                               BoundBinaryOperatorKind kind,
                                Type leftType,
                                Type rightType,
                                Type resultType){
@@ -37,12 +45,24 @@ internal sealed class BoundBinaryOperator {
         new BoundBinaryOperator(SyntaxKind.SlashToken, 
                                 BoundBinaryOperatorKind.Division,
                                 typeof(int)),
+        new BoundBinaryOperator(SyntaxKind.EqualsEqualsToken, 
+                                BoundBinaryOperatorKind.Equals,
+                                typeof(int), typeof(bool)),
+        new BoundBinaryOperator(SyntaxKind.BangEqualsToken, 
+                                BoundBinaryOperatorKind.NotEquals,
+                                typeof(int), typeof(bool)),
 
         new BoundBinaryOperator(SyntaxKind.AmpersandAmpersandToken, 
                                 BoundBinaryOperatorKind.LogicalAnd,
                                 typeof(bool)),
         new BoundBinaryOperator(SyntaxKind.PipePipeToken, 
                                 BoundBinaryOperatorKind.LogicalOr,
+                                typeof(bool)),
+        new BoundBinaryOperator(SyntaxKind.EqualsEqualsToken, 
+                                BoundBinaryOperatorKind.Equals,
+                                typeof(bool)),
+        new BoundBinaryOperator(SyntaxKind.BangEqualsToken, 
+                                BoundBinaryOperatorKind.NotEquals,
                                 typeof(bool)),
     };
 
