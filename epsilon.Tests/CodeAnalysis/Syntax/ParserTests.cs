@@ -56,7 +56,6 @@ public class ParserTests {
                 yield return new object[] {
                     op1, op2
                 };
-                yield break;
             }
         }
     }
