@@ -1,6 +1,8 @@
+using System.Collections.Immutable;
+
 internal sealed class Parser {
     private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
-    private readonly SyntaxToken[] _tokens;
+    private readonly ImmutableArray<SyntaxToken> _tokens;
     private int _position;
 
     public Parser(string text){
@@ -17,7 +19,7 @@ internal sealed class Parser {
             }
         } while (token.Kind != SyntaxKind.EndOfFileToken);
 
-        _tokens = tokens.ToArray();
+        _tokens = tokens.ToImmutableArray();
         _diagnostics.AddRange(lexer.Diagnostics);
     }
 
@@ -53,7 +55,7 @@ internal sealed class Parser {
         var expression = ParseExpression();
         var endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
 
-        return new SyntaxTree(_diagnostics, expression, endOfFileToken);
+        return new SyntaxTree(_diagnostics.ToImmutableArray(), expression, endOfFileToken);
     }
 
     private ExpressionSyntax ParseExpression(){

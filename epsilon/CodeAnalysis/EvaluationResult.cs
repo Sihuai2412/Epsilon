@@ -1,9 +1,11 @@
+using System.Collections.Immutable;
+
 public sealed class EvaluationResult {
-    public EvaluationResult(IEnumerable<Diagnostic> diagnostics, object value){
-        Diagnostics = diagnostics.ToArray();
+    public EvaluationResult(ImmutableArray<Diagnostic> diagnostics, object value){
+        Diagnostics = diagnostics;
         Value = value;
     }
 
-    public IReadOnlyList<Diagnostic> Diagnostics { get; }
+    public ImmutableArray<Diagnostic> Diagnostics { get; }
     public object Value { get; }
 }

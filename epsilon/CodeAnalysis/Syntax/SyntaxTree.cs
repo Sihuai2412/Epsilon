@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 public sealed class SyntaxTree {
     //  1 + 2 * 3          Expression
     //     +                   |   to
@@ -5,13 +7,13 @@ public sealed class SyntaxTree {
     //   1   *
     //      / \
     //     2   3
-    public SyntaxTree(IEnumerable<Diagnostic> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken) {
-        Diagnostics = diagnostics.ToArray();
+    public SyntaxTree(ImmutableArray<Diagnostic> diagnostics, ExpressionSyntax root, SyntaxToken endOfFileToken) {
+        Diagnostics = diagnostics;
         Root = root;
         EndOfFileToken = endOfFileToken;
     }
 
-    public IReadOnlyList<Diagnostic> Diagnostics { get; }
+    public ImmutableArray<Diagnostic> Diagnostics { get; }
     public ExpressionSyntax Root { get; }
     public SyntaxToken EndOfFileToken { get; }
 

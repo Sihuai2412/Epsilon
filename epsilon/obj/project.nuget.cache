@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "mIE4AvHlS88=",
+  "dgSpecHash": "Cxev6VHtnR8=",
   "success": true,
   "projectFilePath": "C:\\Users\\asus\\Desktop\\Epsilon\\epsilon\\epsilon.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\asus\\.nuget\\packages\\system.collections.immutable\\9.0.0\\system.collections.immutable.9.0.0.nupkg.sha512"
+  ],
   "logs": []
 }
