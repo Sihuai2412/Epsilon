@@ -5,6 +5,7 @@ internal static class Program {
         var showTree = false;
         var variables = new Dictionary<VariableSymbol, object>();
         var textBuilder = new StringBuilder();
+        Compilation previous = null;
         
         while (true){
             Console.ForegroundColor = ConsoleColor.Green;
@@ -30,6 +31,9 @@ internal static class Program {
                 } else if (input == "#cls"){
                     Console.Clear();
                     continue;
+                } else if (input == "#reset"){
+                    previous = null;
+                    continue;
                 }
             }
 
@@ -40,7 +44,10 @@ internal static class Program {
 
             if (!isBlank && syntaxTree.Diagnostics.Any()) continue;
 
-            var compilation = new Compilation(syntaxTree);
+            var compilation = previous == null 
+                                    ? new Compilation(syntaxTree)
+                                    : previous.ContinueWith(syntaxTree);
+
             var result = compilation.Evaluate(variables);
 
             var diagnostics = result.Diagnostics;
@@ -56,6 +63,8 @@ internal static class Program {
                 Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine(result.Value);
                 Console.ResetColor();
+
+                previous = compilation;
             } else {
                 foreach (var diagnostic in diagnostics){
                     var lineIndex = syntaxTree.Text.GetLineIndex(diagnostic.Span.Start);
