@@ -1,4 +1,4 @@
 @echo off
 
 dotnet build
-dotnet test .\epsilon.Tests\epsilon.Tests.csproj
+dotnet test .\src\epsilon.Tests\epsilon.Tests.csproj
