@@ -14,16 +14,22 @@ public enum SyntaxKind {
     BangEqualsToken,
     OpenParenthesisToken,
     CloseParenthesisToken,
+    OpenBraceToken,
+    CloseBraceToken,
     BadToken,
     EndOfFileToken,
     IdentifierToken,
 
-    //Keywords
+    // Keywords
     FalseKeyword,
     TrueKeyword,
 
-    //Nodes
+    // Nodes
     CompilationUnit,
+
+    // Statements
+    BlockStatement,
+    ExpressionStatement,
 
     // Expressions
     LiteralExpression,

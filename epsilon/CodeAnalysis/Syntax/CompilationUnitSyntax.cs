@@ -1,10 +1,10 @@
 public sealed class CompilationUnitSyntax : SyntaxNode {
-    public CompilationUnitSyntax(ExpressionSyntax expression, SyntaxToken endOfFileToken){
-        Expression = expression;
+    public CompilationUnitSyntax(StatementSyntax statement, SyntaxToken endOfFileToken){
+        Statement = statement;
         EndOfFileToken = endOfFileToken;
     }
 
     public override SyntaxKind Kind => SyntaxKind.CompilationUnit;
-    public ExpressionSyntax Expression { get; }
+    public StatementSyntax Statement { get; }
     public SyntaxToken EndOfFileToken { get; }
 }
