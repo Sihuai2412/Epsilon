@@ -22,13 +22,16 @@ public enum SyntaxKind {
 
     // Keywords
     FalseKeyword,
+    LetKeyword,
     TrueKeyword,
+    VarKeyword,
 
     // Nodes
     CompilationUnit,
 
     // Statements
     BlockStatement,
+    VariableDeclaration,
     ExpressionStatement,
 
     // Expressions

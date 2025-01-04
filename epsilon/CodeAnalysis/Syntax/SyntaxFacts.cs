@@ -39,10 +39,14 @@ public static class SyntaxFacts {
 
     public static SyntaxKind GetKeywordKind(string text){
         switch (text){
-            case "true":
-                return SyntaxKind.TrueKeyword;
             case "false":
                 return SyntaxKind.FalseKeyword;
+            case "let":
+                return SyntaxKind.LetKeyword;
+            case "true":
+                return SyntaxKind.TrueKeyword;
+            case "var":
+                return SyntaxKind.VarKeyword;
             default:
                 return SyntaxKind.IdentifierToken;
         }
@@ -98,8 +102,12 @@ public static class SyntaxFacts {
                 return "}";
             case SyntaxKind.FalseKeyword:
                 return "false";
+            case SyntaxKind.LetKeyword:
+                return "let";
             case SyntaxKind.TrueKeyword:
                 return "true";
+            case SyntaxKind.VarKeyword:
+                return "var";
             default:
                 return null;
         }
