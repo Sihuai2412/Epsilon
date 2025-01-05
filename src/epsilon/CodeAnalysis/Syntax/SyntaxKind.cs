@@ -27,17 +27,21 @@ public enum SyntaxKind {
     IdentifierToken,
 
     // Keywords
+    ElseKeyword,
     FalseKeyword,
+    IfKeyword,
     LetKeyword,
     TrueKeyword,
     VarKeyword,
 
     // Nodes
     CompilationUnit,
+    ElseClause,
 
     // Statements
     BlockStatement,
     VariableDeclaration,
+    IfStatement,
     ExpressionStatement,
 
     // Expressions

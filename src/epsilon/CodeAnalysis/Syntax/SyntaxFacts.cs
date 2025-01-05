@@ -44,8 +44,12 @@ public static class SyntaxFacts {
 
     public static SyntaxKind GetKeywordKind(string text){
         switch (text){
+            case "else":
+                return SyntaxKind.ElseKeyword;
             case "false":
                 return SyntaxKind.FalseKeyword;
+            case "if":
+                return SyntaxKind.IfKeyword;
             case "let":
                 return SyntaxKind.LetKeyword;
             case "true":
@@ -113,8 +117,12 @@ public static class SyntaxFacts {
                 return "{";
             case SyntaxKind.CloseBraceToken:
                 return "}";
+            case SyntaxKind.ElseKeyword:
+                return "else";
             case SyntaxKind.FalseKeyword:
                 return "false";
+            case SyntaxKind.IfKeyword:
+                return "if";
             case SyntaxKind.LetKeyword:
                 return "let";
             case SyntaxKind.TrueKeyword:
