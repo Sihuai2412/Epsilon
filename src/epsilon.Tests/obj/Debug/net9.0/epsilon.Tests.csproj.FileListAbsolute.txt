@@ -120,9 +120,6 @@ C:\Users\asus\Desktop\Epsilon\src\epsilon.Tests\bin\Debug\net9.0\testhost.dll
 C:\Users\asus\Desktop\Epsilon\src\epsilon.Tests\bin\Debug\net9.0\xunit.runner.visualstudio.testadapter.dll
 C:\Users\asus\Desktop\Epsilon\src\epsilon.Tests\bin\Debug\net9.0\xunit.runner.reporters.netcoreapp10.dll
 C:\Users\asus\Desktop\Epsilon\src\epsilon.Tests\bin\Debug\net9.0\xunit.runner.utility.netcoreapp10.dll
-C:\Users\asus\Desktop\Epsilon\src\epsilon.Tests\bin\Debug\net9.0\epsilon.deps.json
-C:\Users\asus\Desktop\Epsilon\src\epsilon.Tests\bin\Debug\net9.0\epsilon.runtimeconfig.json
-C:\Users\asus\Desktop\Epsilon\src\epsilon.Tests\bin\Debug\net9.0\epsilon.exe
 C:\Users\asus\Desktop\Epsilon\src\epsilon.Tests\bin\Debug\net9.0\epsilon.Tests.deps.json
 C:\Users\asus\Desktop\Epsilon\src\epsilon.Tests\bin\Debug\net9.0\epsilon.Tests.runtimeconfig.json
 C:\Users\asus\Desktop\Epsilon\src\epsilon.Tests\bin\Debug\net9.0\epsilon.Tests.dll

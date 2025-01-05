@@ -1,5 +1,7 @@
 namespace epsilon.Tests.CodeAnalysis.Text;
 
+using epsilon.CodeAnalysis.Text;
+
 public class SourceTextTests {
     [Theory]
     [InlineData(".", 1)]

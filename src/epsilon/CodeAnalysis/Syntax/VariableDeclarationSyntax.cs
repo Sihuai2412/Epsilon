@@ -1,3 +1,5 @@
+namespace epsilon.CodeAnalysis.Syntax;
+
 public sealed class VariableDeclarationSyntax : StatementSyntax {
     public VariableDeclarationSyntax(SyntaxToken keyword, SyntaxToken identifier, SyntaxToken equalsToken, ExpressionSyntax initializer){
         Keyword = keyword;

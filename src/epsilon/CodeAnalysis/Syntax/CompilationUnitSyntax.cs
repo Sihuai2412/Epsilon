@@ -1,3 +1,5 @@
+namespace epsilon.CodeAnalysis.Syntax;
+
 public sealed class CompilationUnitSyntax : SyntaxNode {
     public CompilationUnitSyntax(StatementSyntax statement, SyntaxToken endOfFileToken){
         Statement = statement;

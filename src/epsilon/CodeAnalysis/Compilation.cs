@@ -1,4 +1,8 @@
+namespace epsilon.CodeAnalysis;
+
 using System.Collections.Immutable;
+using epsilon.CodeAnalysis.Binding;
+using epsilon.CodeAnalysis.Syntax;
 
 public sealed class Compilation {
     private BoundGlobalScope _globalScope;

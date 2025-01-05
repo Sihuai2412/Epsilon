@@ -1,3 +1,5 @@
+namespace epsilon.CodeAnalysis.Syntax;
+
 public sealed class UnaryExpressionSyntax : ExpressionSyntax {
     public UnaryExpressionSyntax(SyntaxToken operatorToken, ExpressionSyntax operand){
         OperatorToken = operatorToken;

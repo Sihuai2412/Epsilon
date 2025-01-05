@@ -1,3 +1,5 @@
+namespace epsilon.CodeAnalysis;
+
 public sealed class VariableSymbol{
     internal VariableSymbol(string name, bool isReadOnly, Type type){
         Name = name;

@@ -1,3 +1,4 @@
+namespace epsilon.CodeAnalysis.Text;
 
 using System.Collections.Immutable;
 

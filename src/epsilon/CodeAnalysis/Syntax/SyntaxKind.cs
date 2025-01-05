@@ -1,3 +1,5 @@
+namespace epsilon.CodeAnalysis.Syntax;
+
 public enum SyntaxKind {
     // Tokens
     NumberToken,

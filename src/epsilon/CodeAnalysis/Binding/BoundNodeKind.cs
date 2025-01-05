@@ -1,3 +1,5 @@
+namespace epsilon.CodeAnalysis.Binding;
+
 internal enum BoundNodeKind {
     // Statements
     BlockStatement,

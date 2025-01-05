@@ -1,3 +1,7 @@
+using epsilon.CodeAnalysis.Text;
+
+namespace epsilon.CodeAnalysis;
+
 public sealed class Diagnostic {
     public Diagnostic(TextSpan span, string message){
         Span = span;

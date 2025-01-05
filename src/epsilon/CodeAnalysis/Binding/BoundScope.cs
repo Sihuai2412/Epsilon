@@ -1,3 +1,5 @@
+namespace epsilon.CodeAnalysis.Binding;
+
 using System.Collections.Immutable;
 
 internal sealed class BoundScope {

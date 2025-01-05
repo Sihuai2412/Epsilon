@@ -1,4 +1,7 @@
+namespace epsilon.CodeAnalysis.Syntax;
+
 using System.Collections.Immutable;
+using epsilon.CodeAnalysis.Text;
 
 internal sealed class Parser {
     private readonly DiagnosticBag _diagnostics = new DiagnosticBag();

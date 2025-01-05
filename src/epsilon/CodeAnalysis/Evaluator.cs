@@ -1,3 +1,7 @@
+using epsilon.CodeAnalysis.Binding;
+
+namespace epsilon.CodeAnalysis;
+
 internal sealed class Evaluator {
     private readonly BoundStatement _root;
     private readonly Dictionary<VariableSymbol, object> _variables;

@@ -1,5 +1,7 @@
 ﻿namespace epsilon.Tests.CodeAnalysis.Syntax;
 
+using epsilon.CodeAnalysis.Syntax;
+
 public class LexerTests {
     [Fact]
     public void Lexer_Tests_AllTokens() {

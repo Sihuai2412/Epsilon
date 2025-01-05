@@ -1,3 +1,4 @@
+namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundVariableExpression : BoundExpression {
     public BoundVariableExpression(VariableSymbol variable){

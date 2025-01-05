@@ -1,3 +1,8 @@
+namespace epsilon.Tests.CodeAnalysis;
+
+using epsilon.CodeAnalysis;
+using epsilon.CodeAnalysis.Syntax;
+
 public class EvaluationTests {
     [Theory]
     [InlineData("1", 1)]

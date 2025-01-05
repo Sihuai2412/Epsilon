@@ -1,3 +1,5 @@
+namespace epsilon.CodeAnalysis;
+
 using System.Collections.Immutable;
 
 public sealed class EvaluationResult {

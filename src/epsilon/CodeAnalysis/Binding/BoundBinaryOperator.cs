@@ -1,3 +1,7 @@
+namespace epsilon.CodeAnalysis.Binding;
+
+using epsilon.CodeAnalysis.Syntax;
+
 internal sealed class BoundBinaryOperator {
     private BoundBinaryOperator(SyntaxKind syntaxKind,
                                BoundBinaryOperatorKind kind,

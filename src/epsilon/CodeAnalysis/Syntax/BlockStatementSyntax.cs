@@ -1,3 +1,5 @@
+namespace epsilon.CodeAnalysis.Syntax;
+
 using System.Collections.Immutable;
 
 public sealed class BlockStatementSyntax : StatementSyntax {

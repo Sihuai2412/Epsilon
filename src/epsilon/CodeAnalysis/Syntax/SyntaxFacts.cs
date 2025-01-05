@@ -1,3 +1,4 @@
+namespace epsilon.CodeAnalysis.Syntax;
 
 public static class SyntaxFacts {
     public static int GetUnaryOperatorPrecedence(this SyntaxKind kind){

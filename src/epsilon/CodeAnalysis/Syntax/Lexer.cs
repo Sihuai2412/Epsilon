@@ -1,3 +1,7 @@
+namespace epsilon.CodeAnalysis.Syntax;
+
+using epsilon.CodeAnalysis.Text;
+
 internal sealed class Lexer {
     private readonly SourceText _text;
     private readonly DiagnosticBag _diagnostics = new DiagnosticBag();

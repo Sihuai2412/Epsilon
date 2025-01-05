@@ -1,3 +1,7 @@
+namespace epsilon.CodeAnalysis.Binding;
+
+using epsilon.CodeAnalysis.Syntax;
+
 internal sealed class BoundUnaryOperator {
     private BoundUnaryOperator(SyntaxKind syntaxKind,
                                BoundUnaryOperatorKind kind,

@@ -1,4 +1,7 @@
+namespace epsilon.CodeAnalysis.Syntax;
+
 using System.Collections.Immutable;
+using epsilon.CodeAnalysis.Text;
 
 public sealed class SyntaxTree {
     //  1 + 2 * 3          Expression

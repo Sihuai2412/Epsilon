@@ -1,5 +1,7 @@
 namespace epsilon.Tests.CodeAnalysis.Syntax;
 
+using epsilon.CodeAnalysis.Syntax;
+
 public class ParserTests {
     [Theory]
     [MemberData(nameof(GetBinaryOperatorPairsData))]
