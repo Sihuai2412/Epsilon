@@ -48,10 +48,14 @@ public static class SyntaxFacts {
                 return SyntaxKind.ElseKeyword;
             case "false":
                 return SyntaxKind.FalseKeyword;
+            case "for":
+                return SyntaxKind.ForKeyword;
             case "if":
                 return SyntaxKind.IfKeyword;
             case "let":
                 return SyntaxKind.LetKeyword;
+            case "to":
+                return SyntaxKind.ToKeyword;
             case "true":
                 return SyntaxKind.TrueKeyword;
             case "var":
@@ -123,10 +127,14 @@ public static class SyntaxFacts {
                 return "else";
             case SyntaxKind.FalseKeyword:
                 return "false";
+            case SyntaxKind.ForKeyword:
+                return "for";
             case SyntaxKind.IfKeyword:
                 return "if";
             case SyntaxKind.LetKeyword:
                 return "let";
+            case SyntaxKind.ToKeyword:
+                return "to";
             case SyntaxKind.TrueKeyword:
                 return "true";
             case SyntaxKind.VarKeyword:

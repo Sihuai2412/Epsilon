@@ -61,6 +61,8 @@ internal sealed class Binder {
                 return BindIfStatement((IfStatementSyntax)syntax);
             case SyntaxKind.WhileStatement:
                 return BindWhileStatement((WhileStatementSyntax)syntax);
+            case SyntaxKind.ForStatement:
+                return BindForStatement((ForStatementSyntax)syntax);
             case SyntaxKind.ExpressionStatement:
                 return BindExpressionStatement((ExpressionStatementSyntax)syntax);
             default:
@@ -106,6 +108,24 @@ internal sealed class Binder {
         var condition = BindExpression(syntax.Condition, typeof(bool));
         var body = BindStatement(syntax.Body);
         return new BoundWhileStatement(condition, body);
+    }
+
+    private BoundStatement BindForStatement(ForStatementSyntax syntax){
+        var lowerBound = BindExpression(syntax.LowerBound, typeof(int));
+        var upperBound = BindExpression(syntax.UpperBound, typeof(int));
+
+        _scope = new BoundScope(_scope);
+
+        var name = syntax.Identifier.Text;
+        var variable = new VariableSymbol(name, true, typeof(int));
+        if (!_scope.TryDeclare(variable)){
+            _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);
+        }
+        var body = BindStatement(syntax.Body);
+
+        _scope = _scope.Parent;
+
+        return new BoundForStatement(variable, lowerBound, upperBound, body);
     }
 
     private BoundStatement BindExpressionStatement(ExpressionStatementSyntax syntax){

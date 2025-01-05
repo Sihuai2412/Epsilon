@@ -41,6 +41,7 @@ public class EvaluationTests {
     [InlineData("{ var a = 0 if a == 0 a = 10 else a = 5 a }", 10)]
     [InlineData("{ var a = 0 if a == 4 a = 10 else a = 5 a }", 5)]
     [InlineData("{ var i = 10 var result = 0 while i > 0 { result = result + i i = i - 1} result }", 55)]
+    [InlineData("{ var result = 0 for i = 1 to 10 { result = result + i } result }", 55)]
     public void SyntaxFact_GetText_RoundTrips(string text, object expectedValue){
         AssertValue(text, expectedValue);
     }
@@ -109,6 +110,74 @@ public class EvaluationTests {
             {
                 var x = 10
                 x = [true]
+            }
+        ";
+
+        var diagnostics = @"
+            Cannot convert type 'System.Boolean' to 'System.Int32'.
+        ";
+
+        AssertDiagnostics(text, diagnostics);
+    }
+
+    [Fact]
+    public void Evaluator_IfStatement_Reports_CannotConvert(){
+        var text = @"
+            {
+                var x = 0
+                if [10]
+                    x = 10
+            }
+        ";
+
+        var diagnostics = @"
+            Cannot convert type 'System.Int32' to 'System.Boolean'.
+        ";
+
+        AssertDiagnostics(text, diagnostics);
+    }
+
+    [Fact]
+    public void Evaluator_WhileStatement_Reports_CannotConvert(){
+        var text = @"
+            {
+                var x = 0
+                while [10]
+                    x = 10
+            }
+        ";
+
+        var diagnostics = @"
+            Cannot convert type 'System.Int32' to 'System.Boolean'.
+        ";
+
+        AssertDiagnostics(text, diagnostics);
+    }
+
+    [Fact]
+    public void Evaluator_ForStatement_Reports_CannotConvert_LowerBound(){
+        var text = @"
+            {
+                var result = 0
+                for i = [false] to 10
+                    result = result + i
+            }
+        ";
+
+        var diagnostics = @"
+            Cannot convert type 'System.Boolean' to 'System.Int32'.
+        ";
+
+        AssertDiagnostics(text, diagnostics);
+    }
+
+    [Fact]
+    public void Evaluator_ForStatement_Reports_CannotConvert_UpperBound(){
+        var text = @"
+            {
+                var result = 0
+                for i = 1 to [true]
+                    result = result + i
             }
         ";
 
