@@ -37,12 +37,12 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
     }
 
     public void ReportUndefinedUnaryOperator(TextSpan span, string operatorText, Type operandKind){
-        var message = $"Unary operator '{operatorText}' is not defined for type {operandKind}.";
+        var message = $"Unary operator '{operatorText}' is not defined for type '{operandKind}'.";
         Report(span, message);
     }
 
     public void ReportBindefinedUnaryOperator(TextSpan span, string operatorText, Type leftType, Type rightType){
-        var message = $"Binary operator '{operatorText}' is not defined for type {leftType} and {rightType}.";
+        var message = $"Binary operator '{operatorText}' is not defined for types '{leftType}' and '{rightType}'.";
         Report(span, message);
     }
 
