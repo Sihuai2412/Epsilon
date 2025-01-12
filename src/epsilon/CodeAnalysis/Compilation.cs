@@ -1,6 +1,8 @@
 namespace epsilon.CodeAnalysis;
 
+using System;
 using System.Collections.Immutable;
+using System.IO;
 using epsilon.CodeAnalysis.Binding;
 using epsilon.CodeAnalysis.Syntax;
 
@@ -44,5 +46,9 @@ public sealed class Compilation {
         var evaluator = new Evaluator(GlobalScope.Statement, variables);
         var value = evaluator.Evaluate();
         return new EvaluationResult(ImmutableArray<Diagnostic>.Empty, value);
+    }
+
+    public void EmitTree(TextWriter writer){
+        GlobalScope.Statement.WriteTo(writer);
     }
 }

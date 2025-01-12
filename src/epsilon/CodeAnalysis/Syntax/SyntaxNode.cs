@@ -42,12 +42,11 @@ public abstract class SyntaxNode {
         var isToConsole = writer == Console.Out;
         var marker = isLast ? "└──" : "├──";
 
-        writer.Write(indent);
-
         if (isToConsole){
             Console.ForegroundColor = ConsoleColor.DarkGray;
         }
 
+        writer.Write(indent);
         writer.Write(marker);
         
         if (isToConsole){

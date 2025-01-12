@@ -8,6 +8,7 @@ using epsilon.CodeAnalysis.Text;
 internal static class Program {
     private static void Main(){
         var showTree = false;
+        var showProgram = false;
         var variables = new Dictionary<VariableSymbol, object>();
         var textBuilder = new StringBuilder();
         Compilation previous = null;
@@ -31,7 +32,11 @@ internal static class Program {
                     break;
                 } else if (input == "#showTree"){
                     showTree = !showTree;
-                    Console.WriteLine(showTree ? "Showing parse trees" : "Not showing parse trees");
+                    Console.WriteLine(showTree ? "Showing parse trees." : "Not showing parse trees.");
+                    continue;
+                } else if (input == "#showProgram"){
+                    showProgram = !showProgram;
+                    Console.WriteLine(showProgram ? "Showing bound tree." : "Not showing bound tree.");
                     continue;
                 } else if (input == "#cls"){
                     Console.Clear();
@@ -58,10 +63,11 @@ internal static class Program {
             var diagnostics = result.Diagnostics;
 
             if (showTree){
-                var color = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.DarkGray;
                 syntaxTree.Root.WriteTo(Console.Out);
-                Console.ForegroundColor = color;
+            }
+
+            if (showProgram){
+                compilation.EmitTree(Console.Out);
             }
 
             if (!diagnostics.Any()){
