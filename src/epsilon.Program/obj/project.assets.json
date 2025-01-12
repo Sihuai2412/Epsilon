@@ -74,32 +74,40 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Lenovo\\.nuget\\packages\\": {}
+    "C:\\Users\\asus\\.nuget\\packages\\": {},
+    "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Lenovo\\Desktop\\Epsilon\\src\\epsilon.Program\\epsilon.Program.csproj",
+      "projectUniqueName": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Program\\epsilon.Program.csproj",
       "projectName": "epsilon.Program",
-      "projectPath": "C:\\Users\\Lenovo\\Desktop\\Epsilon\\src\\epsilon.Program\\epsilon.Program.csproj",
-      "packagesPath": "C:\\Users\\Lenovo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Lenovo\\Desktop\\Epsilon\\src\\epsilon.Program\\obj\\",
+      "projectPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Program\\epsilon.Program.csproj",
+      "packagesPath": "C:\\Users\\asus\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Program\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Lenovo\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\asus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "https://api.nuget.org/v3/index.json": {}
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {},
+        "https://nuget.pkg.github.com/terrajobst/index.json": {}
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "C:\\Users\\Lenovo\\Desktop\\Epsilon\\src\\epsilon\\epsilon.csproj": {
-              "projectPath": "C:\\Users\\Lenovo\\Desktop\\Epsilon\\src\\epsilon\\epsilon.csproj"
+            "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon\\epsilon.csproj": {
+              "projectPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon\\epsilon.csproj"
             }
           }
         }
@@ -112,7 +120,7 @@
       "restoreAuditProperties": {
         "enableAudit": "true",
         "auditLevel": "low",
-        "auditMode": "direct"
+        "auditMode": "all"
       },
       "SdkAnalysisLevel": "9.0.100"
     },
@@ -135,7 +143,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
