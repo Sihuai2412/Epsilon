@@ -36,10 +36,6 @@ internal sealed class Evaluator {
                 EvaluateWhileStatement((BoundWhileStatement)node);
                 break;
             }
-            case BoundNodeKind.ForStatement: {
-                EvaluateForStatement((BoundForStatement)node);
-                break;
-            }
             case BoundNodeKind.ExpressionStatement: {
                 EvaluateExpressionStatement((BoundExpressionStatement)node);
                 break;
@@ -72,16 +68,6 @@ internal sealed class Evaluator {
 
     private void EvaluateWhileStatement(BoundWhileStatement node){
         while ((bool)EvaluateExpression(node.Condition)){
-            EvaluateStatement(node.Body);
-        }
-    }
-
-    private void EvaluateForStatement(BoundForStatement node){
-        var lowerBound = (int)EvaluateExpression(node.LowerBound);
-        var upperBound = (int)EvaluateExpression(node.UpperBound);
-
-        for (var i = lowerBound; i <= upperBound; i++){
-            _variables[node.Variable] = i;
             EvaluateStatement(node.Body);
         }
     }
