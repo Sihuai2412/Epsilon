@@ -1,6 +1,6 @@
-namespace epsilon.Tests.CodeAnalysis.Syntax;
-
 using epsilon.CodeAnalysis.Syntax;
+
+namespace epsilon.Tests.CodeAnalysis.Syntax;
 
 public class ParserTests {
     [Theory]

@@ -1,6 +1,6 @@
-namespace epsilon.CodeAnalysis.Text;
-
 using System.Collections.Immutable;
+
+namespace epsilon.CodeAnalysis.Text;
 
 public sealed class SourceText {
     private readonly string _text;

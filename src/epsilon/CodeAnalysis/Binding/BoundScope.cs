@@ -1,6 +1,6 @@
-namespace epsilon.CodeAnalysis.Binding;
-
 using System.Collections.Immutable;
+
+namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundScope {
     private Dictionary<string, VariableSymbol> _variables = new Dictionary<string, VariableSymbol>();

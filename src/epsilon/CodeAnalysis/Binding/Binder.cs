@@ -1,7 +1,7 @@
-namespace epsilon.CodeAnalysis.Binding;
-
 using System.Collections.Immutable;
 using epsilon.CodeAnalysis.Syntax;
+
+namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class Binder {
     private readonly DiagnosticBag _diagnostics = new DiagnosticBag();

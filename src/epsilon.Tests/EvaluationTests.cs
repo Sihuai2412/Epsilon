@@ -1,7 +1,7 @@
-namespace epsilon.Tests.CodeAnalysis;
-
 using epsilon.CodeAnalysis;
 using epsilon.CodeAnalysis.Syntax;
+
+namespace epsilon.Tests.CodeAnalysis;
 
 public class EvaluationTests {
     [Theory]

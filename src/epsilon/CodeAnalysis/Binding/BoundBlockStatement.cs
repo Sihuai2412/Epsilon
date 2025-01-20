@@ -1,6 +1,6 @@
-namespace epsilon.CodeAnalysis.Binding;
-
 using System.Collections.Immutable;
+
+namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundBlockStatement : BoundStatement {
     public BoundBlockStatement(ImmutableArray<BoundStatement> statements){

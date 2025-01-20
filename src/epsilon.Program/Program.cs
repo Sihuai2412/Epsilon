@@ -1,9 +1,9 @@
-﻿namespace epsilon.Program;
-
-using System.Text;
+﻿using System.Text;
 using epsilon.CodeAnalysis;
 using epsilon.CodeAnalysis.Syntax;
 using epsilon.CodeAnalysis.Text;
+
+namespace epsilon.Program;
 
 internal static class Program {
     private static void Main(){

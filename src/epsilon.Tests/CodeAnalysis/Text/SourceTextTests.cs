@@ -1,6 +1,6 @@
-namespace epsilon.Tests.CodeAnalysis.Text;
-
 using epsilon.CodeAnalysis.Text;
+
+namespace epsilon.Tests.CodeAnalysis.Text;
 
 public class SourceTextTests {
     [Theory]

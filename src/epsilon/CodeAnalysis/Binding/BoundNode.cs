@@ -1,5 +1,4 @@
 using System.Reflection;
-using epsilon.CodeAnalysis.Syntax;
 
 namespace epsilon.CodeAnalysis.Binding;
 

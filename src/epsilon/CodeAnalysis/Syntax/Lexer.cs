@@ -1,6 +1,6 @@
-namespace epsilon.CodeAnalysis.Syntax;
-
 using epsilon.CodeAnalysis.Text;
+
+namespace epsilon.CodeAnalysis.Syntax;
 
 internal sealed class Lexer {
     private readonly SourceText _text;

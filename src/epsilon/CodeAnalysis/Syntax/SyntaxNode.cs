@@ -1,7 +1,7 @@
-namespace epsilon.CodeAnalysis.Syntax;
-
 using System.Reflection;
 using epsilon.CodeAnalysis.Text;
+
+namespace epsilon.CodeAnalysis.Syntax;
 
 public abstract class SyntaxNode {
     public abstract SyntaxKind Kind { get; }

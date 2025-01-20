@@ -1,8 +1,8 @@
-namespace epsilon.Tests.CodeAnalysis;
-
 using System.Collections.Immutable;
 using System.Text;
 using epsilon.CodeAnalysis.Text;
+
+namespace epsilon.Tests.CodeAnalysis;
 
 internal sealed class AnnotatedText {
     public AnnotatedText(string text, ImmutableArray<TextSpan> spans){

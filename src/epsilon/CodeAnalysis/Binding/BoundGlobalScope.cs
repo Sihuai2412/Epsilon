@@ -1,6 +1,6 @@
-namespace epsilon.CodeAnalysis.Binding;
-
 using System.Collections.Immutable;
+
+namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundGlobalScope {
     public BoundGlobalScope(BoundGlobalScope previous, ImmutableArray<Diagnostic> diagnostics, ImmutableArray<VariableSymbol> variables, BoundStatement statement){

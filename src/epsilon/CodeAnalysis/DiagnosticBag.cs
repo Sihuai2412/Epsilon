@@ -1,8 +1,8 @@
-namespace epsilon.CodeAnalysis;
-
 using System.Collections;
 using epsilon.CodeAnalysis.Syntax;
 using epsilon.CodeAnalysis.Text;
+
+namespace epsilon.CodeAnalysis;
 
 internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
     private readonly List<Diagnostic> _diagnostics = new List<Diagnostic>();

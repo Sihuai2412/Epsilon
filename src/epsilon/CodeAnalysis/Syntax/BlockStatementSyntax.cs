@@ -1,6 +1,6 @@
-namespace epsilon.CodeAnalysis.Syntax;
-
 using System.Collections.Immutable;
+
+namespace epsilon.CodeAnalysis.Syntax;
 
 public sealed class BlockStatementSyntax : StatementSyntax {
     public BlockStatementSyntax(SyntaxToken openBraceToken, ImmutableArray<StatementSyntax> statements, SyntaxToken closeBraceToken){

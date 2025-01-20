@@ -1,6 +1,6 @@
-namespace epsilon.Tests.CodeAnalysis.Syntax;
-
 using epsilon.CodeAnalysis.Syntax;
+
+namespace epsilon.Tests.CodeAnalysis.Syntax;
 
 internal sealed class AssertingEnumerator : IDisposable {
     private readonly IEnumerator<SyntaxNode> _enumerator;

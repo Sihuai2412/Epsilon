@@ -1,6 +1,6 @@
-namespace epsilon.CodeAnalysis;
-
 using System.Collections.Immutable;
+
+namespace epsilon.CodeAnalysis;
 
 public sealed class EvaluationResult {
     public EvaluationResult(ImmutableArray<Diagnostic> diagnostics, object value){
