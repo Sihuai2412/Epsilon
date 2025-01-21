@@ -58,10 +58,6 @@ internal static class Program {
                                     ? new Compilation(syntaxTree)
                                     : previous.ContinueWith(syntaxTree);
 
-            var result = compilation.Evaluate(variables);
-
-            var diagnostics = result.Diagnostics;
-
             if (showTree){
                 syntaxTree.Root.WriteTo(Console.Out);
             }
@@ -70,14 +66,16 @@ internal static class Program {
                 compilation.EmitTree(Console.Out);
             }
 
-            if (!diagnostics.Any()){
+            var result = compilation.Evaluate(variables);
+
+            if (!result.Diagnostics.Any()){
                 Console.ForegroundColor = ConsoleColor.Magenta;
                 Console.WriteLine(result.Value);
                 Console.ResetColor();
 
                 previous = compilation;
             } else {
-                foreach (var diagnostic in diagnostics){
+                foreach (var diagnostic in result.Diagnostics){
                     var lineIndex = syntaxTree.Text.GetLineIndex(diagnostic.Span.Start);
                     var line = syntaxTree.Text.Lines[lineIndex];                    
                     var lineNumber = lineIndex + 1;
