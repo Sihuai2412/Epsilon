@@ -32,7 +32,7 @@ internal sealed class AnnotatedText {
 
                 var start = startStack.Pop();
                 var end = position;
-                var span = TextSpan.FormBounds(start, end);
+                var span = TextSpan.FromBounds(start, end);
                 spanBuilder.Add(span);
             } else {
                 position++;
