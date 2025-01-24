@@ -20,3 +20,13 @@ dotnet_diagnostic.CS8602.severity = none
 
 # CS8601: 引用类型赋值可能为 null。
 dotnet_diagnostic.CS8601.severity = none
+
+dotnet_naming_rule.private_fields_start_with_underscore.symbols = private_fields
+dotnet_naming_rule.private_fields_start_with_underscore.style = starts_with_underscore
+dotnet_naming_rule.private_fields_start_with_underscore.severity = warning
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+
+dotnet_naming_style.starts_with_underscore.capitalization = camel_case
+dotnet_naming_style.starts_with_underscore.required_prefix = _

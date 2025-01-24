@@ -61,7 +61,7 @@ internal sealed class EpsilonRepl : Repl {
 
         var syntaxTree = SyntaxTree.Parse(text);
 
-        if (syntaxTree.Diagnostics.Any()){
+        if (syntaxTree.Root.Statement.GetLastToken().IsMissing){
             return false;
         }
 

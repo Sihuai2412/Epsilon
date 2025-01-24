@@ -266,7 +266,6 @@ internal abstract class Repl {
             view.CurrentLine--;
             document[view.CurrentLine] = previousLine + currentLine;
             view.CurrentCharacter = previousLine.Length;
-            return;
         } else {
             var lineIndex = view.CurrentLine;
             var line = document[lineIndex];
@@ -282,6 +281,13 @@ internal abstract class Repl {
         var line = document[lineIndex];
         var start = view.CurrentCharacter;
         if (start >= line.Length){
+            if (view.CurrentLine == document.Count - 1){
+                return;
+            }
+
+            var nextLine = document[view.CurrentLine + 1];
+            document[view.CurrentLine] += nextLine;
+            document.RemoveAt(view.CurrentLine + 1);
             return;
         }
         
@@ -325,6 +331,10 @@ internal abstract class Repl {
     }
 
     private void UpdateDocumentFromHistory(ObservableCollection<string> document, SubmissionView view){
+        if (_submissionHistory.Count == 0){
+            return;
+        }
+        
         document.Clear();
 
         var historyItem = _submissionHistory[_submissionHistoryIndex];
