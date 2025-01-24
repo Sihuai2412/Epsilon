@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using epsilon.CodeAnalysis.Binding;
+using epsilon.CodeAnalysis.Symbols;
 using epsilon.CodeAnalysis.Syntax;
 
 namespace epsilon.CodeAnalysis.Lowering;

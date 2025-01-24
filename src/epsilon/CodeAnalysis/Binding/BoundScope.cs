@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using epsilon.CodeAnalysis.Symbols;
 
 namespace epsilon.CodeAnalysis.Binding;
 

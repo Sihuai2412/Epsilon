@@ -1,4 +1,5 @@
 using epsilon.CodeAnalysis.Binding;
+using epsilon.CodeAnalysis.Symbols;
 
 namespace epsilon.CodeAnalysis;
 

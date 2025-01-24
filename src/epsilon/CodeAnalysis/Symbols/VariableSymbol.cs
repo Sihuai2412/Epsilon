@@ -1,4 +1,4 @@
-namespace epsilon.CodeAnalysis;
+namespace epsilon.CodeAnalysis.Symbols;
 
 public sealed class VariableSymbol{
     internal VariableSymbol(string name, bool isReadOnly, Type type){
