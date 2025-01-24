@@ -2,6 +2,7 @@ namespace epsilon.CodeAnalysis.Syntax;
 
 public enum SyntaxKind {
     // Tokens
+    StringToken,
     NumberToken,
     WhitespaceToken,
     PlusToken,

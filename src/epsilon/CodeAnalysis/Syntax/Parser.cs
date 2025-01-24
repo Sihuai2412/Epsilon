@@ -205,16 +205,15 @@ internal sealed class Parser {
                 return ParseNumberLiteral();
             }
 
+            case SyntaxKind.StringToken: {
+                return ParseStringLiteral();
+            }
+
             case SyntaxKind.IdentifierToken:
             default: {
                 return ParseNameExpression();
             }
         }
-    }
-
-    private ExpressionSyntax ParseNumberLiteral(){
-        var numberToken = MatchToken(SyntaxKind.NumberToken);
-        return new LiteralExpressionSyntax(numberToken);
     }
 
     private ExpressionSyntax ParseParenthesisExpression(){
@@ -223,6 +222,16 @@ internal sealed class Parser {
         var right = MatchToken(SyntaxKind.CloseParenthesisToken);
 
         return new ParenthesizedExpressionSyntax(left, expression, right);
+    }
+    
+    private ExpressionSyntax ParseNumberLiteral(){
+        var numberToken = MatchToken(SyntaxKind.NumberToken);
+        return new LiteralExpressionSyntax(numberToken);
+    }
+
+    private ExpressionSyntax ParseStringLiteral(){
+        var stringToken = MatchToken(SyntaxKind.StringToken);
+        return new LiteralExpressionSyntax(stringToken);
     }
 
     private ExpressionSyntax ParseBooleanLiteral(){

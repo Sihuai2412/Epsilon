@@ -31,6 +31,11 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
         Report(span, message);
     }
 
+    public void ReportUnterminatedString(TextSpan span){
+        var message = $"Unterminated string literal.";
+        Report(span, message);
+    }
+
     public void ReportUnexpectedToken(TextSpan span, SyntaxKind actualKind, SyntaxKind expectedKind){
         var message = $"Unexpected token <{actualKind}>, expected <{expectedKind}>.";
         Report(span, message);
