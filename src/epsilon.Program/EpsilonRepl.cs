@@ -15,9 +15,14 @@ internal sealed class EpsilonRepl : Repl {
         foreach (var token in tokens){
             var isKeyword = token.Kind.ToString().EndsWith("Keyword");
             var isNumber = token.Kind == SyntaxKind.NumberToken;
+            var isIdentifier = token.Kind == SyntaxKind.IdentifierToken;
             if (isKeyword){
                 Console.ForegroundColor = ConsoleColor.Blue;
-            } else if (!isNumber){
+            } else if (isIdentifier){
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+            } else if (isNumber){
+                Console.ForegroundColor = ConsoleColor.Cyan;
+            } else {
                 Console.ForegroundColor = ConsoleColor.DarkGray;
             }
 
