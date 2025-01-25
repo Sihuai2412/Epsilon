@@ -1,3 +1,5 @@
+using epsilon.CodeAnalysis.Symbols;
+
 namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundBinaryExpression : BoundExpression {
@@ -10,7 +12,7 @@ internal sealed class BoundBinaryExpression : BoundExpression {
     }
 
     public override BoundNodeKind Kind => BoundNodeKind.BinaryExpression;
-    public override Type Type => Op.ResultType;
+    public override TypeSymbol Type => Op.ResultType;
     public BoundExpression Left { get; }
     public BoundBinaryOperator Op { get; }
     public BoundExpression Right { get; }

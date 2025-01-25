@@ -139,21 +139,21 @@ internal sealed class Evaluator {
             case BoundBinaryOperatorKind.Division:
                 return (int)left / (int)right;
             case BoundBinaryOperatorKind.BitwiseAnd: {
-                if (b.Type == typeof(int)){
+                if (b.Type == TypeSymbol.Int){
                     return (int)left & (int)right;
                 } else {
                     return (bool)left & (bool)right;
                 }
             }
             case BoundBinaryOperatorKind.BitwiseOr: {
-                if (b.Type == typeof(int)){
+                if (b.Type == TypeSymbol.Int){
                     return (int)left | (int)right;
                 } else {
                     return (bool)left | (bool)right;
                 }
             }
             case BoundBinaryOperatorKind.BitwiseXOr: {
-                if (b.Type == typeof(int)){
+                if (b.Type == TypeSymbol.Int){
                     return (int)left ^ (int)right;
                 } else {
                     return (bool)left ^ (bool)right;
