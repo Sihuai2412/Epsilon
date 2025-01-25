@@ -1,0 +1,5 @@
+namespace epsilon.CodeAnalysis.Symbols;
+
+public enum SymbolKind {
+    Variable
+}
