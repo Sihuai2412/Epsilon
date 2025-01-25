@@ -86,14 +86,9 @@ internal sealed class Binder {
     }
 
     private BoundStatement BindVariableDeclaration(VariableDeclarationSyntax syntax){
-        var name = syntax.Identifier.Text;
         var isReadOnly = syntax.Keyword.Kind == SyntaxKind.LetKeyword;
         var initializer = BindExpression(syntax.Initializer);
-        var variable = new VariableSymbol(name, isReadOnly, initializer.Type);
-
-        if (!_scope.TryDeclare(variable)){
-            _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);
-        }
+        var variable = BindVariable(syntax.Identifier, isReadOnly, initializer.Type);
 
         return new BoundVariableDeclaration(variable, initializer);
     }
@@ -117,18 +112,13 @@ internal sealed class Binder {
 
         _scope = new BoundScope(_scope);
 
-        var name = syntax.Identifier.Text;
-        var variable = new VariableSymbol(name, true, TypeSymbol.Int);
-        if (!_scope.TryDeclare(variable)){
-            _diagnostics.ReportVariableAlreadyDeclared(syntax.Identifier.Span, name);
-        }
+        var variable = BindVariable(syntax.Identifier, isReadOnly: true, TypeSymbol.Int);
         var body = BindStatement(syntax.Body);
 
         _scope = _scope.Parent;
 
         return new BoundForStatement(variable, lowerBound, upperBound, body);
     }
-
     private BoundStatement BindExpressionStatement(ExpressionStatementSyntax syntax){
         var expression = BindExpression(syntax.Expression);
         return new BoundExpressionStatement(expression);
@@ -136,7 +126,8 @@ internal sealed class Binder {
 
     private BoundExpression BindExpression(ExpressionSyntax syntax, TypeSymbol targetType){
         var result = BindExpression(syntax);
-        if (result.Type != targetType){
+        if (targetType != TypeSymbol.Error && result.Type != TypeSymbol.Error && 
+            result.Type != targetType){
             _diagnostics.ReportCannotConvert(syntax.Span, result.Type, targetType);
         }
 
@@ -173,7 +164,7 @@ internal sealed class Binder {
 
     private BoundExpression BindNameExpression(NameExpressionSyntax syntax){
         var name = syntax.IdentifierToken.Text;
-        if (string.IsNullOrEmpty(name)){
+        if (syntax.IdentifierToken.IsMissing){
             return new BoundErrorExpression();
         }
 
@@ -247,5 +238,16 @@ internal sealed class Binder {
         }
         
         return new BoundBinaryExpression(boundLeft, boundOperator, boundRight);
+    }
+
+    private VariableSymbol BindVariable(SyntaxToken identifier, bool isReadOnly, TypeSymbol type){
+        var name = identifier.Text ?? "?";
+        var declare = !identifier.IsMissing;
+        var variable = new VariableSymbol(name, isReadOnly, type);
+        if (declare && !_scope.TryDeclare(variable)){
+            _diagnostics.ReportVariableAlreadyDeclared(identifier.Span, name);
+        }
+
+        return variable;
     }
 }
