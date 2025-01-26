@@ -30,3 +30,6 @@ dotnet_naming_symbols.private_fields.applicable_accessibilities = private
 
 dotnet_naming_style.starts_with_underscore.capitalization = camel_case
 dotnet_naming_style.starts_with_underscore.required_prefix = _
+
+# CS8619: 值中的引用类型的为 Null 性与目标类型不匹配。
+dotnet_diagnostic.CS8619.severity = none

@@ -25,6 +25,7 @@ public enum SyntaxKind {
     CloseParenthesisToken,
     OpenBraceToken,
     CloseBraceToken,
+    CommaToken,
     TildeToken,
     HatToken,
     BadToken,
@@ -60,5 +61,6 @@ public enum SyntaxKind {
     UnaryExpression,
     BinaryExpression,
     ParenthesizedExpression,
-    AssignmentExpression
+    AssignmentExpression,
+    CallExpression
 }

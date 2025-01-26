@@ -39,49 +39,65 @@ internal sealed class Lexer {
         _kind = SyntaxKind.BadToken;
         _value = null;
         switch (Current){
-            case '\0':
+            case '\0': {
                 _kind = SyntaxKind.EndOfFileToken;
                 break;
-            case '+':
+            }
+            case '+': {
                 _kind = SyntaxKind.PlusToken;
                 _position++;
                 break;
-            case '-':
+            }
+            case '-': {
                 _kind = SyntaxKind.MinusToken;
                 _position++;
                 break;
-            case '*':
+            }
+            case '*': {
                 _kind = SyntaxKind.StarToken;
                 _position++;
                 break;
-            case '/':
+            }
+            case '/': {
                 _kind = SyntaxKind.SlashToken;
                 _position++;
                 break;
-            case '(':
+            }
+            case '(': {
                 _kind = SyntaxKind.OpenParenthesisToken;
                 _position++;
                 break;
-            case ')':
+            }
+            case ')': {
                 _kind = SyntaxKind.CloseParenthesisToken;
                 _position++;
                 break;
-            case '{':
+            }
+            case '{': {
                 _kind = SyntaxKind.OpenBraceToken;
                 _position++;
                 break;
-            case '}':
+            }
+            case '}': {
                 _kind = SyntaxKind.CloseBraceToken;
                 _position++;
                 break;
-            case '~':
+            }
+            case ',': {
+                _kind = SyntaxKind.CommaToken;
+                _position++;
+                break;
+            }
+            case '~': {
                 _kind = SyntaxKind.TildeToken;
                 _position++;
                 break;
-            case '^':
+            }
+            case '^': {
                 _kind = SyntaxKind.HatToken;
                 _position++;
                 break;
+            }
             case '&': {
                 _position++;
                 if (Current != '&'){

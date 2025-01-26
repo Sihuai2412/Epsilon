@@ -18,5 +18,6 @@ internal enum BoundNodeKind {
     VariableExpression,
     AssignmentExpression,
     UnaryExpression,
-    BinaryExpression
+    BinaryExpression,
+    CallExpression
 }
