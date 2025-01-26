@@ -15,14 +15,18 @@ internal sealed class EpsilonRepl : Repl {
         var tokens = SyntaxTree.ParseTokens(line);
         foreach (var token in tokens){
             var isKeyword = token.Kind.ToString().EndsWith("Keyword");
-            var isNumber = token.Kind == SyntaxKind.NumberToken;
             var isIdentifier = token.Kind == SyntaxKind.IdentifierToken;
+            var isNumber = token.Kind == SyntaxKind.NumberToken;
+            var isString = token.Kind == SyntaxKind.StringToken;
+
             if (isKeyword){
                 Console.ForegroundColor = ConsoleColor.Blue;
             } else if (isIdentifier){
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
             } else if (isNumber){
                 Console.ForegroundColor = ConsoleColor.Cyan;
+            } else if (isString){
+                Console.ForegroundColor = ConsoleColor.Magenta;
             } else {
                 Console.ForegroundColor = ConsoleColor.DarkGray;
             }
@@ -101,7 +105,7 @@ internal sealed class EpsilonRepl : Repl {
         var result = compilation.Evaluate(_variables);
 
         if (!result.Diagnostics.Any()){
-            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(result.Value);
             Console.ResetColor();
 
