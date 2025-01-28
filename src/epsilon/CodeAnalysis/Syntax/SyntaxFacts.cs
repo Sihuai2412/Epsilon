@@ -137,6 +137,8 @@ public static class SyntaxFacts {
                 return "{";
             case SyntaxKind.CloseBraceToken:
                 return "}";
+            case SyntaxKind.ColonToken:
+                return ":";
             case SyntaxKind.CommaToken:
                 return ",";
             case SyntaxKind.ElseKeyword:

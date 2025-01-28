@@ -57,8 +57,18 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
         Report(span, message);
     }
 
+    public void ReportUndefinedType(TextSpan span, string name){
+        var message = $"Type '{name}' doesn't exist.";
+        Report(span, message);
+    }
+
     public void ReportCannotConvert(TextSpan span, TypeSymbol fromType, TypeSymbol toType){
         var message = $"Cannot convert type '{fromType}' to '{toType}'.";
+        Report(span, message);
+    }
+
+    public void ReportCannotConvertImplicitly(TextSpan span, TypeSymbol fromType, TypeSymbol toType){
+        var message = $"Cannot convert type '{fromType}' to '{toType}'. An explicit conversion exits (are you missing a cast?)";
         Report(span, message);
     }
 
