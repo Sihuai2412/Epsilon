@@ -1,6 +1,6 @@
-/src/epsilon/bin
-/src/epsilon/obj
-/src/epsilon.Program/bin
-/src/epsilon.Program/obj
-/src/epsilon.Tests/bin
-/src/epsilon.Tests/obj
+./src/epsilon/bin
+./src/epsilon/obj
+./src/epsilon.Program/bin
+./src/epsilon.Program/obj
+./src/epsilon.Tests/bin
+./src/epsilon.Tests/obj

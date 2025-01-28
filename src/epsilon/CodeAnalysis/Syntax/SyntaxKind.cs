@@ -25,6 +25,7 @@ public enum SyntaxKind {
     CloseParenthesisToken,
     OpenBraceToken,
     CloseBraceToken,
+    ColonToken,
     CommaToken,
     TildeToken,
     HatToken,
@@ -42,6 +43,7 @@ public enum SyntaxKind {
     TrueKeyword,
     VarKeyword,
     WhileKeyword,
+    DoKeyword,
 
     // Nodes
     CompilationUnit,
@@ -52,6 +54,7 @@ public enum SyntaxKind {
     VariableDeclaration,
     IfStatement,
     WhileStatement,
+    DoWhileStatement,
     ForStatement,
     ExpressionStatement,
 

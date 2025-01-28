@@ -68,6 +68,7 @@ public class EvaluationTests {
     [InlineData("{ var i = 10 var result = 0 while i > 0 { result = result + i i = i - 1} result }", 55)]
     [InlineData("{ var result = 0 for i = 1 to 10 { result = result + i } result }", 55)]
     [InlineData("{ var a = 10 for i = 1 to (a = a - 1) { } a }", 9)]
+    [InlineData("{ var a = 0 do a = a + 1 while a < 10 a}", 10)]
     public void Evaluator_Computes_CorrectValues(string text, object expectedValue){
         AssertValue(text, expectedValue);
     }
@@ -86,7 +87,7 @@ public class EvaluationTests {
         ";
 
         var diagnostics = @"
-            Variable 'x' is already declared.
+            'x' is already declared.
         ";
 
         AssertDiagnostics(text, diagnostics);
@@ -138,6 +139,24 @@ public class EvaluationTests {
             Cannot convert type 'int' to 'bool'.
         ";
 
+        AssertDiagnostics(text, diagnostics);
+    }
+
+            [Fact]
+    public void Evaluator_DoWhileStatement_Reports_CannotConvert(){
+        var text = @"
+            {
+                var x = 0
+                do
+                    x = 10
+                while [10]
+            }
+        ";
+
+        var diagnostics = @"
+            Cannot convert type 'int' to 'bool'.
+        ";
+        
         AssertDiagnostics(text, diagnostics);
     }
 
@@ -257,6 +276,22 @@ public class EvaluationTests {
 
         var diagnostics = @"
             Cannot convert type 'bool' to 'int'.
+        ";
+
+        AssertDiagnostics(text, diagnostics);
+    }
+
+    [Fact]
+    public void Evaluator_Variables_Can_Shadow_Functions(){
+        var text = @"
+            {
+                let print = 42
+                [print](""test"")
+            }
+        ";
+
+        var diagnostics = @"
+            Function 'print' doesn't exist.
         ";
 
         AssertDiagnostics(text, diagnostics);

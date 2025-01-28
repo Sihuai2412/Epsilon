@@ -6,6 +6,7 @@ internal enum BoundNodeKind {
     VariableDeclaration,
     IfStatement,
     WhileStatement,
+    DoWhileStatement,
     ForStatement,
     LabelStatement,
     GotoStatement,
