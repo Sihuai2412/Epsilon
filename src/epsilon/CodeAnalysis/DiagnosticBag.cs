@@ -47,8 +47,13 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
         Report(span, message);
     }
 
-    public void ReportBindefinedUnaryOperator(TextSpan span, string operatorText, TypeSymbol leftType, TypeSymbol rightType){
+    public void ReportBindefinedBinaryOperator(TextSpan span, string operatorText, TypeSymbol leftType, TypeSymbol rightType){
         var message = $"Binary operator '{operatorText}' is not defined for types '{leftType}' and '{rightType}'.";
+        Report(span, message);
+    }
+
+    public void ReportParameterAlreadyDeclared(TextSpan span, string parameterName){
+        var message = $"A parameter with the name '{parameterName}' already exists.";
         Report(span, message);
     }
 
@@ -69,7 +74,8 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
 
     public void ReportCannotConvertImplicitly(TextSpan span, TypeSymbol fromType, TypeSymbol toType){
         var message = $"Cannot convert type '{fromType}' to '{toType}'. An explicit conversion exits (are you missing a cast?)";
-        Report(span, message);
+        Report(span, message); 
+        
     }
 
     public void ReportSymbolAlreadyDeclared(TextSpan span, string name){
@@ -99,6 +105,11 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
 
     public void ReportExpressionMustHaveValue(TextSpan span){
         var message = $"Expression must have a value.";
+        Report(span, message);
+    }
+
+    public void XXX_ReportFunctionAreUnsupported(TextSpan span){
+        var message = $"Functions with return values are unsupported.";
         Report(span, message);
     }
 }

@@ -44,8 +44,7 @@ public class ParserTests {
 
     [Theory]
     [MemberData(nameof(GetUnaryOperatorPairsData))]
-    public void Parser_UnaryExpression_HonorsPrecedences(SyntaxKind unaryKind, SyntaxKind binaryKind)
-    {
+    public void Parser_UnaryExpression_HonorsPrecedences(SyntaxKind unaryKind, SyntaxKind binaryKind){
         var unaryPrecedence = SyntaxFacts.GetUnaryOperatorPrecedence(unaryKind);
         var binaryPrecedence = SyntaxFacts.GetBinaryOperatorPrecedence(binaryKind);
         var unaryText = SyntaxFacts.GetText(unaryKind);
@@ -53,10 +52,8 @@ public class ParserTests {
         var text = $"{unaryText} a {binaryText} b";
         var expression = ParseExpression(text);
 
-        if (unaryPrecedence >= binaryPrecedence)
-        {
-            using (var e = new AssertingEnumerator(expression))
-            {
+        if (unaryPrecedence >= binaryPrecedence){
+            using (var e = new AssertingEnumerator(expression)){
                 e.AssertNode(SyntaxKind.BinaryExpression);
                 e.AssertNode(SyntaxKind.UnaryExpression);
                 e.AssertToken(unaryKind, unaryText);
@@ -66,11 +63,8 @@ public class ParserTests {
                 e.AssertNode(SyntaxKind.NameExpression);
                 e.AssertToken(SyntaxKind.IdentifierToken, "b");
             }
-        }
-        else
-        {
-            using (var e = new AssertingEnumerator(expression))
-            {
+        } else {
+            using (var e = new AssertingEnumerator(expression)){
                 e.AssertNode(SyntaxKind.UnaryExpression);
                 e.AssertToken(unaryKind, unaryText);
                 e.AssertNode(SyntaxKind.BinaryExpression);
@@ -86,8 +80,9 @@ public class ParserTests {
     private static ExpressionSyntax ParseExpression(string text){
         var syntaxTree = SyntaxTree.Parse(text);
         var root = syntaxTree.Root;
-        var statement = root.Statement;
-        return Assert.IsType<ExpressionStatementSyntax>(statement).Expression;
+        var member = Assert.Single(root.Members);
+        var globalStatement = Assert.IsType<GlobalStatementSyntax>(member);
+        return Assert.IsType<ExpressionStatementSyntax>(globalStatement.Statement).Expression;
     }
 
     public static IEnumerable<object[]> GetBinaryOperatorPairsData(){

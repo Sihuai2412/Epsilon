@@ -80,7 +80,7 @@ internal sealed class EpsilonRepl : Repl {
 
         var syntaxTree = SyntaxTree.Parse(text);
 
-        if (syntaxTree.Root.Statement.GetLastToken().IsMissing){
+        if (syntaxTree.Root.Members.Last().GetLastToken().IsMissing){
             return false;
         }
 
