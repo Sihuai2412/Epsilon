@@ -5,3 +5,6 @@ Epsilon is a programming language of variable, function and class. It is current
 
 ## Installation
 At present, you can only obtain the source code and compile it through git clone the repository.
+```
+git clone https://github.com/Sihuai2412/Epsilon.git
+```
