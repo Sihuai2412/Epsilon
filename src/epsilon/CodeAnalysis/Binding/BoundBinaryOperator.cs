@@ -103,6 +103,12 @@ internal sealed class BoundBinaryOperator {
         new BoundBinaryOperator(SyntaxKind.PlusToken, 
                                 BoundBinaryOperatorKind.Addition,
                                 TypeSymbol.String),
+        new BoundBinaryOperator(SyntaxKind.EqualsEqualsToken, 
+                                BoundBinaryOperatorKind.Equals,
+                                TypeSymbol.String, TypeSymbol.Bool),
+        new BoundBinaryOperator(SyntaxKind.BangEqualsToken, 
+                                BoundBinaryOperatorKind.NotEquals,
+                                TypeSymbol.String, TypeSymbol.Bool),
     };
 
     public static BoundBinaryOperator Bind(SyntaxKind syntaxKind, TypeSymbol leftType, TypeSymbol rightType){
