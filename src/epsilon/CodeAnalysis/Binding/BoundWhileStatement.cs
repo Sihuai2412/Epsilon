@@ -1,7 +1,7 @@
 namespace epsilon.CodeAnalysis.Binding;
 
-internal sealed class BoundWhileStatement : BoundStatement {
-    public BoundWhileStatement(BoundExpression condition, BoundStatement body){
+internal sealed class BoundWhileStatement : BoundLoopStatement {
+    public BoundWhileStatement(BoundExpression condition, BoundStatement body, BoundLabel breakLabel, BoundLabel continueLabel) : base(breakLabel, continueLabel){
         Condition = condition;
         Body = body;
     }

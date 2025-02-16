@@ -2,8 +2,8 @@ using epsilon.CodeAnalysis.Symbols;
 
 namespace epsilon.CodeAnalysis.Binding;
 
-internal sealed class BoundForStatement : BoundStatement {
-    public BoundForStatement(VariableSymbol variable, BoundExpression lowerBound, BoundExpression upperBound, BoundStatement body){
+internal sealed class BoundForStatement : BoundLoopStatement {
+    public BoundForStatement(VariableSymbol variable, BoundExpression lowerBound, BoundExpression upperBound, BoundStatement body, BoundLabel breakLabel, BoundLabel continueLabel) : base(breakLabel, continueLabel){
         Variable = variable;
         LowerBound = lowerBound;
         UpperBound = upperBound;

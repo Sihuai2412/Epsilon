@@ -21,8 +21,8 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
         _diagnostics.Add(diagnostic);
     }
 
-    public void ReportInvaildNumber(TextSpan span, string text, TypeSymbol type){
-        var message = $"The number {text} isn't vaild {type}.";
+    public void ReportInvalidNumber(TextSpan span, string text, TypeSymbol type){
+        var message = $"The number {text} isn't valid {type}.";
         Report(span, message);
     }
 
@@ -104,12 +104,17 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
     }
 
     public void ReportExpressionMustHaveValue(TextSpan span){
-        var message = $"Expression must have a value.";
+        var message = "Expression must have a value.";
+        Report(span, message);
+    }
+
+    public void ReportInvalidBreakOrContinue(TextSpan span, string text){
+        var message = $"The keyword '{text}' can only be used inside of loops.";
         Report(span, message);
     }
 
     public void XXX_ReportFunctionAreUnsupported(TextSpan span){
-        var message = $"Functions with return values are unsupported.";
+        var message = "Functions with return values are unsupported.";
         Report(span, message);
     }
 }

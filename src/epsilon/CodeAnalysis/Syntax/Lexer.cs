@@ -255,7 +255,7 @@ internal sealed class Lexer {
         var length = _position - _start;
         var text = _text.ToString(_start, length);
         if (!int.TryParse(text, out var value)){
-            _diagnostics.ReportInvaildNumber(new TextSpan(_start, length), text, TypeSymbol.Int);
+            _diagnostics.ReportInvalidNumber(new TextSpan(_start, length), text, TypeSymbol.Int);
         }
 
         _value = value;
