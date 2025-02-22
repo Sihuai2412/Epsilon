@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("epsilon.Program")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4830e9b35121a3f9cb91abc70fb75d5269db5e1b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+58cff3fc40042c5d75d2af52e49e673eb9d4ff56")]
 [assembly: System.Reflection.AssemblyProductAttribute("epsilon.Program")]
 [assembly: System.Reflection.AssemblyTitleAttribute("epsilon.Program")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

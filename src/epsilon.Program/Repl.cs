@@ -53,7 +53,7 @@ internal abstract class Repl {
             var lineCount = 0;
 
             foreach (var line in _submissionDocument){
-                Console.SetCursorPosition(0, _cursorTop + lineCount);
+                Console.SetCursorPosition(0, _cursorTop + lineCount);  //TODO
                 Console.ForegroundColor = ConsoleColor.Green;
 
                 if (lineCount == 0){
