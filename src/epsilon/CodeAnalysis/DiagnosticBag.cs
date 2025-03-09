@@ -113,6 +113,11 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
         Report(span, message);
     }
 
+    public void ReportAllPathsMustReturn(TextSpan span){
+        var message = $"No all code paths return a value.";
+        Report(span, message);
+    }
+
     public void ReportInvalidReturn(TextSpan span){
         var message = "The 'return' keyword can only be used inside of functions.";
         Report(span, message);
