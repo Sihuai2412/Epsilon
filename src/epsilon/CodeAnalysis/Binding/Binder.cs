@@ -106,7 +106,7 @@ internal sealed class Binder {
             type,
             syntax
         );
-        if (!_scope.TryDeclareFunction(function)){
+        if (function.Declaration.Identifier.Text != null && !_scope.TryDeclareFunction(function)){
             _diagnostics.ReportSymbolAlreadyDeclared(syntax.Identifier.Span, function.Name);
         }
     }
@@ -200,7 +200,7 @@ internal sealed class Binder {
         var type = BindTypeClause(syntax.TypeClause);
         var initializer = BindExpression(syntax.Initializer);
         var variableType = type ?? initializer.Type;
-        var variable = BindVariable(syntax.Identifier, isReadOnly, variableType);
+        var variable = BindVariableDeclaration(syntax.Identifier, isReadOnly, variableType);
         var convertedInitializer = BindConversion(syntax.Initializer.Span, initializer, variableType);
 
         return new BoundVariableDeclaration(variable, convertedInitializer);
@@ -244,7 +244,7 @@ internal sealed class Binder {
 
         _scope = new BoundScope(_scope);
 
-        var variable = BindVariable(syntax.Identifier, isReadOnly: true, TypeSymbol.Int);
+        var variable = BindVariableDeclaration(syntax.Identifier, isReadOnly: true, TypeSymbol.Int);
         var body = BindLoopBody(syntax.Body, out var breakLabel, out var continueLabel);
 
         _scope = _scope.Parent;
@@ -361,8 +361,9 @@ internal sealed class Binder {
             return new BoundErrorExpression();
         }
 
-        if (!_scope.TryLookupVariable(name, out var variable)){
-            _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
+        var variable = BindVariableReference(name, syntax.IdentifierToken.Span);
+
+        if (variable == null){
             return new BoundErrorExpression();
         }
 
@@ -373,8 +374,9 @@ internal sealed class Binder {
         var name = syntax.IdentifierToken.Text;
         var boundExpression = BindExpression(syntax.Expression);
 
-        if (!_scope.TryLookupVariable(name, out var variable)){
-            _diagnostics.ReportUndefinedName(syntax.IdentifierToken.Span, name);
+        var variable = BindVariableReference(name, syntax.IdentifierToken.Span);
+
+        if (variable == null){
             return boundExpression;
         }
 
@@ -442,8 +444,16 @@ internal sealed class Binder {
             boundArguments.Add(boundArgument);
         }
 
-        if (!_scope.TryLookupFunction(syntax.Identifier.Text, out var function)){
+        var symbol = _scope.TryLookupSymbol(syntax.Identifier.Text);
+
+        if (symbol == null){
             _diagnostics.ReportUndefinedFunction(syntax.Identifier.Span, syntax.Identifier.Text);
+            return new BoundErrorExpression();
+        }
+
+        var function = symbol as FunctionSymbol;
+        if (function == null){
+            _diagnostics.ReportNotAFunction(syntax.Identifier.Span, syntax.Identifier.Text);
             return new BoundErrorExpression();
         }
 
@@ -509,7 +519,7 @@ internal sealed class Binder {
         return new BoundConversionExpression(type, expression);
     }
 
-    private VariableSymbol BindVariable(SyntaxToken identifier, bool isReadOnly, TypeSymbol type){
+    private VariableSymbol BindVariableDeclaration(SyntaxToken identifier, bool isReadOnly, TypeSymbol type){
         var name = identifier.Text ?? "?";
         var declare = !identifier.IsMissing;
         var variable = _function == null
@@ -520,6 +530,24 @@ internal sealed class Binder {
         }
 
         return variable;
+    }
+
+    private VariableSymbol BindVariableReference(string name, TextSpan span){
+        switch (_scope.TryLookupSymbol(name)){
+            case VariableSymbol variable: {
+                return variable;
+            }
+
+            case null: {
+                _diagnostics.ReportUndefinedVariable(span, name);
+                return null;
+            }
+
+            default: {
+                _diagnostics.ReportNotAVariable(span, name);
+                return null;
+            }
+        }
     }
 
     private TypeSymbol LookupType(string name){

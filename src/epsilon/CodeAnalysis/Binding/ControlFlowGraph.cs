@@ -1,3 +1,4 @@
+using System.CodeDom.Compiler;
 using epsilon.CodeAnalysis.Symbols;
 using epsilon.CodeAnalysis.Syntax;
 
@@ -39,9 +40,10 @@ internal sealed class ControlFlowGraph {
                 return "<End>";
             }
 
-            using (var writer = new StringWriter()){
+            using (var writer = new StringWriter())
+            using (var indentedWriter = new IndentedTextWriter(writer)){
                 foreach (var statement in Statements){
-                    statement.WriteTo(writer);
+                    statement.WriteTo(indentedWriter);
                 }
 
                 return writer.ToString();
@@ -104,18 +106,18 @@ internal sealed class ControlFlowGraph {
             return _blocks.ToList();
         }
 
-            private void StartBlock(){
-                EndBlock();
-            }
+        private void StartBlock(){
+            EndBlock();
+        }
 
-            private void EndBlock(){
-                if (_statements.Count > 0){
-                    var block = new BasicBlock();
-                    block.Statements.AddRange(_statements);
-                    _blocks.Add(block);
-                    _statements.Clear();
-                }
+        private void EndBlock(){
+            if (_statements.Count > 0){
+                var block = new BasicBlock();
+                block.Statements.AddRange(_statements);
+                _blocks.Add(block);
+                _statements.Clear();
             }
+        }
     }
 
     public sealed class GraphBuilder {
@@ -241,7 +243,7 @@ internal sealed class ControlFlowGraph {
 
     public void WriteTo(TextWriter writer){
         string Quote(string text){
-            return "\"" + text.Replace("\"", "\\\"") + "\"";
+            return "\"" + text.TrimEnd().Replace("\\", "\\\\").Replace("\"", "\\\"").Replace(Environment.NewLine, "\\l") + "\"";
         }
 
         writer.WriteLine("digraph G {");
@@ -255,8 +257,8 @@ internal sealed class ControlFlowGraph {
 
         foreach (var block in Blocks){
             var id = blockIds[block];
-            var label = Quote(block.ToString().Replace(Environment.NewLine, "\\l"));
-            writer.WriteLine($"    {id} [label = {label} shape = box]");
+            var label = Quote(block.ToString());
+            writer.WriteLine($"    {id} [label = {label}, shape = box]");
         }
 
         foreach (var branch in Branchs){
@@ -281,8 +283,8 @@ internal sealed class ControlFlowGraph {
         var graph = Create(body);
 
         foreach (var branch in graph.End.Incoming){
-            var lastStatement = branch.From.Statements.Last();
-            if (lastStatement.Kind != BoundNodeKind.ReturnStatement){
+            var lastStatement = branch.From.Statements.LastOrDefault();
+            if (lastStatement == null || lastStatement.Kind != BoundNodeKind.ReturnStatement){
                 return false;
             }
         }
