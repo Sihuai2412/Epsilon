@@ -8,7 +8,7 @@ namespace epsilon.Compiler;
 internal static class Program {
     private static void Main(string[] args){
         if (args.Length == 0){
-            Console.Error.WriteLine("usage: eps <source-paths>");
+            Console.Error.WriteLine("usage: epsi <source-paths>");
             return;
         }
 

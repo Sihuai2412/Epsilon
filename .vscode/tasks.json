@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Epsilon.sln"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "epsi",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "run",
+                "--project",
+                "${workspaceFolder}/src/epsilon.Compiler/epsilon.Compiler.csproj",
+                "--",
+                "${file}"
+            ],
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
