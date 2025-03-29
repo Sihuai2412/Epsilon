@@ -1,7 +1,7 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
 internal class BreakStatementSyntax : StatementSyntax {
-    public BreakStatementSyntax(SyntaxToken keyword){
+    public BreakStatementSyntax(SyntaxTree syntaxTree, SyntaxToken keyword) : base(syntaxTree){
         Keyword = keyword;
     }
 

@@ -1,7 +1,7 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
 public sealed class AssignmentExpressionSyntax : ExpressionSyntax {
-    public AssignmentExpressionSyntax(SyntaxToken identifierToken, SyntaxToken equalsToken, ExpressionSyntax expression){
+    public AssignmentExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken identifierToken, SyntaxToken equalsToken, ExpressionSyntax expression) : base(syntaxTree){
         IdentifierToken = identifierToken;
         EqualsToken = equalsToken;
         Expression = expression;

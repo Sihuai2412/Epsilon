@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 namespace epsilon.CodeAnalysis.Syntax;
 
 public sealed class CompilationUnitSyntax : SyntaxNode {
-    public CompilationUnitSyntax(ImmutableArray<MemberSyntax> members, SyntaxToken endOfFileToken){
+    public CompilationUnitSyntax(SyntaxTree syntaxTree, ImmutableArray<MemberSyntax> members, SyntaxToken endOfFileToken) : base(syntaxTree){
         Members = members;
         EndOfFileToken = endOfFileToken;
     }

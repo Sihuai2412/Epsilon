@@ -3,12 +3,12 @@ using epsilon.CodeAnalysis.Text;
 namespace epsilon.CodeAnalysis;
 
 public sealed class Diagnostic {
-    public Diagnostic(TextSpan span, string message){
-        Span = span;
+    public Diagnostic(TextLocation location, string message){
+        Location = location;
         Message = message;
     }
 
-    public TextSpan Span { get; }
+    public TextLocation Location { get; }
     public string Message { get; }
 
     public override string ToString() => Message;

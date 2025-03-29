@@ -5,17 +5,18 @@ using epsilon.CodeAnalysis.Text;
 namespace epsilon.CodeAnalysis.Syntax;
 
 internal sealed class Lexer {
+    private readonly SyntaxTree _syntaxTree;
     private readonly SourceText _text;
     private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
-
     private int _position;
 
     private int _start;
     private SyntaxKind _kind;
     private object _value;
 
-    public Lexer(SourceText text){
-        _text = text;
+    public Lexer(SyntaxTree syntaxTree){
+        _syntaxTree = syntaxTree;
+        _text = syntaxTree.Text;
     }
 
     public DiagnosticBag Diagnostics => _diagnostics;
@@ -185,7 +186,9 @@ internal sealed class Lexer {
                 } else if (char.IsWhiteSpace(Current)){
                     ReadWhitespace();
                 } else {
-                    _diagnostics.ReportBadCharacter(_position, Current);
+                    var span = new TextSpan(_position, 1);
+                    var location = new TextLocation(_text, span);
+                    _diagnostics.ReportBadCharacter(location, Current);
                     _position++;
                 }
                 break;
@@ -198,7 +201,7 @@ internal sealed class Lexer {
             text = _text.ToString(_start, length);
         }
 
-        return new SyntaxToken(_kind, _start, text, _value);
+        return new SyntaxToken(_syntaxTree, _kind, _start, text, _value);
     }
 
     private void ReadString(){
@@ -213,7 +216,8 @@ internal sealed class Lexer {
                 case '\r':
                 case '\n': {
                     var span = new TextSpan(_start, 1);
-                    _diagnostics.ReportUnterminatedString(span);
+                    var location = new TextLocation(_text, span);
+                    _diagnostics.ReportUnterminatedString(location);
                     done = true;
                     break;
                 }
@@ -255,7 +259,9 @@ internal sealed class Lexer {
         var length = _position - _start;
         var text = _text.ToString(_start, length);
         if (!int.TryParse(text, out var value)){
-            _diagnostics.ReportInvalidNumber(new TextSpan(_start, length), text, TypeSymbol.Int);
+            var span = new TextSpan(_start, length);
+            var location = new TextLocation(_text, span);
+            _diagnostics.ReportInvalidNumber(location, text, TypeSymbol.Int);
         }
 
         _value = value;
