@@ -20,7 +20,7 @@
                 "--project",
                 "${workspaceFolder}/src/epsilon.Compiler/epsilon.Compiler.csproj",
                 "--",
-                "${file}"
+                "${fileDirname}"
             ],
             "presentation": {
                 "echo": true,

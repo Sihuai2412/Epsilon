@@ -12,21 +12,25 @@ internal static class Program {
             return;
         }
 
-        if (args.Length > 1){
-            Console.Error.WriteLine("error: only one path supported right now");
+        var paths = GetFilePaths(args);
+        var syntaxTrees = new List<SyntaxTree>();
+        var hasErrors = false;
+
+        foreach (var path in paths){
+            if (!File.Exists(path)){
+                Console.Error.WriteLine($"error: file '{path}' doesn't exist");
+                hasErrors = true;
+                continue;
+            }
+            var syntaxTree = SyntaxTree.Load(path);
+            syntaxTrees.Add(syntaxTree);
+        }
+
+        if (hasErrors){
             return;
         }
 
-        var path = args.Single();
-
-        if (!File.Exists(path)){
-            Console.Error.WriteLine($"error: file '{path}' doesn't exist");
-            return;
-        }
-
-        var syntaxTree = SyntaxTree.Load(path);
-
-        var compilation = new Compilation(syntaxTree);
+        var compilation = new Compilation(syntaxTrees.ToArray());
         var result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
 
         if (!result.Diagnostics.Any()){
@@ -34,7 +38,21 @@ internal static class Program {
                 Console.WriteLine(result.Value);
             }
         } else {
-            Console.Error.WriteDiagnostics(result.Diagnostics, syntaxTree);
+            Console.Error.WriteDiagnostics(result.Diagnostics);
         }
+    }
+
+    private static IEnumerable<string> GetFilePaths(IEnumerable<string> paths){
+        var result = new SortedSet<string>();
+
+        foreach (var path in paths){
+            if (Directory.Exists(path)){
+                result.UnionWith(Directory.EnumerateFiles(path, "*.epsi", SearchOption.AllDirectories));
+            } else {
+                result.Add(path);
+            }
+        }
+
+        return result;
     }
 }
