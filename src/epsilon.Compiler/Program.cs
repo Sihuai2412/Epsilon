@@ -6,10 +6,10 @@ using epsilon.IO;
 namespace epsilon.Compiler;
 
 internal static class Program {
-    private static void Main(string[] args){
+    private static int Main(string[] args){
         if (args.Length == 0){
             Console.Error.WriteLine("usage: epsi <source-paths>");
-            return;
+            return 1;
         }
 
         var paths = GetFilePaths(args);
@@ -27,7 +27,7 @@ internal static class Program {
         }
 
         if (hasErrors){
-            return;
+            return 1;
         }
 
         var compilation = new Compilation(syntaxTrees.ToArray());
@@ -39,7 +39,10 @@ internal static class Program {
             }
         } else {
             Console.Error.WriteDiagnostics(result.Diagnostics);
+            return 1;
         }
+
+        return 0;
     }
 
     private static IEnumerable<string> GetFilePaths(IEnumerable<string> paths){

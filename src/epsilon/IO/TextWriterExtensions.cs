@@ -6,12 +6,16 @@ using epsilon.CodeAnalysis.Text;
 namespace epsilon.IO;
 
 public static class TextWriterExtensions {
-    private static bool IsConsoleOut(this TextWriter writer){
+    private static bool IsConsole(this TextWriter writer){
         if (writer == Console.Out){
-            return true;
+            return !Console.IsOutputRedirected;
         }
 
-        if (writer is IndentedTextWriter iw && iw.InnerWriter.IsConsoleOut()){
+        if (writer == Console.Error){
+            return !Console.IsErrorRedirected && !Console.IsOutputRedirected;
+        }
+
+        if (writer is IndentedTextWriter iw && iw.InnerWriter.IsConsole()){
             return true;
         }
 
@@ -19,13 +23,13 @@ public static class TextWriterExtensions {
     }
 
     private static void SetForeground(this TextWriter writer, ConsoleColor color){
-        if (writer.IsConsoleOut()){
+        if (writer.IsConsole()){
             Console.ForegroundColor = color;
         }
     }
 
     private static void ResetColor(this TextWriter writer){
-        if (writer.IsConsoleOut()){
+        if (writer.IsConsole()){
             Console.ResetColor();
         }
     }
@@ -87,12 +91,12 @@ public static class TextWriterExtensions {
             var lineIndex = text.GetLineIndex(span.Start);
             var line = text.Lines[lineIndex];
 
-            Console.WriteLine();
+            writer.WriteLine();
 
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.Write($"{fileName}({startLine}, {startCharacter}, {endLine}, {endCharacter}): ");
-            Console.WriteLine(diagnostic);
-            Console.ResetColor();
+            writer.SetForeground(ConsoleColor.DarkRed);
+            writer.Write($"{fileName}({startLine}, {startCharacter}, {endLine}, {endCharacter}): ");
+            writer.WriteLine(diagnostic);
+            writer.ResetColor();
 
             var prefixSpan = TextSpan.FromBounds(line.Start, span.Start);
             var suffixSpan = TextSpan.FromBounds(span.End, line.End);
@@ -101,18 +105,18 @@ public static class TextWriterExtensions {
             var error = text.ToString(span);
             var suffix = text.ToString(suffixSpan);
 
-            Console.Write("    ");
-            Console.Write(prefix);
+            writer.Write("    ");
+            writer.Write(prefix);
 
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.Write(error);
-            Console.ResetColor();
+            writer.SetForeground(ConsoleColor.DarkRed);
+            writer.Write(error);
+            writer.ResetColor();
 
-            Console.Write(suffix);
+            writer.Write(suffix);
 
-            Console.WriteLine();
+            writer.WriteLine();
         }
 
-        Console.WriteLine();
+        writer.WriteLine();
     }
 }

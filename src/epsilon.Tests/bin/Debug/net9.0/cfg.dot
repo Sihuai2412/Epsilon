@@ -1,5 +1,12 @@
 digraph G {
     N0 [label = "<Start>", shape = box]
-    N1 [label = "<End>", shape = box]
+    N1 [label = "goto Label1 unless n > 10", shape = box]
+    N2 [label = "return true", shape = box]
+    N3 [label = "Label1:", shape = box]
+    N4 [label = "<End>", shape = box]
     N0 -> N1 [label = ""]
+    N1 -> N3 [label = "!(n > 10)"]
+    N1 -> N2 [label = "n > 10"]
+    N2 -> N4 [label = ""]
+    N3 -> N4 [label = ""]
 }
