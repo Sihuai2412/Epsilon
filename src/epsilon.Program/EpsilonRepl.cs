@@ -7,10 +7,15 @@ using epsilon.IO;
 namespace epsilon.Program;
 
 internal sealed class EpsilonRepl : Repl {
+    private static bool _loadingSubmissions;
     private Compilation _previous;
     private bool _showTree;
     private bool _showProgram;
     private readonly Dictionary<VariableSymbol, object> _variables = new Dictionary<VariableSymbol, object>();
+
+    public EpsilonRepl(){
+        LoadSubmissions();
+    }
 
     protected override void RenderLine(string line){
         var tokens = SyntaxTree.ParseTokens(line);
@@ -47,6 +52,7 @@ internal sealed class EpsilonRepl : Repl {
     private void EvaluateReset(){
         _previous = null;
         _variables.Clear();
+        ClearSubmissions();
     }
 
     [MetaCommand("showTree", "Shows the parse tree")]
@@ -59,6 +65,51 @@ internal sealed class EpsilonRepl : Repl {
     private void EvaluateShowProgram(){
         _showProgram = !_showProgram;
         Console.WriteLine(_showProgram ? "Showing bound tree." : "Not showing bound tree.");
+    }
+
+    [MetaCommand("load", "Loads a script file")]
+    private void EvaluateLoad(string path){
+        path = Path.GetFullPath(path);
+
+        if (!File.Exists(path)){
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"error: file does not exist '{path}'");
+            Console.ResetColor();
+            return;
+        }
+
+        var text = File.ReadAllText(path);
+        EvaluateSubmission(text);
+    }
+
+    [MetaCommand("ls", "Lists all symbols")]
+    private void EvaluateLs(){
+        if (_previous == null){
+            return;
+        }
+
+        var symbols = _previous.GetSymbols().OrderBy(s => s.Kind).ThenBy(s => s.Name);
+        foreach (var symbol in symbols){
+            symbol.WriteTo(Console.Out);
+            Console.WriteLine();
+        }
+    }
+
+    [MetaCommand("dump", "Shows bound tree of a given function")]
+    private void EvaluateDump(string functionName){
+        if (_previous == null){
+            return;
+        }
+
+        var symbol = _previous.GetSymbols().OfType<FunctionSymbol>().SingleOrDefault(f => f.Name == functionName);
+        if (symbol == null){
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"error: file '{functionName}' does not exist");
+            Console.ResetColor();
+            return;
+        }
+
+        _previous.EmitTree(symbol, Console.Out);
     }
 
     protected override bool IsCompleteSubmission(string text){
@@ -109,9 +160,57 @@ internal sealed class EpsilonRepl : Repl {
             }
 
             _previous = compilation;
+            SaveSubmissions(text);
         } else {
             Console.Out.WriteDiagnostics(result.Diagnostics);
         }
     }
 
+    private static string GetSubmissionsDirectory(){
+        var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        var submissionsDirectory = Path.Combine(localAppData, "Epsilon", "Submissions");
+        return submissionsDirectory;
+    }
+
+    private void LoadSubmissions(){
+        var submissionsDirectory = GetSubmissionsDirectory();
+        if (!Directory.Exists(submissionsDirectory)){
+            return;
+        }
+
+        var files = Directory.GetFiles(submissionsDirectory).OrderBy(f => f).ToArray();
+        if (files.Length == 0){
+            return;
+        }
+
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.WriteLine($"Loaded {files.Length} submission(s)");
+        Console.ResetColor();
+        
+        _loadingSubmissions = true;
+
+        foreach (var file in files){
+            var text = File.ReadAllText(file);
+            EvaluateSubmission(text);
+        }
+
+        _loadingSubmissions = false;
+    }
+
+    private static void ClearSubmissions(){
+        Directory.Delete(GetSubmissionsDirectory(), recursive: true);
+    }
+
+    private static void SaveSubmissions(string text){
+        if (_loadingSubmissions){
+            return;
+        }
+
+        var submissionsDirectory = GetSubmissionsDirectory();
+        Directory.CreateDirectory(submissionsDirectory);
+        var count = Directory.GetFiles(submissionsDirectory).Length;
+        var name = $"submission{count:0000}";
+        var fileName = Path.Combine(submissionsDirectory, name);
+        File.WriteAllText(fileName, text);
+    }
 }
