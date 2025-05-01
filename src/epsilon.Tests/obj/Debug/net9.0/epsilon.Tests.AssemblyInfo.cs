@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("Epsilon.Tests")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("epsilon.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+071b15d40d2cbfc93ae51b774e448a16eec810c1")]
-[assembly: System.Reflection.AssemblyProductAttribute("Epsilon.Tests")]
-[assembly: System.Reflection.AssemblyTitleAttribute("Epsilon.Tests")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fa871e4a578a2bd0c12e58bedca10cc968d07303")]
+[assembly: System.Reflection.AssemblyProductAttribute("epsilon.Tests")]
+[assembly: System.Reflection.AssemblyTitleAttribute("epsilon.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // 由 MSBuild WriteCodeFragment 类生成。

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\asus\\Desktop\\Epsilon\\src\\Epsilon.Tests\\Epsilon.Tests.csproj": {}
+    "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Tests\\epsilon.Tests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\asus\\Desktop\\Epsilon\\src\\Epsilon.Tests\\Epsilon.Tests.csproj": {
+    "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Tests\\epsilon.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\Epsilon.Tests\\Epsilon.Tests.csproj",
-        "projectName": "Epsilon.Tests",
-        "projectPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\Epsilon.Tests\\Epsilon.Tests.csproj",
+        "projectUniqueName": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Tests\\epsilon.Tests.csproj",
+        "projectName": "epsilon.Tests",
+        "projectPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Tests\\epsilon.Tests.csproj",
         "packagesPath": "C:\\Users\\asus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\Epsilon.Tests\\obj\\",
+        "outputPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
