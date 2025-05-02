@@ -7,7 +7,8 @@ using epsilon.IO;
 namespace epsilon.Program;
 
 internal sealed class EpsilonRepl : Repl {
-    private static bool _loadingSubmissions;
+    private bool _loadingSubmissions;
+    private static readonly Compilation _emptyCompilation = new Compilation();
     private Compilation _previous;
     private bool _showTree;
     private bool _showProgram;
@@ -84,11 +85,8 @@ internal sealed class EpsilonRepl : Repl {
 
     [MetaCommand("ls", "Lists all symbols")]
     private void EvaluateLs(){
-        if (_previous == null){
-            return;
-        }
-
-        var symbols = _previous.GetSymbols().OrderBy(s => s.Kind).ThenBy(s => s.Name);
+        var compilation = _previous ?? _emptyCompilation;
+        var symbols = compilation.GetSymbols().OrderBy(s => s.Kind).ThenBy(s => s.Name);
         foreach (var symbol in symbols){
             symbol.WriteTo(Console.Out);
             Console.WriteLine();
@@ -97,11 +95,8 @@ internal sealed class EpsilonRepl : Repl {
 
     [MetaCommand("dump", "Shows bound tree of a given function")]
     private void EvaluateDump(string functionName){
-        if (_previous == null){
-            return;
-        }
-
-        var symbol = _previous.GetSymbols().OfType<FunctionSymbol>().SingleOrDefault(f => f.Name == functionName);
+        var compilation = _previous ?? _emptyCompilation;
+        var symbol = compilation.GetSymbols().OfType<FunctionSymbol>().SingleOrDefault(f => f.Name == functionName);
         if (symbol == null){
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"error: file '{functionName}' does not exist");
@@ -109,7 +104,7 @@ internal sealed class EpsilonRepl : Repl {
             return;
         }
 
-        _previous.EmitTree(symbol, Console.Out);
+        compilation.EmitTree(symbol, Console.Out);
     }
 
     protected override bool IsCompleteSubmission(string text){
@@ -201,7 +196,7 @@ internal sealed class EpsilonRepl : Repl {
         Directory.Delete(GetSubmissionsDirectory(), recursive: true);
     }
 
-    private static void SaveSubmissions(string text){
+    private void SaveSubmissions(string text){
         if (_loadingSubmissions){
             return;
         }
