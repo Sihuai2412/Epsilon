@@ -56,12 +56,6 @@ public sealed class Compilation {
                 .Where(fi => fi.FieldType == typeof(FunctionSymbol))
                 .Select(fi => (FunctionSymbol)fi.GetValue(obj: null))
                 .ToList();
-            
-            foreach (var builtin in builtinFunctions){
-                if (seenSymbolNames.Add(builtin.Name)){
-                    yield return builtin;
-                }
-            }   
 
             foreach (var function in submission.Functions){
                 if (seenSymbolNames.Add(function.Name)){
@@ -74,6 +68,12 @@ public sealed class Compilation {
                     yield return variable;
                 }
             }
+
+            foreach (var builtin in builtinFunctions){
+                if (seenSymbolNames.Add(builtin.Name)){
+                    yield return builtin;
+                }
+            }   
 
             submission = submission.Previous;
         }
