@@ -104,7 +104,7 @@ internal sealed class Evaluator {
     private object EvaluateExpression(BoundExpression node){
         switch (node.Kind){
             case BoundNodeKind.LiteralExpression:
-                return EvaluateLiterialExpression((BoundLiteralExpression)node);
+                return EvaluateLiteralExpression((BoundLiteralExpression)node);
             case BoundNodeKind.VariableExpression:
                 return EvaluateVariableExpression((BoundVariableExpression)node);
             case BoundNodeKind.AssignmentExpression:
@@ -122,7 +122,7 @@ internal sealed class Evaluator {
         }
     }
 
-    private static object EvaluateLiterialExpression(BoundLiteralExpression n){
+    private static object EvaluateLiteralExpression(BoundLiteralExpression n){
         return n.Value;
     }
 

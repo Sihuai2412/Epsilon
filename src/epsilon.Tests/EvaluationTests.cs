@@ -557,7 +557,7 @@ public class EvaluationTests {
             function test(n: [invalidtype]){
             }
         ";
-
+        
         var diagnostics = @"
             Type 'invalidtype' doesn't exist.
         ";
@@ -567,7 +567,7 @@ public class EvaluationTests {
 
     private static void AssertValue(string text, object expectedValue){
         var syntaxTree = SyntaxTree.Parse(text);
-        var compilation = new Compilation(syntaxTree);
+        var compilation = Compilation.CreateScript(null, syntaxTree);
         var variables = new Dictionary<VariableSymbol, object>();
         var result = compilation.Evaluate(variables);
         
@@ -578,7 +578,7 @@ public class EvaluationTests {
     private void AssertDiagnostics(string text, string diagnosticText){
         var annotatedText = AnnotatedText.Parse(text);
         var syntaxTree = SyntaxTree.Parse(annotatedText.Text);
-        var compilation = new Compilation(syntaxTree);
+        var compilation = Compilation.CreateScript(null, syntaxTree);
         var result = compilation.Evaluate(new Dictionary<VariableSymbol, object>());
 
         var expectedDiagnostic = AnnotatedText.UnindentLines(diagnosticText);

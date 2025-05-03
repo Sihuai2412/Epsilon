@@ -8,7 +8,7 @@ namespace epsilon.Program;
 
 internal sealed class EpsilonRepl : Repl {
     private bool _loadingSubmissions;
-    private static readonly Compilation _emptyCompilation = new Compilation();
+    private static readonly Compilation _emptyCompilation = Compilation.CreateScript(null);
     private Compilation _previous;
     private bool _showTree;
     private bool _showProgram;
@@ -133,9 +133,7 @@ internal sealed class EpsilonRepl : Repl {
     protected override void EvaluateSubmission(string text){
         var syntaxTree = SyntaxTree.Parse(text);
 
-        var compilation = _previous == null
-                                ? new Compilation(syntaxTree)
-                                : _previous.ContinueWith(syntaxTree);
+        var compilation = Compilation.CreateScript(_previous, syntaxTree);
 
         if (_showTree){
             syntaxTree.Root.WriteTo(Console.Out);
@@ -193,7 +191,10 @@ internal sealed class EpsilonRepl : Repl {
     }
 
     private static void ClearSubmissions(){
-        Directory.Delete(GetSubmissionsDirectory(), recursive: true);
+        var dir = GetSubmissionsDirectory();
+        if (Directory.Exists(dir)){
+            Directory.Delete(dir, recursive: true);
+        }
     }
 
     private void SaveSubmissions(string text){
