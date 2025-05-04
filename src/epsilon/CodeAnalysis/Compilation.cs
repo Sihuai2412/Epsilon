@@ -27,6 +27,7 @@ public sealed class Compilation {
     public bool IsScript { get; }
     public Compilation Previous { get; }
     public ImmutableArray<SyntaxTree> SyntaxTrees { get; }
+    public FunctionSymbol MainFunction => GlobalScope.MainFunction;
     public ImmutableArray<FunctionSymbol> Functions => GlobalScope.Functions;
     public ImmutableArray<VariableSymbol> Variables => GlobalScope.Variables;
 
@@ -94,16 +95,16 @@ public sealed class Compilation {
 
         var program = GetProgram();
         
-        var appPath = Environment.GetCommandLineArgs()[0];
-        var appDirectory = Path.GetDirectoryName(appPath);
-        var cfgPath = Path.Combine(appDirectory, "cfg.dot");
-        var cfgStatement = !program.Statement.Statements.Any() && program.Functions.Any()
-                            ? program.Functions.Last().Value
-                            : program.Statement;
-        var cfg = ControlFlowGraph.Create(cfgStatement);
-        using (var streamWriter = new StreamWriter(cfgPath)){
-            cfg.WriteTo(streamWriter);
-        }
+        // var appPath = Environment.GetCommandLineArgs()[0];
+        // var appDirectory = Path.GetDirectoryName(appPath);
+        // var cfgPath = Path.Combine(appDirectory, "cfg.dot");
+        // var cfgStatement = !program.Statement.Statements.Any() && program.Functions.Any()
+        //                     ? program.Functions.Last().Value
+        //                     : program.Statement;
+        // var cfg = ControlFlowGraph.Create(cfgStatement);
+        // using (var streamWriter = new StreamWriter(cfgPath)){
+        //     cfg.WriteTo(streamWriter);
+        // }
 
         if (program.Diagnostics.Any()){
             return new EvaluationResult(program.Diagnostics.ToImmutableArray(), null);
@@ -115,19 +116,10 @@ public sealed class Compilation {
     }
 
     public void EmitTree(TextWriter writer){
-        var program = GetProgram();
-        if (program.Statement.Statements.Any()){
-            program.Statement.WriteTo(writer);
-        } else {
-            foreach (var functionBody in program.Functions){
-                if (!GlobalScope.Functions.Contains(functionBody.Key)){
-                    continue;
-                }
-
-                functionBody.Key.WriteTo(writer);
-                writer.WriteLine();
-                functionBody.Value.WriteTo(writer);
-            }
+        if (GlobalScope.MainFunction != null){
+            EmitTree(GlobalScope.MainFunction, writer);
+        } else if (GlobalScope.ScriptFunction != null){
+            EmitTree(GlobalScope.ScriptFunction, writer);
         }
     }
 

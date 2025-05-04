@@ -18,17 +18,16 @@ internal sealed class Conversion {
     public bool IsIdentity { get; }
     public bool IsImplicit { get; }
     public bool IsExplicit => Exists && !IsImplicit;
-
     public static Conversion Classify(TypeSymbol from, TypeSymbol to){
         if (from == to){
             return Conversion.Identity;
         }
 
-        if (from != TypeSymbol.Void || to == TypeSymbol.Any){
+        if (from != TypeSymbol.Void && to == TypeSymbol.Any){
             return Conversion.Implicit;
         }
 
-        if (from == TypeSymbol.Any || to != TypeSymbol.Void){
+        if (from == TypeSymbol.Any && to != TypeSymbol.Void){
             return Conversion.Explicit;
         }
         
