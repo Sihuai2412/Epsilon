@@ -6,12 +6,12 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v9.0": {
-      "epsilon.Program/1.0.0": {
+      "epsilon.Repl/1.0.0": {
         "dependencies": {
           "epsilon": "1.0.0"
         },
         "runtime": {
-          "epsilon.Program.dll": {}
+          "epsilon.Repl.dll": {}
         }
       },
       "System.Collections.Immutable/9.0.0": {},
@@ -29,7 +29,7 @@
     }
   },
   "libraries": {
-    "epsilon.Program/1.0.0": {
+    "epsilon.Repl/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

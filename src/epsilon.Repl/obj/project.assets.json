@@ -80,11 +80,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Program\\epsilon.Program.csproj",
-      "projectName": "epsilon.Program",
-      "projectPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Program\\epsilon.Program.csproj",
+      "projectUniqueName": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Repl\\epsilon.Repl.csproj",
+      "projectName": "epsilon.Repl",
+      "projectPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Repl\\epsilon.Repl.csproj",
       "packagesPath": "C:\\Users\\asus\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Program\\obj\\",
+      "outputPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Repl\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

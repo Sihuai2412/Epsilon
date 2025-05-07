@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "epsilon", "src\epsilon\epsilon.csproj", "{319D8A4C-AE39-4D1B-971F-CC316448F9CE}"
 EndProject
-Project("{39BFA8B1-08E5-476D-8A34-F429D1A93BDD}") = "epsilon.Program", "src\epsilon.Program\epsilon.Program.csproj", "{E7C71B11-AF67-4029-AB5F-B31443056FBB}"
+Project("{39BFA8B1-08E5-476D-8A34-F429D1A93BDD}") = "epsilon.Repl", "src\epsilon.Repl\epsilon.Repl.csproj", "{E7C71B11-AF67-4029-AB5F-B31443056FBB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "epsilon.Tests", "src\epsilon.Tests\epsilon.Tests.csproj", "{B9D7446A-04B8-410F-B08C-55015A2517D4}"
 EndProject

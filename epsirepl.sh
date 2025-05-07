@@ -1,3 +1,3 @@
 #!/bin/bash
 
-dotnet run --project .\src\epsilon.Program\epsilon.Program.csproj
+dotnet run --project .\src\epsilon.Repl\epsilon.Repl.csproj

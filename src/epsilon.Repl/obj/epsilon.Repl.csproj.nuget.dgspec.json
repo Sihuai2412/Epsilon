@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Tests\\epsilon.Tests.csproj": {}
+    "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Repl\\epsilon.Repl.csproj": {}
   },
   "projects": {
-    "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Tests\\epsilon.Tests.csproj": {
+    "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Repl\\epsilon.Repl.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Tests\\epsilon.Tests.csproj",
-        "projectName": "epsilon.Tests",
-        "projectPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Tests\\epsilon.Tests.csproj",
+        "projectUniqueName": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Repl\\epsilon.Repl.csproj",
+        "projectName": "epsilon.Repl",
+        "projectPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Repl\\epsilon.Repl.csproj",
         "packagesPath": "C:\\Users\\asus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Tests\\obj\\",
+        "outputPath": "C:\\Users\\asus\\Desktop\\Epsilon\\src\\epsilon.Repl\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -54,24 +54,6 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "dependencies": {
-            "Microsoft.NET.Test.Sdk": {
-              "target": "Package",
-              "version": "[17.11.1, )"
-            },
-            "coverlet.collector": {
-              "target": "Package",
-              "version": "[6.0.2, )"
-            },
-            "xunit": {
-              "target": "Package",
-              "version": "[2.9.2, )"
-            },
-            "xunit.runner.visualstudio": {
-              "target": "Package",
-              "version": "[2.8.2, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",
