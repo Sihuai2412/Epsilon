@@ -3,7 +3,7 @@ using epsilon.CodeAnalysis.Symbols;
 namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundUnaryExpression : BoundExpression {
-    public BoundUnaryExpression(BoundUnaryOperator op, BoundExpression operand){
+    public BoundUnaryExpression(BoundUnaryOperator op, BoundExpression operand) {
         Op = op;
         Operand = operand;
     }

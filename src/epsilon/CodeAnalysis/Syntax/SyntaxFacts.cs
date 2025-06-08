@@ -1,8 +1,8 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
 public static class SyntaxFacts {
-    public static int GetUnaryOperatorPrecedence(this SyntaxKind kind){
-        switch (kind){
+    public static int GetUnaryOperatorPrecedence(this SyntaxKind kind) {
+        switch (kind) {
             case SyntaxKind.PlusToken:
             case SyntaxKind.MinusToken:
             case SyntaxKind.BangToken:
@@ -14,8 +14,8 @@ public static class SyntaxFacts {
         }
     }
 
-    public static int GetBinaryOperatorPrecedence(this SyntaxKind kind){
-        switch (kind){
+    public static int GetBinaryOperatorPrecedence(this SyntaxKind kind) {
+        switch (kind) {
             case SyntaxKind.StarToken:
             case SyntaxKind.SlashToken:
                 return 5;
@@ -35,7 +35,7 @@ public static class SyntaxFacts {
             case SyntaxKind.AmpersandToken:
             case SyntaxKind.AmpersandAmpersandToken:
                 return 2;
-            
+
             case SyntaxKind.PipeToken:
             case SyntaxKind.PipePipeToken:
             case SyntaxKind.HatToken:
@@ -46,8 +46,8 @@ public static class SyntaxFacts {
         }
     }
 
-    public static SyntaxKind GetKeywordKind(string text){
-        switch (text){
+    public static SyntaxKind GetKeywordKind(string text) {
+        switch (text) {
             case "break":
                 return SyntaxKind.BreakKeyword;
             case "continue":
@@ -81,26 +81,26 @@ public static class SyntaxFacts {
         }
     }
 
-    public static IEnumerable<SyntaxKind> GetUnaryOperatorKinds(){
-        var kinds = (SyntaxKind[]) Enum.GetValues(typeof(SyntaxKind));
-        foreach (var kind in kinds){
-            if (GetUnaryOperatorPrecedence(kind) > 0){
+    public static IEnumerable<SyntaxKind> GetUnaryOperatorKinds() {
+        var kinds = (SyntaxKind[])Enum.GetValues(typeof(SyntaxKind));
+        foreach (var kind in kinds) {
+            if (GetUnaryOperatorPrecedence(kind) > 0) {
                 yield return kind;
             }
         }
     }
 
-    public static IEnumerable<SyntaxKind> GetBinaryOperatorKinds(){
-        var kinds = (SyntaxKind[]) Enum.GetValues(typeof(SyntaxKind));
-        foreach (var kind in kinds){
-            if (GetBinaryOperatorPrecedence(kind) > 0){
+    public static IEnumerable<SyntaxKind> GetBinaryOperatorKinds() {
+        var kinds = (SyntaxKind[])Enum.GetValues(typeof(SyntaxKind));
+        foreach (var kind in kinds) {
+            if (GetBinaryOperatorPrecedence(kind) > 0) {
                 yield return kind;
             }
         }
     }
 
-    public static string GetText(SyntaxKind kind){
-        switch (kind){
+    public static string GetText(SyntaxKind kind) {
+        switch (kind) {
             case SyntaxKind.PlusToken:
                 return "+";
             case SyntaxKind.MinusToken:

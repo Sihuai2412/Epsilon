@@ -1,7 +1,7 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
 public sealed class ExpressionStatementSyntax : StatementSyntax {
-    public ExpressionStatementSyntax(SyntaxTree syntaxTree, ExpressionSyntax expression) : base(syntaxTree){
+    public ExpressionStatementSyntax(SyntaxTree syntaxTree, ExpressionSyntax expression) : base(syntaxTree) {
         Expression = expression;
     }
 

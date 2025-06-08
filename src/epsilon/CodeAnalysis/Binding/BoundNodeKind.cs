@@ -13,7 +13,7 @@ internal enum BoundNodeKind {
     ConditionalGotoStatement,
     ReturnStatement,
     ExpressionStatement,
-    
+
     // Expressions
     ErrorExpression,
     LiteralExpression,

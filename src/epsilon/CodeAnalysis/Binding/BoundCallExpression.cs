@@ -4,7 +4,7 @@ using epsilon.CodeAnalysis.Symbols;
 namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundCallExpression : BoundExpression {
-    public BoundCallExpression(FunctionSymbol function, ImmutableArray<BoundExpression> arguments){
+    public BoundCallExpression(FunctionSymbol function, ImmutableArray<BoundExpression> arguments) {
         Function = function;
         Arguments = arguments;
     }

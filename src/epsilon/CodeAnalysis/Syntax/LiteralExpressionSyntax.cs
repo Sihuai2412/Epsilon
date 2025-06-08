@@ -2,10 +2,10 @@ namespace epsilon.CodeAnalysis.Syntax;
 
 public sealed class LiteralExpressionSyntax : ExpressionSyntax {
     public LiteralExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken literalToken)
-        : this(syntaxTree, literalToken, literalToken.Value){
+        : this(syntaxTree, literalToken, literalToken.Value) {
     }
 
-    public LiteralExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken literalToken, object value) : base(syntaxTree){
+    public LiteralExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken literalToken, object value) : base(syntaxTree) {
         LiteralToken = literalToken;
         Value = value;
     }

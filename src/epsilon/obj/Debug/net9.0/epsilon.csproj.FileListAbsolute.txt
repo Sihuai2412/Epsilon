@@ -25,3 +25,4 @@ C:\Users\asus\Desktop\Epsilon\src\epsilon\obj\Debug\net9.0\epsilon.AssemblyInfo.
 C:\Users\asus\Desktop\Epsilon\src\epsilon\obj\Debug\net9.0\epsilon.csproj.CoreCompileInputs.cache
 C:\Users\asus\Desktop\Epsilon\src\epsilon\obj\Debug\net9.0\epsilon.sourcelink.json
 C:\Users\asus\Desktop\Epsilon\src\epsilon\obj\Debug\net9.0\ref\epsilon.dll
+C:\Users\asus\Desktop\Epsilon\src\epsilon\obj\Debug\net9.0\epsilon.csproj.AssemblyReference.cache

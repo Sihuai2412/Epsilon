@@ -3,7 +3,7 @@ using epsilon.CodeAnalysis.Symbols;
 namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundConversionExpression : BoundExpression {
-    public BoundConversionExpression(TypeSymbol type, BoundExpression expression){
+    public BoundConversionExpression(TypeSymbol type, BoundExpression expression) {
         Type = type;
         Expression = expression;
     }

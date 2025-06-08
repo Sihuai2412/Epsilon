@@ -1,7 +1,7 @@
 namespace epsilon.CodeAnalysis.Text;
 
 public sealed class TextLine {
-    public TextLine(SourceText text, int start, int length, int lengthIncludingLineBreak){
+    public TextLine(SourceText text, int start, int length, int lengthIncludingLineBreak) {
         Text = text;
         Start = start;
         Length = length;

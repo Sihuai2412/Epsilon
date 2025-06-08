@@ -1,7 +1,7 @@
 namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundConditionalGotoStatement : BoundStatement {
-    public BoundConditionalGotoStatement(BoundLabel label, BoundExpression condition, bool jumpIfTrue = true){
+    public BoundConditionalGotoStatement(BoundLabel label, BoundExpression condition, bool jumpIfTrue = true) {
         Label = label;
         Condition = condition;
         JumpIfTrue = jumpIfTrue;

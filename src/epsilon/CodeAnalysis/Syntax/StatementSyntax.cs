@@ -1,6 +1,6 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
 public abstract class StatementSyntax : SyntaxNode {
-    protected StatementSyntax(SyntaxTree syntaxTree) : base(syntaxTree){
+    protected StatementSyntax(SyntaxTree syntaxTree) : base(syntaxTree) {
     }
 }

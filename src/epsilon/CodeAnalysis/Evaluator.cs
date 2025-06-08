@@ -12,14 +12,14 @@ internal sealed class Evaluator {
 
     private object _lastValue;
 
-    public Evaluator(BoundProgram program, Dictionary<VariableSymbol, object> variables){
+    public Evaluator(BoundProgram program, Dictionary<VariableSymbol, object> variables) {
         _program = program;
         _globals = variables;
         _locals.Push(new Dictionary<VariableSymbol, object>());
 
         var current = program;
-        while (current != null){
-            foreach (var kv in current.Functions){
+        while (current != null) {
+            foreach (var kv in current.Functions) {
                 var function = kv.Key;
                 var body = kv.Value;
 
@@ -29,9 +29,9 @@ internal sealed class Evaluator {
         }
     }
 
-    public object Evaluate(){
+    public object Evaluate() {
         var function = _program.MainFunction ?? _program.ScriptFunction;
-        if (function == null){
+        if (function == null) {
             return null;
         }
 
@@ -39,56 +39,56 @@ internal sealed class Evaluator {
         return EvaluateStatement(body);
     }
 
-    private object EvaluateStatement(BoundBlockStatement body){
+    private object EvaluateStatement(BoundBlockStatement body) {
         var labelToIndex = new Dictionary<BoundLabel, int>();
 
-        for (var i = 0; i < body.Statements.Length; i++){
-            if (body.Statements[i] is BoundLabelStatement l){
+        for (var i = 0; i < body.Statements.Length; i++) {
+            if (body.Statements[i] is BoundLabelStatement l) {
                 labelToIndex.Add(l.Label, i + 1);
             }
         }
 
         var index = 0;
 
-        while (index < body.Statements.Length){
+        while (index < body.Statements.Length) {
 
             var s = body.Statements[index];
 
-            switch (s.Kind){
+            switch (s.Kind) {
                 case BoundNodeKind.VariableDeclaration: {
-                    EvaluateVariableDeclaration((BoundVariableDeclaration)s);
-                    index++;
-                    break;
-                }
-                case BoundNodeKind.ExpressionStatement: {
-                    EvaluateExpressionStatement((BoundExpressionStatement)s);
-                    index++;
-                    break;
-                }
-                case BoundNodeKind.GotoStatement: {
-                    var gs = (BoundGotoStatement)s;
-                    index = labelToIndex[gs.Label];
-                    break;
-                }
-                case BoundNodeKind.ConditionalGotoStatement: {
-                    var cgs = (BoundConditionalGotoStatement)s;
-                    var condition = (bool)EvaluateExpression(cgs.Condition);
-                    if (condition == cgs.JumpIfTrue){
-                        index = labelToIndex[cgs.Label];
-                    } else {
+                        EvaluateVariableDeclaration((BoundVariableDeclaration)s);
                         index++;
+                        break;
                     }
-                    break;
-                }
+                case BoundNodeKind.ExpressionStatement: {
+                        EvaluateExpressionStatement((BoundExpressionStatement)s);
+                        index++;
+                        break;
+                    }
+                case BoundNodeKind.GotoStatement: {
+                        var gs = (BoundGotoStatement)s;
+                        index = labelToIndex[gs.Label];
+                        break;
+                    }
+                case BoundNodeKind.ConditionalGotoStatement: {
+                        var cgs = (BoundConditionalGotoStatement)s;
+                        var condition = (bool)EvaluateExpression(cgs.Condition);
+                        if (condition == cgs.JumpIfTrue) {
+                            index = labelToIndex[cgs.Label];
+                        } else {
+                            index++;
+                        }
+                        break;
+                    }
                 case BoundNodeKind.LabelStatement: {
-                    index++;
-                    break;
-                }
+                        index++;
+                        break;
+                    }
                 case BoundNodeKind.ReturnStatement: {
-                    var rs = (BoundReturnStatement)s;
-                    _lastValue = rs.Expression == null ? null : EvaluateExpression(rs.Expression);
-                    return _lastValue;
-                }
+                        var rs = (BoundReturnStatement)s;
+                        _lastValue = rs.Expression == null ? null : EvaluateExpression(rs.Expression);
+                        return _lastValue;
+                    }
                 default:
                     throw new Exception($"Unexpected node {s.Kind}");
             }
@@ -97,18 +97,18 @@ internal sealed class Evaluator {
         return _lastValue;
     }
 
-    private void EvaluateVariableDeclaration(BoundVariableDeclaration node){
+    private void EvaluateVariableDeclaration(BoundVariableDeclaration node) {
         var value = EvaluateExpression(node.Initializer);
         _lastValue = value;
         Assign(node.Variable, value);
     }
 
-    private void EvaluateExpressionStatement(BoundExpressionStatement node){
+    private void EvaluateExpressionStatement(BoundExpressionStatement node) {
         _lastValue = EvaluateExpression(node.Expression);
     }
 
-    private object EvaluateExpression(BoundExpression node){
-        switch (node.Kind){
+    private object EvaluateExpression(BoundExpression node) {
+        switch (node.Kind) {
             case BoundNodeKind.LiteralExpression:
                 return EvaluateLiteralExpression((BoundLiteralExpression)node);
             case BoundNodeKind.VariableExpression:
@@ -128,12 +128,12 @@ internal sealed class Evaluator {
         }
     }
 
-    private static object EvaluateLiteralExpression(BoundLiteralExpression n){
+    private static object EvaluateLiteralExpression(BoundLiteralExpression n) {
         return n.Value;
     }
 
-    private object EvaluateVariableExpression(BoundVariableExpression v){
-        if (v.Variable.Kind == SymbolKind.GlobalVariable){
+    private object EvaluateVariableExpression(BoundVariableExpression v) {
+        if (v.Variable.Kind == SymbolKind.GlobalVariable) {
             return _globals[v.Variable];
         } else {
             var locals = _locals.Peek();
@@ -141,7 +141,7 @@ internal sealed class Evaluator {
         }
     }
 
-    private object EvaluateAssignmentExpression(BoundAssignmentExpression a){
+    private object EvaluateAssignmentExpression(BoundAssignmentExpression a) {
         var value = EvaluateExpression(a.Expression);
 
         Assign(a.Variable, value);
@@ -149,10 +149,10 @@ internal sealed class Evaluator {
         return value;
     }
 
-    private object EvaluateUnaryExpression(BoundUnaryExpression u){
+    private object EvaluateUnaryExpression(BoundUnaryExpression u) {
         var operand = EvaluateExpression(u.Operand);
 
-        switch (u.Op.Kind){
+        switch (u.Op.Kind) {
             case BoundUnaryOperatorKind.Identity:
                 return (int)operand;
             case BoundUnaryOperatorKind.Negation:
@@ -166,13 +166,13 @@ internal sealed class Evaluator {
         }
     }
 
-    private object EvaluateBinaryExpression(BoundBinaryExpression b){
+    private object EvaluateBinaryExpression(BoundBinaryExpression b) {
         var left = EvaluateExpression(b.Left);
         var right = EvaluateExpression(b.Right);
 
-        switch (b.Op.Kind){
+        switch (b.Op.Kind) {
             case BoundBinaryOperatorKind.Addition:
-                if (b.Type == TypeSymbol.Int){
+                if (b.Type == TypeSymbol.Int) {
                     return (int)left + (int)right;
                 } else {
                     return (string)left + (string)right;
@@ -184,26 +184,26 @@ internal sealed class Evaluator {
             case BoundBinaryOperatorKind.Division:
                 return (int)left / (int)right;
             case BoundBinaryOperatorKind.BitwiseAnd: {
-                if (b.Type == TypeSymbol.Int){
-                    return (int)left & (int)right;
-                } else {
-                    return (bool)left & (bool)right;
+                    if (b.Type == TypeSymbol.Int) {
+                        return (int)left & (int)right;
+                    } else {
+                        return (bool)left & (bool)right;
+                    }
                 }
-            }
             case BoundBinaryOperatorKind.BitwiseOr: {
-                if (b.Type == TypeSymbol.Int){
-                    return (int)left | (int)right;
-                } else {
-                    return (bool)left | (bool)right;
+                    if (b.Type == TypeSymbol.Int) {
+                        return (int)left | (int)right;
+                    } else {
+                        return (bool)left | (bool)right;
+                    }
                 }
-            }
             case BoundBinaryOperatorKind.BitwiseXOr: {
-                if (b.Type == TypeSymbol.Int){
-                    return (int)left ^ (int)right;
-                } else {
-                    return (bool)left ^ (bool)right;
+                    if (b.Type == TypeSymbol.Int) {
+                        return (int)left ^ (int)right;
+                    } else {
+                        return (bool)left ^ (bool)right;
+                    }
                 }
-            }
             case BoundBinaryOperatorKind.LogicalAnd:
                 return (bool)left && (bool)right;
             case BoundBinaryOperatorKind.LogicalOr:
@@ -225,28 +225,28 @@ internal sealed class Evaluator {
         }
     }
 
-    private object EvaluateCallExpression(BoundCallExpression node){
-        if (node.Function == BuiltinFunctions.Input){
+    private object EvaluateCallExpression(BoundCallExpression node) {
+        if (node.Function == BuiltinFunctions.Input) {
             return Console.ReadLine();
-        } else if (node.Function == BuiltinFunctions.Print){
+        } else if (node.Function == BuiltinFunctions.Print) {
             var message = (string)EvaluateExpression(node.Arguments[0]);
             Console.WriteLine(message);
             return null;
-        } else if (node.Function == BuiltinFunctions.Rnd){
+        } else if (node.Function == BuiltinFunctions.Rnd) {
             var max = (int)EvaluateExpression(node.Arguments[0]);
-            if (_random == null){
+            if (_random == null) {
                 _random = new Random();
             }
 
             return _random.Next(max);
         } else {
             var locals = new Dictionary<VariableSymbol, object>();
-            for (var i = 0; i < node.Arguments.Length; i++){
+            for (var i = 0; i < node.Arguments.Length; i++) {
                 var parameter = node.Function.Parameters[i];
                 var value = EvaluateExpression(node.Arguments[i]);
                 locals.Add(parameter, value);
             }
-            
+
             _locals.Push(locals);
 
             var statement = _functions[node.Function];
@@ -258,27 +258,27 @@ internal sealed class Evaluator {
         }
     }
 
-    private object EvaluateConversionExpression(BoundConversionExpression node){
+    private object EvaluateConversionExpression(BoundConversionExpression node) {
         var value = EvaluateExpression(node.Expression);
-        if (node.Type == TypeSymbol.Any){
+        if (node.Type == TypeSymbol.Any) {
             return value;
-        } else if (node.Type == TypeSymbol.Bool){
+        } else if (node.Type == TypeSymbol.Bool) {
             return Convert.ToBoolean(value);
-        } else if (node.Type == TypeSymbol.Int){
+        } else if (node.Type == TypeSymbol.Int) {
             return Convert.ToInt32(value);
-        } else if (node.Type == TypeSymbol.String){
+        } else if (node.Type == TypeSymbol.String) {
             return Convert.ToString(value);
         } else {
             throw new Exception($"Unexpected type {node.Type}");
         }
     }
 
-    private void Assign(VariableSymbol variable, object value){
-        if (variable.Kind == SymbolKind.GlobalVariable){
+    private void Assign(VariableSymbol variable, object value) {
+        if (variable.Kind == SymbolKind.GlobalVariable) {
             _globals[variable] = value;
         } else {
             var locals = _locals.Peek();
             locals[variable] = value;
         }
     }
-} 
+}

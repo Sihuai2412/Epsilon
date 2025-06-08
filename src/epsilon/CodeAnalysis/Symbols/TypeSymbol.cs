@@ -8,7 +8,7 @@ public sealed class TypeSymbol : Symbol {
     public static readonly TypeSymbol String = new TypeSymbol("string");
     public static readonly TypeSymbol Void = new TypeSymbol("void");
 
-    internal TypeSymbol(string name) : base(name){
+    internal TypeSymbol(string name) : base(name) {
 
     }
 

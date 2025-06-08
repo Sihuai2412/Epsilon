@@ -1,7 +1,7 @@
 namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundExpressionStatement : BoundStatement {
-    public BoundExpressionStatement(BoundExpression expression){
+    public BoundExpressionStatement(BoundExpression expression) {
         Expression = expression;
     }
 

@@ -1,7 +1,7 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
 public sealed class TypeClauseSyntax : SyntaxNode {
-    public TypeClauseSyntax(SyntaxTree syntaxTree, SyntaxToken colonToken, SyntaxToken identifier) : base(syntaxTree){
+    public TypeClauseSyntax(SyntaxTree syntaxTree, SyntaxToken colonToken, SyntaxToken identifier) : base(syntaxTree) {
         ColonToken = colonToken;
         Identifier = identifier;
     }

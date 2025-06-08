@@ -8,31 +8,31 @@ namespace epsilon.CodeAnalysis.Lowering;
 internal sealed class Lowerer : BoundTreeRewriter {
     private int _labelCount;
 
-    public Lowerer(){
+    public Lowerer() {
 
     }
 
-    private BoundLabel GenerateLabel(){
+    private BoundLabel GenerateLabel() {
         var name = $"Label{++_labelCount}";
         return new BoundLabel(name);
     }
 
-    public static BoundBlockStatement Lower(BoundStatement statement){
+    public static BoundBlockStatement Lower(BoundStatement statement) {
         var lowerer = new Lowerer();
         var result = lowerer.RewriteStatement(statement);
         return Flatten(result);
     }
 
-    private static BoundBlockStatement Flatten(BoundStatement statement){
+    private static BoundBlockStatement Flatten(BoundStatement statement) {
         var builder = ImmutableArray.CreateBuilder<BoundStatement>();
         var stack = new Stack<BoundStatement>();
         stack.Push(statement);
 
-        while (stack.Count > 0){
+        while (stack.Count > 0) {
             var current = stack.Pop();
 
-            if (current is BoundBlockStatement block){
-                foreach (var s in block.Statements.Reverse()){
+            if (current is BoundBlockStatement block) {
+                foreach (var s in block.Statements.Reverse()) {
                     stack.Push(s);
                 }
             } else {
@@ -43,8 +43,8 @@ internal sealed class Lowerer : BoundTreeRewriter {
         return new BoundBlockStatement(builder.ToImmutable());
     }
 
-    protected override BoundStatement RewriteIfStatement(BoundIfStatement node){
-        if (node.ElseStatement == null){
+    protected override BoundStatement RewriteIfStatement(BoundIfStatement node) {
+        if (node.ElseStatement == null) {
             var endLabel = GenerateLabel();
             var gotoFalse = new BoundConditionalGotoStatement(endLabel, node.Condition, false);
             var endLabelStatement = new BoundLabelStatement(endLabel);
@@ -53,13 +53,13 @@ internal sealed class Lowerer : BoundTreeRewriter {
         } else {
             var elseLabel = GenerateLabel();
             var endLabel = GenerateLabel();
-            
+
             var gotoFalse = new BoundConditionalGotoStatement(elseLabel, node.Condition, false);
             var gotoEndStatement = new BoundGotoStatement(endLabel);
             var elseLabelStatement = new BoundLabelStatement(elseLabel);
             var endLabelStatement = new BoundLabelStatement(endLabel);
             var result = new BoundBlockStatement(ImmutableArray.Create<BoundStatement>(
-                gotoFalse, 
+                gotoFalse,
                 node.ThenStatement,
                 gotoEndStatement,
                 elseLabelStatement,
@@ -71,7 +71,7 @@ internal sealed class Lowerer : BoundTreeRewriter {
         }
     }
 
-    protected override BoundStatement RewriteWhileStatement(BoundWhileStatement node){
+    protected override BoundStatement RewriteWhileStatement(BoundWhileStatement node) {
         var bodyLabel = GenerateLabel();
 
         var gotoContinue = new BoundGotoStatement(node.ContinueLabel);
@@ -92,7 +92,7 @@ internal sealed class Lowerer : BoundTreeRewriter {
         return RewriteStatement(result);
     }
 
-    protected override BoundStatement RewriteDoWhileStatement(BoundDoWhileStatement node){
+    protected override BoundStatement RewriteDoWhileStatement(BoundDoWhileStatement node) {
         var bodyLabel = GenerateLabel();
 
         var bodyLabelStatement = new BoundLabelStatement(bodyLabel);
@@ -111,7 +111,7 @@ internal sealed class Lowerer : BoundTreeRewriter {
         return RewriteStatement(result);
     }
 
-    protected override BoundStatement RewriteForStatement(BoundForStatement node){
+    protected override BoundStatement RewriteForStatement(BoundForStatement node) {
         var variableDeclaration = new BoundVariableDeclaration(node.Variable, node.LowerBound);
         var variableExpression = new BoundVariableExpression(node.Variable);
         var upperBoundSymbol = new LocalVariableSymbol("upperBound", true, TypeSymbol.Int);
@@ -133,17 +133,17 @@ internal sealed class Lowerer : BoundTreeRewriter {
             )
         );
         var whileBody = new BoundBlockStatement(ImmutableArray.Create<BoundStatement>(
-            node.Body, 
-            continueLabelStatement, 
+            node.Body,
+            continueLabelStatement,
             increment
         ));
         var whileStatement = new BoundWhileStatement(condition, whileBody, node.BreakLabel, GenerateLabel());
         var result = new BoundBlockStatement(ImmutableArray.Create<BoundStatement>(
             variableDeclaration,
-            upperBoundDeclaration, 
+            upperBoundDeclaration,
             whileStatement
         ));
-        
+
         return RewriteStatement(result);
     }
 }

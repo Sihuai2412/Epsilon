@@ -1,7 +1,7 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
 public sealed class CallExpressionSyntax : ExpressionSyntax {
-    public CallExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken identifier, SyntaxToken openParenthesisToken, SeparatedSyntaxList<ExpressionSyntax> arguments, SyntaxToken closeParenthesisToken) : base(syntaxTree){
+    public CallExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken identifier, SyntaxToken openParenthesisToken, SeparatedSyntaxList<ExpressionSyntax> arguments, SyntaxToken closeParenthesisToken) : base(syntaxTree) {
         Identifier = identifier;
         OpenParenthesisToken = openParenthesisToken;
         Arguments = arguments;

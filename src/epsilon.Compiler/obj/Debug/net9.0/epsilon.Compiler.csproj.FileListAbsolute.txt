@@ -17,3 +17,8 @@ C:\Users\asus\Desktop\Epsilon\src\epsilon.Compiler\bin\Debug\net9.0\epsilon.dll
 C:\Users\asus\Desktop\Epsilon\src\epsilon.Compiler\bin\Debug\net9.0\epsilon.pdb
 C:\Users\asus\Desktop\Epsilon\src\epsilon.Compiler\obj\Debug\net9.0\epsilon.Compiler.csproj.AssemblyReference.cache
 C:\Users\asus\Desktop\Epsilon\src\epsilon.Compiler\obj\Debug\net9.0\epsilon..F5C9D97C.Up2Date
+C:\Users\asus\Desktop\Epsilon\src\epsilon.Compiler\bin\Debug\net9.0\Mono.Cecil.Mdb.dll
+C:\Users\asus\Desktop\Epsilon\src\epsilon.Compiler\bin\Debug\net9.0\Mono.Cecil.Pdb.dll
+C:\Users\asus\Desktop\Epsilon\src\epsilon.Compiler\bin\Debug\net9.0\Mono.Cecil.Rocks.dll
+C:\Users\asus\Desktop\Epsilon\src\epsilon.Compiler\bin\Debug\net9.0\Mono.Cecil.dll
+C:\Users\asus\Desktop\Epsilon\src\epsilon.Compiler\bin\Debug\net9.0\Mono.Options.dll

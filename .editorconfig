@@ -33,3 +33,16 @@ dotnet_naming_style.starts_with_underscore.required_prefix = _
 
 # CS8619: 值中的引用类型的为 Null 性与目标类型不匹配。
 dotnet_diagnostic.CS8619.severity = none
+
+csharp_new_line_before_open_brace = none
+
+csharp_new_line_before_open_brace_types = false
+
+csharp_new_line_before_open_brace_methods = false
+csharp_new_line_before_open_brace_accessors = false
+csharp_new_line_before_open_brace_anonymous_methods = false
+csharp_new_line_before_open_brace_anonymous_types = false
+csharp_new_line_before_open_brace_control_blocks = false
+csharp_new_line_before_open_brace_lambdas = false
+
+csharp_new_line_before_else = false

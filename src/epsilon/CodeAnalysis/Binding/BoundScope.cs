@@ -6,7 +6,7 @@ namespace epsilon.CodeAnalysis.Binding;
 internal sealed class BoundScope {
     private Dictionary<string, Symbol> _symbols;
 
-    public BoundScope(BoundScope parent){
+    public BoundScope(BoundScope parent) {
         Parent = parent;
     }
 
@@ -16,10 +16,10 @@ internal sealed class BoundScope {
 
     public bool TryDeclareFunction(FunctionSymbol function) => TryDeclareSymbol(function);
 
-    private bool TryDeclareSymbol<TSymbol>(TSymbol symbol) where TSymbol : Symbol{
-        if (_symbols == null){
+    private bool TryDeclareSymbol<TSymbol>(TSymbol symbol) where TSymbol : Symbol {
+        if (_symbols == null) {
             _symbols = new Dictionary<string, Symbol>();
-        } else if (_symbols.ContainsKey(symbol.Name)){
+        } else if (_symbols.ContainsKey(symbol.Name)) {
             return false;
         }
 
@@ -27,8 +27,8 @@ internal sealed class BoundScope {
         return true;
     }
 
-    public Symbol TryLookupSymbol(string name){
-        if (_symbols != null && _symbols.TryGetValue(name, out var symbol)){
+    public Symbol TryLookupSymbol(string name) {
+        if (_symbols != null && _symbols.TryGetValue(name, out var symbol)) {
             return symbol;
         }
 
@@ -39,8 +39,8 @@ internal sealed class BoundScope {
 
     public ImmutableArray<FunctionSymbol> GetDeclaredFunctions() => GetDeclaredSymbols<FunctionSymbol>();
 
-    private ImmutableArray<TSymbol> GetDeclaredSymbols<TSymbol>() where TSymbol : Symbol{
-        if (_symbols == null){
+    private ImmutableArray<TSymbol> GetDeclaredSymbols<TSymbol>() where TSymbol : Symbol {
+        if (_symbols == null) {
             return ImmutableArray<TSymbol>.Empty;
         }
 

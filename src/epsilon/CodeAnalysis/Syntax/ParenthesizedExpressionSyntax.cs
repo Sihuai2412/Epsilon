@@ -1,10 +1,10 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
 public sealed class ParenthesizedExpressionSyntax : ExpressionSyntax {
-    public ParenthesizedExpressionSyntax(SyntaxTree syntaxTree, 
+    public ParenthesizedExpressionSyntax(SyntaxTree syntaxTree,
                                          SyntaxToken openParenthesisToken,
                                          ExpressionSyntax expression,
-                                         SyntaxToken closeParenthesisToken) : base(syntaxTree){
+                                         SyntaxToken closeParenthesisToken) : base(syntaxTree) {
         OpenParenthesisToken = openParenthesisToken;
         Expression = expression;
         CloseParenthesisToken = closeParenthesisToken;

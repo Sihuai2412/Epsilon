@@ -1,7 +1,7 @@
 namespace epsilon.CodeAnalysis.Binding;
 
 internal abstract class BoundLoopStatement : BoundStatement {
-    protected BoundLoopStatement(BoundLabel breakLabel, BoundLabel continueLabel){
+    protected BoundLoopStatement(BoundLabel breakLabel, BoundLabel continueLabel) {
         BreakLabel = breakLabel;
         ContinueLabel = continueLabel;
     }

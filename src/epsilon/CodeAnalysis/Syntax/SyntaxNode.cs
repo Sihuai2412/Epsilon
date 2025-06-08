@@ -4,7 +4,7 @@ using epsilon.CodeAnalysis.Text;
 namespace epsilon.CodeAnalysis.Syntax;
 
 public abstract class SyntaxNode {
-    protected SyntaxNode(SyntaxTree syntaxTree){
+    protected SyntaxNode(SyntaxTree syntaxTree) {
         SyntaxTree = syntaxTree;
     }
 
@@ -21,24 +21,24 @@ public abstract class SyntaxNode {
 
     public TextLocation Location => new TextLocation(SyntaxTree.Text, Span);
 
-    public IEnumerable<SyntaxNode> GetChildren(){
+    public IEnumerable<SyntaxNode> GetChildren() {
         var properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-        foreach (var property in properties){
-            if (typeof(SyntaxNode).IsAssignableFrom(property.PropertyType)){
-                var child = (SyntaxNode) property.GetValue(this);
-                if (child != null){
+        foreach (var property in properties) {
+            if (typeof(SyntaxNode).IsAssignableFrom(property.PropertyType)) {
+                var child = (SyntaxNode)property.GetValue(this);
+                if (child != null) {
                     yield return child;
                 }
-            } else if (typeof(SeparatedSyntaxList).IsAssignableFrom(property.PropertyType)){
-                var separatedSyntaxList = (SeparatedSyntaxList) property.GetValue(this);
-                foreach (var child in separatedSyntaxList.GetWithSeparators()){
+            } else if (typeof(SeparatedSyntaxList).IsAssignableFrom(property.PropertyType)) {
+                var separatedSyntaxList = (SeparatedSyntaxList)property.GetValue(this);
+                foreach (var child in separatedSyntaxList.GetWithSeparators()) {
                     yield return child;
                 }
-            } else if (typeof(IEnumerable<SyntaxNode>).IsAssignableFrom(property.PropertyType)){
-                var children = (IEnumerable<SyntaxNode>) property.GetValue(this);
-                foreach (var child in children){
-                    if (child != null){
+            } else if (typeof(IEnumerable<SyntaxNode>).IsAssignableFrom(property.PropertyType)) {
+                var children = (IEnumerable<SyntaxNode>)property.GetValue(this);
+                foreach (var child in children) {
+                    if (child != null) {
                         yield return child;
                     }
                 }
@@ -46,41 +46,41 @@ public abstract class SyntaxNode {
         }
     }
 
-    public SyntaxToken GetLastToken(){
-        if (this is SyntaxToken token){
+    public SyntaxToken GetLastToken() {
+        if (this is SyntaxToken token) {
             return token;
         }
-        
+
         return GetChildren().Last().GetLastToken();
     }
 
-    public void WriteTo(TextWriter writer){
+    public void WriteTo(TextWriter writer) {
         PrettyPrint(writer, this);
     }
 
-    private static void PrettyPrint(TextWriter writer, SyntaxNode node, string indent = "", bool isLast = true){
+    private static void PrettyPrint(TextWriter writer, SyntaxNode node, string indent = "", bool isLast = true) {
         var isToConsole = writer == Console.Out;
         var marker = isLast ? "└──" : "├──";
 
-        if (isToConsole){
+        if (isToConsole) {
             Console.ForegroundColor = ConsoleColor.DarkGray;
         }
 
         writer.Write(indent);
         writer.Write(marker);
-        
-        if (isToConsole){
+
+        if (isToConsole) {
             Console.ForegroundColor = node is SyntaxToken ? ConsoleColor.Blue : ConsoleColor.Cyan;
         }
 
         writer.Write(node.Kind);
 
-        if (node is SyntaxToken t && t.Value != null){
+        if (node is SyntaxToken t && t.Value != null) {
             writer.Write(" ");
             writer.Write(t.Value);
         }
 
-        if (isToConsole){
+        if (isToConsole) {
             Console.ResetColor();
         }
 
@@ -90,13 +90,13 @@ public abstract class SyntaxNode {
 
         var lastChild = node.GetChildren().LastOrDefault();
 
-        foreach (var child in node.GetChildren()){
+        foreach (var child in node.GetChildren()) {
             PrettyPrint(writer, child, indent, child == lastChild);
         }
     }
 
-    public override string ToString(){
-        using (var writer = new StringWriter()){
+    public override string ToString() {
+        using (var writer = new StringWriter()) {
             WriteTo(writer);
 
             return writer.ToString();

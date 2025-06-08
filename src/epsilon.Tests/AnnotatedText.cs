@@ -5,7 +5,7 @@ using epsilon.CodeAnalysis.Text;
 namespace epsilon.Tests.CodeAnalysis;
 
 internal sealed class AnnotatedText {
-    public AnnotatedText(string text, ImmutableArray<TextSpan> spans){
+    public AnnotatedText(string text, ImmutableArray<TextSpan> spans) {
         Text = text;
         Spans = spans;
     }
@@ -13,7 +13,7 @@ internal sealed class AnnotatedText {
     public string Text { get; }
     public ImmutableArray<TextSpan> Spans { get; }
 
-    public static AnnotatedText Parse(string text){
+    public static AnnotatedText Parse(string text) {
         text = Unindent(text);
 
         var textBuilder = new StringBuilder();
@@ -22,11 +22,11 @@ internal sealed class AnnotatedText {
 
         var position = 0;
 
-        foreach (var c in text){
-            if (c == '['){
+        foreach (var c in text) {
+            if (c == '[') {
                 startStack.Push(position);
-            } else if (c == ']'){
-                if (startStack.Count == 0){
+            } else if (c == ']') {
+                if (startStack.Count == 0) {
                     throw new ArgumentException("Too many ']' in text", nameof(text));
                 }
 
@@ -40,31 +40,31 @@ internal sealed class AnnotatedText {
             }
         }
 
-        if (startStack.Count != 0){
+        if (startStack.Count != 0) {
             throw new ArgumentException("Missing ']' in text", nameof(text));
         }
 
         return new AnnotatedText(textBuilder.ToString(), spanBuilder.ToImmutable());
     }
 
-    private static string Unindent(string text){
+    private static string Unindent(string text) {
         var lines = UnindentLines(text);
         return string.Join(Environment.NewLine, lines);
     }
 
-    public static string[] UnindentLines(string text){
+    public static string[] UnindentLines(string text) {
         var lines = new List<string>();
 
-        using (var reader = new StringReader(text)){
+        using (var reader = new StringReader(text)) {
             string line;
             while ((line = reader.ReadLine()) != null) lines.Add(line);
         }
 
         var minIndentation = int.MaxValue;
-        for (var i = 0; i < lines.Count; i++){
+        for (var i = 0; i < lines.Count; i++) {
             var line = lines[i];
 
-            if (line.Trim().Length == 0){
+            if (line.Trim().Length == 0) {
                 lines[i] = string.Empty;
                 continue;
             }
@@ -73,8 +73,8 @@ internal sealed class AnnotatedText {
             minIndentation = Math.Min(minIndentation, indentation);
         }
 
-        for (var i = 0; i < lines.Count; i++){
-            if (lines[i].Length == 0){
+        for (var i = 0; i < lines.Count; i++) {
+            if (lines[i].Length == 0) {
                 continue;
             }
 
@@ -83,7 +83,7 @@ internal sealed class AnnotatedText {
 
         while (lines.Count > 0 && lines[0].Length == 0) lines.RemoveAt(0);
         while (lines.Count > 0 && lines[lines.Count - 1].Length == 0) lines.RemoveAt(lines.Count - 1);
-        
+
         return lines.ToArray();
     }
 }

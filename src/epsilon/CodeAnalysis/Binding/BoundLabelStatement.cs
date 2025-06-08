@@ -1,7 +1,7 @@
 namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundLabelStatement : BoundStatement {
-    public BoundLabelStatement(BoundLabel label){
+    public BoundLabelStatement(BoundLabel label) {
         Label = label;
     }
 
