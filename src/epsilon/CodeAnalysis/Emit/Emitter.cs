@@ -6,19 +6,14 @@ using Mono.Cecil.Cil;
 
 namespace epsilon.CodeAnalysis.Emit;
 
-internal class Emitter {
-    private readonly DiagnosticBag _diagnostics = new DiagnosticBag();
-    private readonly List<AssemblyDefinition> _assemblies = new List<AssemblyDefinition>();
-    private readonly Dictionary<TypeSymbol, TypeReference> _knownTypes = new Dictionary<TypeSymbol, TypeReference>();
+internal sealed class Emitter {
+    private DiagnosticBag _diagnostics = new DiagnosticBag();
+    private readonly AssemblyDefinition _assemblyDefinition;
+    private readonly Dictionary<TypeSymbol, TypeReference> _knownTypes;
+    private readonly MethodReference _consoleWriteLineReference;
 
-    public static ImmutableArray<Diagnostic> Emit(BoundProgram program, string moduleName, string[] references, string outputPath) {
-        if (program.Diagnostics.Any()) {
-            return program.Diagnostics;
-        }
-
+    private Emitter(string moduleName, string[] references) {
         var assemblies = new List<AssemblyDefinition>();
-
-        var result = new DiagnosticBag();
 
         foreach (var reference in references) {
             try {
@@ -26,7 +21,7 @@ internal class Emitter {
                 assemblies.Add(assembly);
             }
             catch (BadImageFormatException) {
-                result.ReportInvalidReference(reference);
+                _diagnostics.ReportInvalidReference(reference);
             }
         }
 
@@ -39,12 +34,12 @@ internal class Emitter {
         };
 
         var assemblyName = new AssemblyNameDefinition(moduleName, new Version(1, 0));
-        var assemblyDefinition = AssemblyDefinition.CreateAssembly(assemblyName, moduleName, ModuleKind.Console);
-        var knownTypes = new Dictionary<TypeSymbol, TypeReference>();
+        _assemblyDefinition = AssemblyDefinition.CreateAssembly(assemblyName, moduleName, ModuleKind.Console);
+        _knownTypes = new Dictionary<TypeSymbol, TypeReference>();
 
         foreach (var (typeSymbol, metadataName) in builtInTypes) {
             var typeReference = ResolveType(typeSymbol.Name, metadataName);
-            knownTypes.Add(typeSymbol, typeReference);
+            _knownTypes.Add(typeSymbol, typeReference);
         }
 
         TypeReference ResolveType(string epsilonName, string metadataName) {
@@ -54,12 +49,12 @@ internal class Emitter {
                                        .ToArray();
 
             if (foundTypes.Length == 1) {
-                var typeReference = assemblyDefinition.MainModule.ImportReference(foundTypes[0]);
+                var typeReference = _assemblyDefinition.MainModule.ImportReference(foundTypes[0]);
                 return typeReference;
             } else if (foundTypes.Length == 0) {
-                result.ReportRequiredTypeNotFound(epsilonName, metadataName);
+                _diagnostics.ReportRequiredTypeNotFound(epsilonName, metadataName);
             } else {
-                result.ReportRequiredTypeAmbiguous(epsilonName, metadataName, foundTypes);
+                _diagnostics.ReportRequiredTypeAmbiguous(epsilonName, metadataName, foundTypes);
             }
 
             return null;
@@ -93,43 +88,54 @@ internal class Emitter {
                         continue;
                     }
 
-                    return assemblyDefinition.MainModule.ImportReference(method);
+                    return _assemblyDefinition.MainModule.ImportReference(method);
                 }
 
-                result.ReportRequiredMethodNotFound(typeName, methodName, parameterTypeNames);
+                _diagnostics.ReportRequiredMethodNotFound(typeName, methodName, parameterTypeNames);
                 return null;
             } else if (foundTypes.Length == 0) {
-                result.ReportRequiredTypeNotFound(null, typeName);
+                _diagnostics.ReportRequiredTypeNotFound(null, typeName);
             } else {
-                result.ReportRequiredTypeAmbiguous(null, typeName, foundTypes);
+                _diagnostics.ReportRequiredTypeAmbiguous(null, typeName, foundTypes);
             }
 
             return null;
         }
 
-        var consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", ["System.String"]);
+        _consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", ["System.String"]);
+    }
 
-        if (result.Any()) {
-            return result.ToImmutableArray();
+    public ImmutableArray<Diagnostic> Emit(BoundProgram program, string outputPath) {
+        if (_diagnostics.Any()) {
+            return _diagnostics.ToImmutableArray();
         }
 
-        var objectType = knownTypes[TypeSymbol.Any];
+        var objectType = _knownTypes[TypeSymbol.Any];
         var typeDefinition = new TypeDefinition("", "Program", TypeAttributes.Abstract | TypeAttributes.Sealed, objectType);
-        assemblyDefinition.MainModule.Types.Add(typeDefinition);
+        _assemblyDefinition.MainModule.Types.Add(typeDefinition);
 
-        var voidType = knownTypes[TypeSymbol.Void];
+        var voidType = _knownTypes[TypeSymbol.Void];
         var mainMethod = new MethodDefinition("Main", MethodAttributes.Static | MethodAttributes.Private, voidType);
         typeDefinition.Methods.Add(mainMethod);
 
         var ilProcessor = mainMethod.Body.GetILProcessor();
         ilProcessor.Emit(OpCodes.Ldstr, "Hello World From Epsilon!");
-        ilProcessor.Emit(OpCodes.Call, consoleWriteLineReference);
+        ilProcessor.Emit(OpCodes.Call, _consoleWriteLineReference);
         ilProcessor.Emit(OpCodes.Ret);
 
-        assemblyDefinition.EntryPoint = mainMethod;
+        _assemblyDefinition.EntryPoint = mainMethod;
 
-        assemblyDefinition.Write(outputPath);
+        _assemblyDefinition.Write(outputPath);
 
-        return result.ToImmutableArray();
+        return _diagnostics.ToImmutableArray();
+    }
+
+    public static ImmutableArray<Diagnostic> Emit(BoundProgram program, string moduleName, string[] references, string outputPath) {
+        if (program.Diagnostics.Any()) {
+            return program.Diagnostics;
+        }
+
+        var emitter = new Emitter(moduleName, references);
+        return emitter.Emit(program, outputPath);
     }
 }

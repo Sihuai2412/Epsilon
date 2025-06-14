@@ -174,7 +174,7 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
         var assemblyNames = foundTypes.Select(t => t.Module.Assembly.Name.Name);
         var assemblyNameList = string.Join(", ", assemblyNames);
         var message = epsilonName == null
-            ? $"The required type '{epsilonName}' was found in multiple references: {assemblyNameList}."
+            ? $"The required type '{metadataName}' was found in multiple references: {assemblyNameList}."
             : $"The required type '{epsilonName}' ('{metadataName}') was found in multiple references: {assemblyNameList}.";
         Report(default, message);
     }
