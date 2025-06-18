@@ -16,6 +16,7 @@ internal sealed class Emitter {
     private readonly Dictionary<TypeSymbol, TypeReference> _knownTypes;
     private readonly MethodReference _consoleWriteLineReference;
     private readonly MethodReference _consoleReadLineReference;
+    private readonly MethodReference _stringConcatReference;
     private readonly Dictionary<VariableSymbol, VariableDefinition> _locals = new Dictionary<VariableSymbol, VariableDefinition>();
 
     private Emitter(string moduleName, string[] references) {
@@ -110,6 +111,7 @@ internal sealed class Emitter {
 
         _consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", ["System.String"]);
         _consoleReadLineReference = ResolveMethod("System.Console", "ReadLine", Array.Empty<string>());
+        _stringConcatReference = ResolveMethod("System.String", "Concat", ["System.String", "System.String"]);
     }
 
     public static ImmutableArray<Diagnostic> Emit(BoundProgram program, string moduleName, string[] references, string outputPath) {
@@ -302,7 +304,18 @@ internal sealed class Emitter {
     }
 
     private void EmitBinaryExpression(ILProcessor ilProcessor, BoundBinaryExpression node) {
-        throw new NotImplementedException();
+        if (node.Op.Kind == BoundBinaryOperatorKind.Addition) {
+            if (node.Left.Type == TypeSymbol.String &&
+                 node.Right.Type == TypeSymbol.String) {
+                EmitExpression(ilProcessor, node.Left);
+                EmitExpression(ilProcessor, node.Right);
+                ilProcessor.Emit(OpCodes.Call, _stringConcatReference);
+            } else {
+                throw new NotImplementedException();
+            }
+        } else {
+            throw new NotImplementedException();
+        }
     }
 
     private void EmitCallExpression(ILProcessor ilProcessor, BoundCallExpression node) {
