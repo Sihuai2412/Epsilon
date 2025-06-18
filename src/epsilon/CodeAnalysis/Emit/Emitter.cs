@@ -10,10 +10,13 @@ namespace epsilon.CodeAnalysis.Emit;
 internal sealed class Emitter {
     private DiagnosticBag _diagnostics = new DiagnosticBag();
     private TypeDefinition _typeDefinition;
+
     private readonly Dictionary<FunctionSymbol, MethodDefinition> _methods = new Dictionary<FunctionSymbol, MethodDefinition>();
     private readonly AssemblyDefinition _assemblyDefinition;
     private readonly Dictionary<TypeSymbol, TypeReference> _knownTypes;
     private readonly MethodReference _consoleWriteLineReference;
+    private readonly MethodReference _consoleReadLineReference;
+    private readonly Dictionary<VariableSymbol, VariableDefinition> _locals = new Dictionary<VariableSymbol, VariableDefinition>();
 
     private Emitter(string moduleName, string[] references) {
         var assemblies = new List<AssemblyDefinition>();
@@ -106,6 +109,7 @@ internal sealed class Emitter {
         }
 
         _consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", ["System.String"]);
+        _consoleReadLineReference = ResolveMethod("System.Console", "ReadLine", Array.Empty<string>());
     }
 
     public static ImmutableArray<Diagnostic> Emit(BoundProgram program, string moduleName, string[] references, string outputPath) {
@@ -152,6 +156,7 @@ internal sealed class Emitter {
 
     private void EmitFunctionBody(FunctionSymbol function, BoundBlockStatement body) {
         var method = _methods[function];
+        _locals.Clear();
 
         var ilProcessor = method.Body.GetILProcessor();
         foreach (var statement in body.Statements) {
@@ -198,7 +203,13 @@ internal sealed class Emitter {
     }
 
     private void EmitVariableDeclaration(ILProcessor ilProcessor, BoundVariableDeclaration node) {
-        throw new NotImplementedException();
+        var typeReference = _knownTypes[node.Variable.Type];
+        var variableDefinition = new VariableDefinition(typeReference);
+        _locals.Add(node.Variable, variableDefinition);
+        ilProcessor.Body.Variables.Add(variableDefinition);
+
+        EmitExpression(ilProcessor, node.Initializer);
+        ilProcessor.Emit(OpCodes.Stloc, variableDefinition);
     }
 
     private void EmitLabelStatement(ILProcessor ilProcessor, BoundLabelStatement node) {
@@ -278,7 +289,8 @@ internal sealed class Emitter {
     }
 
     private void EmitVariableExpression(ILProcessor ilProcessor, BoundVariableExpression node) {
-        throw new NotImplementedException();
+        var variableDefinition = _locals[node.Variable];
+        ilProcessor.Emit(OpCodes.Ldloc, variableDefinition.Index);
     }
 
     private void EmitAssignmentExpression(ILProcessor ilProcessor, BoundAssignmentExpression node) {
@@ -301,7 +313,7 @@ internal sealed class Emitter {
         if (node.Function == BuiltinFunctions.Print) {
             ilProcessor.Emit(OpCodes.Call, _consoleWriteLineReference);
         } else if (node.Function == BuiltinFunctions.Input) {
-            throw new NotImplementedException();
+            ilProcessor.Emit(OpCodes.Call, _consoleReadLineReference);
         } else if (node.Function == BuiltinFunctions.Rnd) {
             throw new NotImplementedException();
         } else {
