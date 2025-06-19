@@ -6,9 +6,7 @@ namespace epsilon.CodeAnalysis.Symbols;
 internal static class BuiltinFunctions {
     public static readonly FunctionSymbol Print = new FunctionSymbol(
         "print",
-        ImmutableArray.Create(
-            new ParameterSymbol("text", TypeSymbol.String)
-        ),
+        [new ParameterSymbol("text", TypeSymbol.String, 0)],
         TypeSymbol.Void
     );
     public static readonly FunctionSymbol Input = new FunctionSymbol(
@@ -18,9 +16,7 @@ internal static class BuiltinFunctions {
     );
     public static readonly FunctionSymbol Rnd = new FunctionSymbol(
         "rnd",
-        ImmutableArray.Create(
-            new ParameterSymbol("max", TypeSymbol.Int)
-        ),
+        [new ParameterSymbol("max", TypeSymbol.Int, 0)],
         TypeSymbol.Int
     );
 

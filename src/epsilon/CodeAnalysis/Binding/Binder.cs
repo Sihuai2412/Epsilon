@@ -154,7 +154,7 @@ internal sealed class Binder {
             if (!seenParameterNames.Add(parameterName)) {
                 _diagnostics.ReportParameterAlreadyDeclared(parameterSyntax.Location, parameterName);
             } else {
-                var parameter = new ParameterSymbol(parameterName, parameterType);
+                var parameter = new ParameterSymbol(parameterName, parameterType, parameters.Count);
                 parameters.Add(parameter);
             }
         }
