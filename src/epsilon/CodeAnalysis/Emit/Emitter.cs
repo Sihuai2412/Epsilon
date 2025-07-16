@@ -173,10 +173,6 @@ internal sealed class Emitter {
             EmitStatement(ilProcessor, statement);
         }
 
-        if (function.Type == TypeSymbol.Void) {
-            ilProcessor.Emit(OpCodes.Ret);
-        }
-
         method.Body.OptimizeMacros();
     }
 
