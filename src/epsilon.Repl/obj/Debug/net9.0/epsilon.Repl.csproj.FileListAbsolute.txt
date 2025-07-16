@@ -17,3 +17,7 @@ C:\Users\asus\Desktop\Epsilon\src\epsilon.Repl\obj\Debug\net9.0\refint\epsilon.R
 C:\Users\asus\Desktop\Epsilon\src\epsilon.Repl\obj\Debug\net9.0\epsilon.Repl.pdb
 C:\Users\asus\Desktop\Epsilon\src\epsilon.Repl\obj\Debug\net9.0\epsilon.Repl.genruntimeconfig.cache
 C:\Users\asus\Desktop\Epsilon\src\epsilon.Repl\obj\Debug\net9.0\ref\epsilon.Repl.dll
+C:\Users\asus\Desktop\Epsilon\src\epsilon.Repl\bin\Debug\net9.0\Mono.Cecil.Mdb.dll
+C:\Users\asus\Desktop\Epsilon\src\epsilon.Repl\bin\Debug\net9.0\Mono.Cecil.Pdb.dll
+C:\Users\asus\Desktop\Epsilon\src\epsilon.Repl\bin\Debug\net9.0\Mono.Cecil.Rocks.dll
+C:\Users\asus\Desktop\Epsilon\src\epsilon.Repl\bin\Debug\net9.0\Mono.Cecil.dll

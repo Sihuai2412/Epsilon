@@ -17,13 +17,13 @@ internal sealed class Lowerer : BoundTreeRewriter {
         return new BoundLabel(name);
     }
 
-    public static BoundBlockStatement Lower(BoundStatement statement) {
+    public static BoundBlockStatement Lower(FunctionSymbol function, BoundStatement statement) {
         var lowerer = new Lowerer();
         var result = lowerer.RewriteStatement(statement);
-        return Flatten(result);
+        return Flatten(function, result);
     }
 
-    private static BoundBlockStatement Flatten(BoundStatement statement) {
+    private static BoundBlockStatement Flatten(FunctionSymbol function, BoundStatement statement) {
         var builder = ImmutableArray.CreateBuilder<BoundStatement>();
         var stack = new Stack<BoundStatement>();
         stack.Push(statement);
@@ -40,7 +40,18 @@ internal sealed class Lowerer : BoundTreeRewriter {
             }
         }
 
+        if (function.Type == TypeSymbol.Void) {
+            if (builder.Count == 0 || CanFallThrough(builder.Last())) {
+                builder.Add(new BoundReturnStatement(null));
+            }
+        }
+
         return new BoundBlockStatement(builder.ToImmutable());
+    }
+
+    private static bool CanFallThrough(BoundStatement boundStatement) {
+        return boundStatement.Kind != BoundNodeKind.ReturnStatement &&
+               boundStatement.Kind != BoundNodeKind.GotoStatement;
     }
 
     protected override BoundStatement RewriteIfStatement(BoundIfStatement node) {

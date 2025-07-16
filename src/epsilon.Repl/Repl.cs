@@ -38,7 +38,7 @@ internal abstract class Repl {
         while (true) {
             var text = EditSubmission();
             if (string.IsNullOrEmpty(text)) {
-                return;
+                continue;
             }
 
             if (text.StartsWith("#")) {
