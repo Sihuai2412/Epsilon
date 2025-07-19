@@ -17,6 +17,9 @@ internal sealed class Emitter {
     private readonly MethodReference _consoleWriteLineReference;
     private readonly MethodReference _consoleReadLineReference;
     private readonly MethodReference _stringConcatReference;
+    private readonly MethodReference _convertToBooleanReference;
+    private readonly MethodReference _convertToInt32Reference;
+    private readonly MethodReference _convertToStringReference;
     private readonly Dictionary<VariableSymbol, VariableDefinition> _locals = new Dictionary<VariableSymbol, VariableDefinition>();
 
     private Emitter(string moduleName, string[] references) {
@@ -112,6 +115,9 @@ internal sealed class Emitter {
         _consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", ["System.String"]);
         _consoleReadLineReference = ResolveMethod("System.Console", "ReadLine", Array.Empty<string>());
         _stringConcatReference = ResolveMethod("System.String", "Concat", ["System.String", "System.String"]);
+        _convertToBooleanReference = ResolveMethod("System.Convert", "ToBoolean", ["System.Object"]);
+        _convertToInt32Reference = ResolveMethod("System.Convert", "ToInt32", ["System.Object"]);
+        _convertToStringReference = ResolveMethod("System.Convert", "ToString", ["System.Object"]);
     }
 
     public static ImmutableArray<Diagnostic> Emit(BoundProgram program, string moduleName, string[] references, string outputPath) {
@@ -351,6 +357,23 @@ internal sealed class Emitter {
     }
 
     private void EmitConversionExpression(ILProcessor ilProcessor, BoundConversionExpression node) {
-        throw new NotImplementedException();
+        EmitExpression(ilProcessor, node.Expression);
+        var needsBoxing = node.Expression.Type == TypeSymbol.Bool ||
+                          node.Expression.Type == TypeSymbol.Int;
+        if (needsBoxing) {
+            ilProcessor.Emit(OpCodes.Box, _knownTypes[node.Expression.Type]);
+        }
+
+        if (node.Type == TypeSymbol.Any) {
+            // Done
+        } else if (node.Type == TypeSymbol.Bool) {
+            ilProcessor.Emit(OpCodes.Call, _convertToBooleanReference);
+        } else if (node.Type == TypeSymbol.Int) {
+            ilProcessor.Emit(OpCodes.Call, _convertToInt32Reference);
+        } else if (node.Type == TypeSymbol.String) {
+            ilProcessor.Emit(OpCodes.Call, _convertToStringReference);
+        } else {
+            throw new Exception($"Unexpected conversion from {node.Expression.Type} to {node.Type}");
+        }
     }
 }
