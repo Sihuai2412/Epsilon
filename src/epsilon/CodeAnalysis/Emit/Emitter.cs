@@ -11,6 +11,7 @@ namespace epsilon.CodeAnalysis.Emit;
 internal sealed class Emitter {
     private DiagnosticBag _diagnostics = new DiagnosticBag();
     private TypeDefinition _typeDefinition;
+    private FieldDefinition _randomFieldDefinition;
 
     private readonly Dictionary<FunctionSymbol, MethodDefinition> _methods = new Dictionary<FunctionSymbol, MethodDefinition>();
     private readonly AssemblyDefinition _assemblyDefinition;
@@ -22,6 +23,9 @@ internal sealed class Emitter {
     private readonly MethodReference _convertToBooleanReference;
     private readonly MethodReference _convertToInt32Reference;
     private readonly MethodReference _convertToStringReference;
+    private readonly TypeReference _randomReference;
+    private readonly MethodReference _randomCtorReference;
+    private readonly MethodReference _randomNextReference;
     private readonly Dictionary<VariableSymbol, VariableDefinition> _locals = new Dictionary<VariableSymbol, VariableDefinition>();
     private readonly Dictionary<BoundLabel, int> _labels = new Dictionary<BoundLabel, int>();
     private readonly List<(int InstructionIndex, BoundLabel Target)> _fixups = new List<(int InstructionIndex, BoundLabel Target)>();
@@ -123,6 +127,9 @@ internal sealed class Emitter {
         _convertToBooleanReference = ResolveMethod("System.Convert", "ToBoolean", ["System.Object"]);
         _convertToInt32Reference = ResolveMethod("System.Convert", "ToInt32", ["System.Object"]);
         _convertToStringReference = ResolveMethod("System.Convert", "ToString", ["System.Object"]);
+        _randomReference = ResolveType(null, "System.Random");
+        _randomCtorReference = ResolveMethod("System.Random", ".ctor", Array.Empty<string>());
+        _randomNextReference = ResolveMethod("System.Random", "Next", ["System.Int32"]);
     }
 
     public static ImmutableArray<Diagnostic> Emit(BoundProgram program, string moduleName, string[] references, string outputPath) {
@@ -252,7 +259,7 @@ internal sealed class Emitter {
     private void EmitConditionalGotoStatement(ILProcessor ilProcessor, BoundConditionalGotoStatement node) {
         EmitExpression(ilProcessor, node.Condition);
 
-        var opCode = node.JumpIfTrue ? OpCodes.Brtrue : OpCodes.Brfalse;    
+        var opCode = node.JumpIfTrue ? OpCodes.Brtrue : OpCodes.Brfalse;
         _fixups.Add((ilProcessor.Body.Instructions.Count, node.Label));
         ilProcessor.Emit(opCode, Instruction.Create(OpCodes.Nop));
     }
@@ -457,6 +464,22 @@ internal sealed class Emitter {
     }
 
     private void EmitCallExpression(ILProcessor ilProcessor, BoundCallExpression node) {
+        if (node.Function == BuiltinFunctions.Rnd) {
+            if (_randomFieldDefinition == null) {
+                EmitRandomField();
+            }
+
+            ilProcessor.Emit(OpCodes.Ldsfld, _randomFieldDefinition);
+
+            foreach (var argument in node.Arguments) {
+                EmitExpression(ilProcessor, argument);
+            }
+
+            ilProcessor.Emit(OpCodes.Callvirt, _randomNextReference);
+
+            return;
+        }
+
         foreach (var argument in node.Arguments) {
             EmitExpression(ilProcessor, argument);
         }
@@ -465,12 +488,31 @@ internal sealed class Emitter {
             ilProcessor.Emit(OpCodes.Call, _consoleWriteLineReference);
         } else if (node.Function == BuiltinFunctions.Input) {
             ilProcessor.Emit(OpCodes.Call, _consoleReadLineReference);
-        } else if (node.Function == BuiltinFunctions.Rnd) {
-            throw new NotImplementedException();
         } else {
             var methodDefinition = _methods[node.Function];
             ilProcessor.Emit(OpCodes.Call, methodDefinition);
         }
+    }
+
+    private void EmitRandomField() {
+        _randomFieldDefinition = new FieldDefinition("$rnd", FieldAttributes.Static | FieldAttributes.Private, _randomReference);
+        _typeDefinition.Fields.Add(_randomFieldDefinition);
+
+        var staticConstructor = new MethodDefinition(
+            ".cctor",
+            MethodAttributes.Static |
+            MethodAttributes.Private |
+            MethodAttributes.SpecialName |
+            MethodAttributes.RTSpecialName,
+            _knownTypes[TypeSymbol.Void]
+        );
+        
+        _typeDefinition.Methods.Insert(0, staticConstructor);
+
+        var ilProcessor = staticConstructor.Body.GetILProcessor();
+        ilProcessor.Emit(OpCodes.Newobj, _randomCtorReference);
+        ilProcessor.Emit(OpCodes.Stsfld, _randomFieldDefinition);
+        ilProcessor.Emit(OpCodes.Ret);
     }
 
     private void EmitConversionExpression(ILProcessor ilProcessor, BoundConversionExpression node) {
