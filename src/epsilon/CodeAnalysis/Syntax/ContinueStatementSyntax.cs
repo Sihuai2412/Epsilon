@@ -1,6 +1,6 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
-internal class ContinueStatementSyntax : StatementSyntax {
+internal sealed partial class ContinueStatementSyntax : StatementSyntax {
     public ContinueStatementSyntax(SyntaxTree syntaxTree, SyntaxToken keyword) : base(syntaxTree) {
         Keyword = keyword;
     }

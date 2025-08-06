@@ -1,6 +1,6 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
-public sealed class FunctionDeclarationSyntax : MemberSyntax {
+public sealed partial class FunctionDeclarationSyntax : MemberSyntax {
     public FunctionDeclarationSyntax(
                                         SyntaxTree syntaxTree,
                                         SyntaxToken functionKeyword,

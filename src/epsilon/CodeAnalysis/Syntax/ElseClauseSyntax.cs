@@ -1,6 +1,6 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
-public sealed class ElseClauseSyntax : SyntaxNode {
+public sealed partial class ElseClauseSyntax : SyntaxNode {
     public ElseClauseSyntax(SyntaxTree syntaxTree, SyntaxToken elseKeyword, StatementSyntax elseStatement) : base(syntaxTree) {
         ElseKeyword = elseKeyword;
         ElseStatement = elseStatement;

@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 
 namespace epsilon.CodeAnalysis.Syntax;
 
-public sealed class BlockStatementSyntax : StatementSyntax {
+public sealed partial class BlockStatementSyntax : StatementSyntax {
     public BlockStatementSyntax(SyntaxTree syntaxTree, SyntaxToken openBraceToken, ImmutableArray<StatementSyntax> statements, SyntaxToken closeBraceToken) : base(syntaxTree) {
         OpenBraceToken = openBraceToken;
         Statements = statements;

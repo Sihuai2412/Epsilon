@@ -15,4 +15,8 @@ public sealed class SyntaxToken : SyntaxNode {
     public object Value { get; }
     public override TextSpan Span => new TextSpan(Position, Text?.Length ?? 0);
     public bool IsMissing => Text == null;
+
+    public override IEnumerable<SyntaxNode> GetChildren() {
+        return Array.Empty<SyntaxNode>();
+    }
 }

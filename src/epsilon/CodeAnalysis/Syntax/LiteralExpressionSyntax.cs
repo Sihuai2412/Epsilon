@@ -1,6 +1,6 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
-public sealed class LiteralExpressionSyntax : ExpressionSyntax {
+public sealed partial class LiteralExpressionSyntax : ExpressionSyntax {
     public LiteralExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken literalToken)
         : this(syntaxTree, literalToken, literalToken.Value) {
     }

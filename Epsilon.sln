@@ -9,7 +9,9 @@ Project("{39BFA8B1-08E5-476D-8A34-F429D1A93BDD}") = "epsilon.Repl", "src\epsilon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "epsilon.Tests", "src\epsilon.Tests\epsilon.Tests.csproj", "{B9D7446A-04B8-410F-B08C-55015A2517D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "epsilon.Compiler", "src\epsilon.Compiler\epsilon.Compiler.csproj", "{27AEC704-53BD-43DA-9343-0D4C0D5AFC27}"
+Project("{e287e825-67a0-4594-9e9b-978ae7789d9a}") = "epsilon.Compiler", "src\epsilon.Compiler\epsilon.Compiler.csproj", "{27AEC704-53BD-43DA-9343-0D4C0D5AFC27}"
+EndProject
+Project("{eac09e86-4e8d-4b6d-8db2-89c18e9cb436}") = "epsilon.Generators", "src\epsilon.Generators\epsilon.Generators.csproj", "{2bb86a1c-4aff-48e4-a2d6-bf3ab909371a}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,14 @@ Global
 		{27AEC704-53BD-43DA-9343-0D4C0D5AFC27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27AEC704-53BD-43DA-9343-0D4C0D5AFC27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27AEC704-53BD-43DA-9343-0D4C0D5AFC27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{e287e825-67a0-4594-9e9b-978ae7789d9a}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{e287e825-67a0-4594-9e9b-978ae7789d9a}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{e287e825-67a0-4594-9e9b-978ae7789d9a}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{e287e825-67a0-4594-9e9b-978ae7789d9a}.Release|Any CPU.Build.0 = Release|Any CPU
+		{eac09e86-4e8d-4b6d-8db2-89c18e9cb436}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{eac09e86-4e8d-4b6d-8db2-89c18e9cb436}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{eac09e86-4e8d-4b6d-8db2-89c18e9cb436}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{eac09e86-4e8d-4b6d-8db2-89c18e9cb436}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
