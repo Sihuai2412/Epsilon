@@ -120,6 +120,7 @@ public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
     private IReadOnlyList<INamedTypeSymbol> GetAllTypes(IAssemblySymbol symbol) {
         var result = new List<INamedTypeSymbol>();
         GetAllTypes(result, symbol.GlobalNamespace);
+        result.Sort((x, y) => x.MetadataName.CompareTo(y.MetadataName));
         return result;
     }
 
