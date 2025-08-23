@@ -11,3 +11,9 @@ At present, you can only obtain the source code and compile it through git clone
 ``` bash
 git clone https://github.com/Sihuai2412/Epsilon.git
 ```
+
+## License
+
+This project is licensed under the GNU General Public License v3.0.
+
+See the [LICENSE](LICENSE) file for the full text.
