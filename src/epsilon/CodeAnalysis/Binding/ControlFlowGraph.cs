@@ -5,17 +5,17 @@ using epsilon.CodeAnalysis.Syntax;
 namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class ControlFlowGraph {
-    public ControlFlowGraph(BasicBlock start, BasicBlock end, List<BasicBlock> blocks, List<BasicBlockBranch> branchs) {
+    public ControlFlowGraph(BasicBlock start, BasicBlock end, List<BasicBlock> blocks, List<BasicBlockBranch> branches) {
         Start = start;
         End = end;
         Blocks = blocks;
-        Branchs = branchs;
+        Branches = branches;
     }
 
     public BasicBlock Start { get; }
     public BasicBlock End { get; }
     public List<BasicBlock> Blocks { get; }
-    public List<BasicBlockBranch> Branchs { get; }
+    public List<BasicBlockBranch> Branches { get; }
 
     public sealed class BasicBlock {
         public BasicBlock() { }
@@ -90,6 +90,7 @@ internal sealed class ControlFlowGraph {
                             StartBlock();
                             break;
                         }
+                    case BoundNodeKind.NopStatement:
                     case BoundNodeKind.VariableDeclaration:
                     case BoundNodeKind.ExpressionStatement: {
                             _statements.Add(statement);
@@ -171,6 +172,7 @@ internal sealed class ControlFlowGraph {
                                 Connect(current, _end);
                                 break;
                             }
+                        case BoundNodeKind.NopStatement:
                         case BoundNodeKind.VariableDeclaration:
                         case BoundNodeKind.LabelStatement:
                         case BoundNodeKind.ExpressionStatement: {
@@ -261,7 +263,7 @@ internal sealed class ControlFlowGraph {
             writer.WriteLine($"    {id} [label = {label}, shape = box]");
         }
 
-        foreach (var branch in Branchs) {
+        foreach (var branch in Branches) {
             var fromId = blockIds[branch.From];
             var toId = blockIds[branch.To];
             var label = Quote(branch.ToString());

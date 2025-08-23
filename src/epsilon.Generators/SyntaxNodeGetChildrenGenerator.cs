@@ -16,10 +16,10 @@ public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
     public void Execute(GeneratorExecutionContext context) {
         var compilation = (CSharpCompilation)context.Compilation;
 
-        var types = GetAllTypes(compilation.Assembly);
         var immutableArrayType = compilation.GetTypeByMetadataName("System.Collections.Immutable.ImmutableArray`1");
         var separatedSyntaxListType = compilation.GetTypeByMetadataName("epsilon.CodeAnalysis.Syntax.SeparatedSyntaxList`1");
         var syntaxNodeType = compilation.GetTypeByMetadataName("epsilon.CodeAnalysis.Syntax.SyntaxNode");
+        var types = GetAllTypes(compilation.Assembly);
         var syntaxNodeTypes = types.Where(t => !t.IsAbstract && IsPartial(t) && IsDerivedFrom(t, syntaxNodeType));
 
         SourceText sourceText;
@@ -73,6 +73,7 @@ public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
             }
 
             indentedTextWriter.Flush();
+            stringWriter.Flush();
             sourceText = SourceText.From(stringWriter.ToString(), Encoding.UTF8);
         }
 

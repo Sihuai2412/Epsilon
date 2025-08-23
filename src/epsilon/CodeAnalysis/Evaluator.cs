@@ -55,6 +55,10 @@ internal sealed class Evaluator {
             var s = body.Statements[index];
 
             switch (s.Kind) {
+                case BoundNodeKind.NopStatement: {
+                        index++;
+                        break;
+                    }
                 case BoundNodeKind.VariableDeclaration: {
                         EvaluateVariableDeclaration((BoundVariableDeclaration)s);
                         index++;
@@ -108,9 +112,11 @@ internal sealed class Evaluator {
     }
 
     private object EvaluateExpression(BoundExpression node) {
+        if (node.ConstantValue != null) {
+            return EvaluateConstantExpression(node);
+        }
+
         switch (node.Kind) {
-            case BoundNodeKind.LiteralExpression:
-                return EvaluateLiteralExpression((BoundLiteralExpression)node);
             case BoundNodeKind.VariableExpression:
                 return EvaluateVariableExpression((BoundVariableExpression)node);
             case BoundNodeKind.AssignmentExpression:
@@ -128,8 +134,8 @@ internal sealed class Evaluator {
         }
     }
 
-    private static object EvaluateLiteralExpression(BoundLiteralExpression n) {
-        return n.Value;
+    private static object EvaluateConstantExpression(BoundExpression n) {
+        return n.ConstantValue.Value;
     }
 
     private object EvaluateVariableExpression(BoundVariableExpression v) {
@@ -229,8 +235,8 @@ internal sealed class Evaluator {
         if (node.Function == BuiltinFunctions.Input) {
             return Console.ReadLine();
         } else if (node.Function == BuiltinFunctions.Print) {
-            var message = (string)EvaluateExpression(node.Arguments[0]);
-            Console.WriteLine(message);
+            var value = EvaluateExpression(node.Arguments[0]);
+            Console.WriteLine(value);
             return null;
         } else if (node.Function == BuiltinFunctions.Rnd) {
             var max = (int)EvaluateExpression(node.Arguments[0]);

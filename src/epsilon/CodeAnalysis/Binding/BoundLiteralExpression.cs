@@ -4,8 +4,6 @@ namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundLiteralExpression : BoundExpression {
     public BoundLiteralExpression(object value) {
-        Value = value;
-
         if (value is bool) {
             Type = TypeSymbol.Bool;
         } else if (value is int) {
@@ -15,10 +13,13 @@ internal sealed class BoundLiteralExpression : BoundExpression {
         } else {
             throw new Exception($"Unexpected literal '{value}' of type {value.GetType()}.");
         }
+
+        ConstantValue = new BoundConstant(value);
     }
 
 
     public override BoundNodeKind Kind => BoundNodeKind.LiteralExpression;
     public override TypeSymbol Type { get; }
-    public object Value { get; }
+    public object Value => ConstantValue.Value;
+    public override BoundConstant ConstantValue { get; }
 }
