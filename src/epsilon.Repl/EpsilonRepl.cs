@@ -25,6 +25,7 @@ internal sealed class EpsilonRepl : Repl {
             var isIdentifier = token.Kind == SyntaxKind.IdentifierToken;
             var isNumber = token.Kind == SyntaxKind.NumberToken;
             var isString = token.Kind == SyntaxKind.StringToken;
+            var isComment = token.Kind == SyntaxKind.SingleLineCommentToken;
 
             if (isKeyword) {
                 Console.ForegroundColor = ConsoleColor.Blue;
@@ -34,6 +35,8 @@ internal sealed class EpsilonRepl : Repl {
                 Console.ForegroundColor = ConsoleColor.Cyan;
             } else if (isString) {
                 Console.ForegroundColor = ConsoleColor.Magenta;
+            } else if (isComment) {
+                Console.ForegroundColor = ConsoleColor.Green;
             } else {
                 Console.ForegroundColor = ConsoleColor.DarkGray;
             }
@@ -128,7 +131,8 @@ internal sealed class EpsilonRepl : Repl {
 
         var syntaxTree = SyntaxTree.Parse(text);
 
-        if (syntaxTree.Root.Members.Last().GetLastToken().IsMissing) {
+        var lastMember = syntaxTree.Root.Members.LastOrDefault();
+        if (lastMember == null || lastMember.GetLastToken().IsMissing) {
             return false;
         }
 
