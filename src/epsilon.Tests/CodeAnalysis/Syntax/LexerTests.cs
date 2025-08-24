@@ -22,6 +22,8 @@ public class LexerTests {
     public void Lexer_Covers_AllTokens() {
         var tokenKinds = Enum.GetValues(typeof(SyntaxKind))
                               .Cast<SyntaxKind>()
+                              .Where(k => k != SyntaxKind.SingleLineCommentToken &&
+                                          k != SyntaxKind.MultiLineCommentToken)
                               .Where(k => k.ToString().EndsWith("Keyword") ||
                                           k.ToString().EndsWith("Token"));
 
@@ -114,7 +116,7 @@ public class LexerTests {
             (SyntaxKind.IdentifierToken, "a"),
             (SyntaxKind.IdentifierToken, "abc"),
             (SyntaxKind.StringToken, "\"Test\""),
-            (SyntaxKind.StringToken, "\"Te\"\"st\""),
+            (SyntaxKind.StringToken, "\"Te\"\"st\"")
         };
 
         return fixedTokens.Concat(dynamicTokens);
@@ -126,7 +128,8 @@ public class LexerTests {
             (SyntaxKind.WhitespaceToken, "  "),
             (SyntaxKind.WhitespaceToken, "\r"),
             (SyntaxKind.WhitespaceToken, "\n"),
-            (SyntaxKind.WhitespaceToken, "\r\n")
+            (SyntaxKind.WhitespaceToken, "\r\n"),
+            (SyntaxKind.MultiLineCommentToken, "/**/")
         };
     }
 
@@ -206,6 +209,22 @@ public class LexerTests {
             return true;
         }
 
+        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.SlashToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.StarToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.SingleLineCommentToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.MultiLineCommentToken) {
+            return true;
+        }
+
         return false;
     }
 
@@ -227,7 +246,9 @@ public class LexerTests {
             foreach (var t2 in GetTokens()) {
                 if (RequiresSeparator(t1.kind, t2.kind)) {
                     foreach (var s in GetSeparators()) {
-                        yield return (t1.kind, t1.text, s.kind, s.text, t2.kind, t2.text);
+                        if (!RequiresSeparator(t1.kind, s.kind) && !RequiresSeparator(s.kind, t2.kind)) {
+                            yield return (t1.kind, t1.text, s.kind, s.text, t2.kind, t2.text);
+                        }
                     }
                 }
             }

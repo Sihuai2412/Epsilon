@@ -46,6 +46,11 @@ public static class SyntaxFacts {
         }
     }
 
+    public static bool IsComment(this SyntaxKind kind) {
+        return kind == SyntaxKind.SingleLineCommentToken ||
+               kind == SyntaxKind.MultiLineCommentToken;
+    }
+
     public static SyntaxKind GetKeywordKind(string text) {
         switch (text) {
             case "break":

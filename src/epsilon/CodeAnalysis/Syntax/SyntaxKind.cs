@@ -6,6 +6,7 @@ public enum SyntaxKind {
     NumberToken,
     WhitespaceToken,
     SingleLineCommentToken,
+    MultiLineCommentToken,
     PlusToken,
     MinusToken,
     StarToken,

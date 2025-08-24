@@ -1,3 +1,4 @@
+
 namespace epsilon.CodeAnalysis.Text;
 
 public struct TextSpan {
@@ -13,6 +14,11 @@ public struct TextSpan {
     public static TextSpan FromBounds(int start, int end) {
         var length = end - start;
         return new TextSpan(start, length);
+    }
+
+    public bool OverlapsWith(TextSpan span) {
+        return Start < span.End &&
+               End > span.Start;
     }
 
     public override string ToString() => $"{Start}..{End}";

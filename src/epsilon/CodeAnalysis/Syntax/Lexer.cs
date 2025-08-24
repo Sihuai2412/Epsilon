@@ -62,6 +62,8 @@ internal sealed class Lexer {
             case '/': {
                     if (Lookahead == '/') {
                         ReadSingleLineComment();
+                    } else if (Lookahead == '*') {
+                        ReadMultiLineComment();
                     } else {
                         _kind = SyntaxKind.SlashToken;
                         _position++;
@@ -222,9 +224,9 @@ internal sealed class Lexer {
 
         while (!done) {
             switch (Current) {
+                case '\0':
                 case '\r':
-                case '\n':
-                case '\0': {
+                case '\n': {
                         done = true;
                         break;
                     }
@@ -236,6 +238,37 @@ internal sealed class Lexer {
         }
 
         _kind = SyntaxKind.SingleLineCommentToken;
+    }
+
+    private void ReadMultiLineComment() {
+        _position += 2;
+        var done = false;
+
+        while (!done) {
+            switch (Current) {
+                case '\0': {
+                        var span = new TextSpan(_start, 2);
+                        var location = new TextLocation(_text, span);
+                        _diagnostics.ReportUnterminatedMultiLineComment(location);
+                        done = true;
+                        break;
+                    }
+                case '*': {
+                        if (Lookahead == '/') {
+                            _position++;
+                            done = true;
+                        }
+                        _position++;
+                        break;
+                    }
+                default: {
+                        _position++;
+                        break;
+                    }
+            }
+        }
+
+        _kind = SyntaxKind.MultiLineCommentToken;
     }
 
     private void ReadString() {
