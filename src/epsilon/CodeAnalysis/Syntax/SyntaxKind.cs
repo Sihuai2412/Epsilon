@@ -4,9 +4,10 @@ public enum SyntaxKind {
     // Tokens
     StringToken,
     NumberToken,
-    WhitespaceToken,
-    SingleLineCommentToken,
-    MultiLineCommentToken,
+    BadTokenTrivia,
+    WhitespaceTrivia,
+    SingleLineCommentTrivia,
+    MultiLineCommentTrivia,
     PlusToken,
     MinusToken,
     StarToken,
@@ -31,7 +32,6 @@ public enum SyntaxKind {
     CommaToken,
     TildeToken,
     HatToken,
-    BadToken,
     EndOfFileToken,
     IdentifierToken,
 

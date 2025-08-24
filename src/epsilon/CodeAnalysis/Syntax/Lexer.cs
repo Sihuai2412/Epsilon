@@ -37,7 +37,7 @@ internal sealed class Lexer {
 
     public SyntaxToken Lex() {
         _start = _position;
-        _kind = SyntaxKind.BadToken;
+        _kind = SyntaxKind.BadTokenTrivia;
         _value = null;
         switch (Current) {
             case '\0': {
@@ -237,7 +237,7 @@ internal sealed class Lexer {
             }
         }
 
-        _kind = SyntaxKind.SingleLineCommentToken;
+        _kind = SyntaxKind.SingleLineCommentTrivia;
     }
 
     private void ReadMultiLineComment() {
@@ -268,7 +268,7 @@ internal sealed class Lexer {
             }
         }
 
-        _kind = SyntaxKind.MultiLineCommentToken;
+        _kind = SyntaxKind.MultiLineCommentTrivia;
     }
 
     private void ReadString() {
@@ -315,7 +315,7 @@ internal sealed class Lexer {
             _position++;
         }
 
-        _kind = SyntaxKind.WhitespaceToken;
+        _kind = SyntaxKind.WhitespaceTrivia;
     }
 
     private void ReadNumberToken() {

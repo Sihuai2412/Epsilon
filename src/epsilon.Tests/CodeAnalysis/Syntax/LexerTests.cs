@@ -22,14 +22,12 @@ public class LexerTests {
     public void Lexer_Covers_AllTokens() {
         var tokenKinds = Enum.GetValues(typeof(SyntaxKind))
                               .Cast<SyntaxKind>()
-                              .Where(k => k != SyntaxKind.SingleLineCommentToken &&
-                                          k != SyntaxKind.MultiLineCommentToken)
                               .Where(k => k.IsToken());
 
         var testedTokenKinds = GetTokens().Concat(GetSeparators()).Select(t => t.kind);
 
         var untestedTokenKinds = new SortedSet<SyntaxKind>(tokenKinds);
-        untestedTokenKinds.Remove(SyntaxKind.BadToken);
+        untestedTokenKinds.Remove(SyntaxKind.BadTokenTrivia);
         untestedTokenKinds.Remove(SyntaxKind.EndOfFileToken);
         untestedTokenKinds.ExceptWith(testedTokenKinds);
 
@@ -123,12 +121,12 @@ public class LexerTests {
 
     private static IEnumerable<(SyntaxKind kind, string text)> GetSeparators() {
         return new[] {
-            (SyntaxKind.WhitespaceToken, " "),
-            (SyntaxKind.WhitespaceToken, "  "),
-            (SyntaxKind.WhitespaceToken, "\r"),
-            (SyntaxKind.WhitespaceToken, "\n"),
-            (SyntaxKind.WhitespaceToken, "\r\n"),
-            (SyntaxKind.MultiLineCommentToken, "/**/")
+            (SyntaxKind.WhitespaceTrivia, " "),
+            (SyntaxKind.WhitespaceTrivia, "  "),
+            (SyntaxKind.WhitespaceTrivia, "\r"),
+            (SyntaxKind.WhitespaceTrivia, "\n"),
+            (SyntaxKind.WhitespaceTrivia, "\r\n"),
+            (SyntaxKind.MultiLineCommentTrivia, "/**/")
         };
     }
 
@@ -216,11 +214,11 @@ public class LexerTests {
             return true;
         }
 
-        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.SingleLineCommentToken) {
+        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.SingleLineCommentTrivia) {
             return true;
         }
 
-        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.MultiLineCommentToken) {
+        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.MultiLineCommentTrivia) {
             return true;
         }
 
