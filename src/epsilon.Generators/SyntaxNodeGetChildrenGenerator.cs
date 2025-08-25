@@ -42,7 +42,10 @@ public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
                 foreach (var property in type.GetMembers().OfType<IPropertySymbol>()) {
                     if (property.Type is INamedTypeSymbol propertyType) {
                         if (IsDerivedFrom(propertyType, syntaxNodeType)) {
+                            indentedTextWriter.WriteLine($"if ({property.Name} != null)");
+                            indentedTextWriter.Indent++;
                             indentedTextWriter.WriteLine($"yield return {property.Name};");
+                            indentedTextWriter.Indent--;
                         } else if (
                             propertyType.TypeArguments.Length == 1 &&
                             IsDerivedFrom(propertyType.TypeArguments[0], syntaxNodeType) &&
@@ -50,7 +53,10 @@ public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
                         ) {
                             indentedTextWriter.WriteLine($"foreach (var child in {property.Name})" + " {");
                             indentedTextWriter.Indent++;
-                            indentedTextWriter.WriteLine("yield return child;");
+                            indentedTextWriter.WriteLine($"if (child != null)");
+                            indentedTextWriter.Indent++;
+                            indentedTextWriter.WriteLine($"yield return child;");
+                            indentedTextWriter.Indent--;
                             indentedTextWriter.Indent--;
                             indentedTextWriter.WriteLine("}");
                         } else if (
@@ -59,7 +65,10 @@ public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
                         ) {
                             indentedTextWriter.WriteLine($"foreach (var child in {property.Name}.GetWithSeparators())" + " {");
                             indentedTextWriter.Indent++;
-                            indentedTextWriter.WriteLine("yield return child;");
+                            indentedTextWriter.WriteLine($"if (child != null)");
+                            indentedTextWriter.Indent++;
+                            indentedTextWriter.WriteLine($"yield return child;");
+                            indentedTextWriter.Indent--;
                             indentedTextWriter.Indent--;
                             indentedTextWriter.WriteLine("}");
                         }
