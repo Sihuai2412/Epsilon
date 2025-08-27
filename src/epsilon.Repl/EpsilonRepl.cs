@@ -11,6 +11,7 @@ internal sealed class EpsilonRepl : Repl {
     private bool _loadingSubmissions;
     private static readonly Compilation _emptyCompilation = Compilation.CreateScript(null);
     private Compilation _previous;
+    private bool _showTime;
     private bool _showTree;
     private bool _showProgram;
     private readonly Dictionary<VariableSymbol, object> _variables = new Dictionary<VariableSymbol, object>();
@@ -89,6 +90,12 @@ internal sealed class EpsilonRepl : Repl {
         ClearSubmissions();
     }
 
+    [MetaCommand("showTime", "Shows the program time")]
+    private void EvaluateShowTime() {
+        _showTime = !_showTime;
+        Console.WriteLine(_showTime ? "Showing program time." : "Not showing program time.");
+    }
+
     [MetaCommand("showTree", "Shows the parse tree")]
     private void EvaluateShowTree() {
         _showTree = !_showTree;
@@ -165,6 +172,8 @@ internal sealed class EpsilonRepl : Repl {
     }
 
     protected override void EvaluateSubmission(string text) {
+        var startMilliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
         var syntaxTree = SyntaxTree.Parse(text);
 
         var compilation = Compilation.CreateScript(_previous, syntaxTree);
@@ -178,6 +187,15 @@ internal sealed class EpsilonRepl : Repl {
         }
 
         var result = compilation.Evaluate(_variables);
+
+        var endMilliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+        var spentMilliseconds = endMilliseconds - startMilliseconds;
+        if (_showTime) {
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine($"The program took {spentMilliseconds} milliseconds.");
+            Console.ResetColor();
+        }
 
         if (!result.ErrorDiagnostics.Any()) {
             Console.Out.WriteDiagnostics(result.WarningDiagnostics);

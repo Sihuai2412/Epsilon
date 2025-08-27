@@ -252,7 +252,8 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
                     return;
                 }
             default: {
-                    throw new Exception($"Unexpected syntax {node.Kind}");
+                    ReportUnreachableCode(node.Location);
+                    break;
                 }
         }
     }
