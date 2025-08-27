@@ -45,6 +45,17 @@ public class LexerTests {
     }
 
     [Theory]
+    [MemberData(nameof(GetSeparatorsData))]
+    public void Lexer_Lexes_Separator(SyntaxKind kind, string text) {
+        var tokens = SyntaxTree.ParseTokens(text, includeEndOfFile: true);
+
+        var token = Assert.Single(tokens);
+        var trivia = Assert.Single(token.LeadingTrivia);
+        Assert.Equal(kind, trivia.Kind);
+        Assert.Equal(text, trivia.Text);
+    }
+
+    [Theory]
     [MemberData(nameof(GetTokenPairsData))]
     public void Lexer_Lexes_TokenPairs(SyntaxKind t1Kind, string t1Text,
                                        SyntaxKind t2Kind, string t2Text) {
@@ -66,12 +77,16 @@ public class LexerTests {
         var text = t1Text + separatorText + t2Text;
         var tokens = SyntaxTree.ParseTokens(text).ToArray();
 
+        Assert.Equal(2, tokens.Length);
         Assert.Equal(t1Kind, tokens[0].Kind);
         Assert.Equal(t1Text, tokens[0].Text);
-        Assert.Equal(separatorKind, tokens[1].Kind);
-        Assert.Equal(separatorText, tokens[1].Text);
-        Assert.Equal(t2Kind, tokens[2].Kind);
-        Assert.Equal(t2Text, tokens[2].Text);
+
+        var separator = Assert.Single(tokens[0].TrailingTrivia);
+        Assert.Equal(separatorKind, separator.Kind);
+        Assert.Equal(separatorText, separator.Text);
+
+        Assert.Equal(t2Kind, tokens[1].Kind);
+        Assert.Equal(t2Text, tokens[1].Text);
     }
 
     [Theory]
@@ -90,7 +105,15 @@ public class LexerTests {
     }
 
     public static IEnumerable<object[]> GetTokensData() {
-        foreach (var t in GetTokens().Concat(GetSeparators())) {
+        foreach (var t in GetTokens()) {
+            yield return new object[] {
+                t.kind, t.text
+            };
+        }
+    }
+
+    public static IEnumerable<object[]> GetSeparatorsData() {
+        foreach (var t in GetSeparators()) {
             yield return new object[] {
                 t.kind, t.text
             };
@@ -138,9 +161,9 @@ public class LexerTests {
         return new[] {
             (SyntaxKind.WhitespaceTrivia, " "),
             (SyntaxKind.WhitespaceTrivia, "  "),
-            (SyntaxKind.WhitespaceTrivia, "\r"),
-            (SyntaxKind.WhitespaceTrivia, "\n"),
-            (SyntaxKind.WhitespaceTrivia, "\r\n"),
+            (SyntaxKind.LineBreakTrivia, "\r"),
+            (SyntaxKind.LineBreakTrivia, "\n"),
+            (SyntaxKind.LineBreakTrivia, "\r\n"),
             (SyntaxKind.MultiLineCommentTrivia, "/**/")
         };
     }
