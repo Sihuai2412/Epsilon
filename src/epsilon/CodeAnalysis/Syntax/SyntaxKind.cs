@@ -1,13 +1,18 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
 public enum SyntaxKind {
+    BadToken,
+
+    // Trivia
+    SkippedTextTrivia,
+    WhitespaceTrivia,
+    LineBreakTrivia,
+    SingleLineCommentTrivia,
+    MultiLineCommentTrivia,
+
     // Tokens
     StringToken,
     NumberToken,
-    BadTokenTrivia,
-    WhitespaceTrivia,
-    SingleLineCommentTrivia,
-    MultiLineCommentTrivia,
     PlusToken,
     MinusToken,
     StarToken,
@@ -78,5 +83,5 @@ public enum SyntaxKind {
     BinaryExpression,
     ParenthesizedExpression,
     AssignmentExpression,
-    CallExpression
+    CallExpression,
 }

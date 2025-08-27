@@ -78,7 +78,8 @@ public static class TextWriterExtensions {
 
     public static void WriteDiagnostics(this TextWriter writer, IEnumerable<Diagnostic> diagnostics) {
         foreach (var diagnostic in diagnostics.Where(d => d.Location.Text == null)) {
-            writer.SetForeground(ConsoleColor.DarkRed);
+            var messageColor = diagnostic.IsWarning ? ConsoleColor.DarkYellow : ConsoleColor.DarkRed;
+            writer.SetForeground(messageColor);
             writer.Write(diagnostic.Message);
             writer.ResetColor();
         }
@@ -100,7 +101,8 @@ public static class TextWriterExtensions {
 
             writer.WriteLine();
 
-            writer.SetForeground(ConsoleColor.DarkRed);
+            var messageColor = diagnostic.IsWarning ? ConsoleColor.DarkYellow : ConsoleColor.DarkRed;
+            writer.SetForeground(messageColor);
             writer.Write($"{fileName}({startLine}, {startCharacter}, {endLine}, {endCharacter}): ");
             writer.WriteLine(diagnostic);
             writer.ResetColor();

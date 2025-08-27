@@ -78,11 +78,8 @@ public sealed class Compilation {
     }
 
     public EvaluationResult Evaluate(Dictionary<VariableSymbol, object> variables) {
-        var parseDiagnostics = SyntaxTrees.SelectMany(st => st.Diagnostics);
-
-        var diagnostics = parseDiagnostics.Concat(GlobalScope.Diagnostics).ToImmutableArray();
-        if (diagnostics.Any()) {
-            return new EvaluationResult(diagnostics, null);
+        if (GlobalScope.Diagnostics.Any()) {
+            return new EvaluationResult(GlobalScope.Diagnostics, null);
         }
 
         var program = GetProgram();
@@ -98,13 +95,14 @@ public sealed class Compilation {
         //     cfg.WriteTo(streamWriter);
         // }
 
-        if (program.Diagnostics.Any()) {
-            return new EvaluationResult(program.Diagnostics.ToImmutableArray(), null);
+        if (program.ErrorDiagnostics.Any()) {
+            return new EvaluationResult(program.Diagnostics, null);
         }
 
         var evaluator = new Evaluator(program, variables);
         var value = evaluator.Evaluate();
-        return new EvaluationResult(ImmutableArray<Diagnostic>.Empty, value);
+        
+        return new EvaluationResult(program.WarningDiagnostics, value);
     }
 
     public void EmitTree(TextWriter writer) {
@@ -132,7 +130,8 @@ public sealed class Compilation {
         var parseDiagnostics = SyntaxTrees.SelectMany(st => st.Diagnostics);
 
         var diagnostics = parseDiagnostics.Concat(GlobalScope.Diagnostics).ToImmutableArray();
-        if (diagnostics.Any()) {
+        var errorDiagnostics = diagnostics.Where(d => d.IsError);
+        if (errorDiagnostics.Any()) {
             return diagnostics;
         }
 

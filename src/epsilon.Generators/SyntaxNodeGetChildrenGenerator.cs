@@ -42,6 +42,8 @@ public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
                 foreach (var property in type.GetMembers().OfType<IPropertySymbol>()) {
                     if (property.Type is INamedTypeSymbol propertyType) {
                         if (IsDerivedFrom(propertyType, syntaxNodeType)) {
+                            // TODO: check NullableAnnotation
+
                             indentedTextWriter.WriteLine($"if ({property.Name} != null)");
                             indentedTextWriter.Indent++;
                             indentedTextWriter.WriteLine($"yield return {property.Name};");

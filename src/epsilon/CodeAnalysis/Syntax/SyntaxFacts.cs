@@ -189,8 +189,9 @@ public static class SyntaxFacts {
 
     public static bool IsTrivia(this SyntaxKind kind) {
         switch (kind) {
-            case SyntaxKind.BadTokenTrivia:
+            case SyntaxKind.SkippedTextTrivia:
             case SyntaxKind.WhitespaceTrivia:
+            case SyntaxKind.LineBreakTrivia:
             case SyntaxKind.SingleLineCommentTrivia:
             case SyntaxKind.MultiLineCommentTrivia: {
                     return true;

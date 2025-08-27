@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Text;
 using epsilon.CodeAnalysis.Binding;
 using epsilon.CodeAnalysis.Symbols;
 using epsilon.CodeAnalysis.Syntax;
@@ -19,7 +20,10 @@ internal sealed class Emitter {
     private readonly MethodReference _objectEqualsReference;
     private readonly MethodReference _consoleWriteLineReference;
     private readonly MethodReference _consoleReadLineReference;
-    private readonly MethodReference _stringConcatReference;
+    private readonly MethodReference _stringConcat2Reference;
+    private readonly MethodReference _stringConcat3Reference;
+    private readonly MethodReference _stringConcat4Reference;
+    private readonly MethodReference _stringConcatArrayReference;
     private readonly MethodReference _convertToBooleanReference;
     private readonly MethodReference _convertToInt32Reference;
     private readonly MethodReference _convertToStringReference;
@@ -123,7 +127,10 @@ internal sealed class Emitter {
         _objectEqualsReference = ResolveMethod("System.Object", "Equals", ["System.Object", "System.Object"]);
         _consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", ["System.Object"]);
         _consoleReadLineReference = ResolveMethod("System.Console", "ReadLine", Array.Empty<string>());
-        _stringConcatReference = ResolveMethod("System.String", "Concat", ["System.String", "System.String"]);
+        _stringConcat2Reference = ResolveMethod("System.String", "Concat", ["System.String", "System.String"]);
+        _stringConcat3Reference = ResolveMethod("System.String", "Concat", ["System.String", "System.String", "System.String"]);
+        _stringConcat4Reference = ResolveMethod("System.String", "Concat", ["System.String", "System.String", "System.String", "System.String"]);
+        _stringConcatArrayReference = ResolveMethod("System.String", "Concat", ["System.String[]"]);
         _convertToBooleanReference = ResolveMethod("System.Convert", "ToBoolean", ["System.Object"]);
         _convertToInt32Reference = ResolveMethod("System.Convert", "ToInt32", ["System.Object"]);
         _convertToStringReference = ResolveMethod("System.Convert", "ToString", ["System.Object"]);
@@ -133,7 +140,7 @@ internal sealed class Emitter {
     }
 
     public static ImmutableArray<Diagnostic> Emit(BoundProgram program, string moduleName, string[] references, string outputPath) {
-        if (program.Diagnostics.Any()) {
+        if (program.ErrorDiagnostics.Any()) {
             return program.Diagnostics;
         }
 
@@ -376,16 +383,16 @@ internal sealed class Emitter {
     }
 
     private void EmitBinaryExpression(ILProcessor ilProcessor, BoundBinaryExpression node) {
-        EmitExpression(ilProcessor, node.Left);
-        EmitExpression(ilProcessor, node.Right);
-
         if (node.Op.Kind == BoundBinaryOperatorKind.Addition) {
             if (node.Left.Type == TypeSymbol.String &&
                 node.Right.Type == TypeSymbol.String) {
-                ilProcessor.Emit(OpCodes.Call, _stringConcatReference);
+                EmitStringConcatExpression(ilProcessor, node);
                 return;
             }
         }
+
+        EmitExpression(ilProcessor, node.Left);
+        EmitExpression(ilProcessor, node.Right);
 
         if (node.Op.Kind == BoundBinaryOperatorKind.Equals) {
             if (node.Left.Type == TypeSymbol.Any && node.Right.Type == TypeSymbol.Any ||
@@ -472,6 +479,110 @@ internal sealed class Emitter {
         }
     }
 
+    private void EmitStringConcatExpression(ILProcessor ilProcessor, BoundBinaryExpression node) {
+        var nodes = FoldConstants(Flatten(node)).ToList();
+
+        switch (nodes.Count) {
+            case 0: {
+                    ilProcessor.Emit(OpCodes.Ldstr, string.Empty);
+                    break;
+                }
+
+            case 1: {
+                    EmitExpression(ilProcessor, nodes[0]);
+                    break;
+                }
+
+            case 2: {
+                    EmitExpression(ilProcessor, nodes[0]);
+                    EmitExpression(ilProcessor, nodes[1]);
+                    ilProcessor.Emit(OpCodes.Call, _stringConcat2Reference);
+                    break;
+                }
+
+            case 3: {
+                    EmitExpression(ilProcessor, nodes[0]);
+                    EmitExpression(ilProcessor, nodes[1]);
+                    EmitExpression(ilProcessor, nodes[2]);
+                    ilProcessor.Emit(OpCodes.Call, _stringConcat3Reference);
+                    break;
+                }
+
+            case 4: {
+                    EmitExpression(ilProcessor, nodes[0]);
+                    EmitExpression(ilProcessor, nodes[1]);
+                    EmitExpression(ilProcessor, nodes[2]);
+                    EmitExpression(ilProcessor, nodes[3]);
+                    ilProcessor.Emit(OpCodes.Call, _stringConcat4Reference);
+                    break;
+                }
+
+            default: {
+                    ilProcessor.Emit(OpCodes.Ldc_I4, nodes.Count);
+                    ilProcessor.Emit(OpCodes.Newarr, _knownTypes[TypeSymbol.String]);
+
+                    for (var i = 0; i < nodes.Count; i++) {
+                        ilProcessor.Emit(OpCodes.Dup);
+                        ilProcessor.Emit(OpCodes.Ldc_I4, i);
+                        EmitExpression(ilProcessor, nodes[i]);
+                        ilProcessor.Emit(OpCodes.Stelem_Ref);
+                    }
+
+                    ilProcessor.Emit(OpCodes.Call, _stringConcatArrayReference);
+                    break;
+                }
+        }
+
+        static IEnumerable<BoundExpression> Flatten(BoundExpression node) {
+            if (node is BoundBinaryExpression binaryExpression &&
+                binaryExpression.Op.Kind == BoundBinaryOperatorKind.Addition &&
+                binaryExpression.Left.Type == TypeSymbol.String &&
+                binaryExpression.Right.Type == TypeSymbol.String) {
+                foreach (var result in Flatten(binaryExpression.Left)) {
+                    yield return result;
+                }
+
+                foreach (var result in Flatten(binaryExpression.Right)) {
+                    yield return result;
+                }
+            } else {
+                if (node.Type != TypeSymbol.String) {
+                    throw new Exception($"Unexpected node type in string concatenation: {node.Type}");
+                }
+
+                yield return node;
+            }
+        }
+
+        static IEnumerable<BoundExpression> FoldConstants(IEnumerable<BoundExpression> nodes) {
+            StringBuilder sb = null;
+
+            foreach (var node in nodes) {
+                if (node.ConstantValue != null) {
+                    var stringValue = (string)node.ConstantValue.Value;
+
+                    if (string.IsNullOrEmpty(stringValue)) {
+                        continue;
+                    }
+
+                    sb ??= new StringBuilder();
+                    sb.Append(stringValue);
+                } else {
+                    if (sb?.Length > 0) {
+                        yield return new BoundLiteralExpression(sb.ToString());
+                        sb.Clear();
+                    }
+
+                    yield return node;
+                }
+            }
+
+            if (sb?.Length > 0) {
+                yield return new BoundLiteralExpression(sb.ToString());
+            }
+        }
+    }
+
     private void EmitCallExpression(ILProcessor ilProcessor, BoundCallExpression node) {
         if (node.Function == BuiltinFunctions.Rnd) {
             if (_randomFieldDefinition == null) {
@@ -515,7 +626,7 @@ internal sealed class Emitter {
             MethodAttributes.RTSpecialName,
             _knownTypes[TypeSymbol.Void]
         );
-        
+
         _typeDefinition.Methods.Insert(0, staticConstructor);
 
         var ilProcessor = staticConstructor.Body.GetILProcessor();

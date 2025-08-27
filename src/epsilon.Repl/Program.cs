@@ -1,4 +1,4 @@
-﻿namespace epsilon.Program;
+﻿namespace epsilon.Repl;
 
 internal static class Program {
     private static void Main() {

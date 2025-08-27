@@ -27,7 +27,7 @@ public class LexerTests {
         var testedTokenKinds = GetTokens().Concat(GetSeparators()).Select(t => t.kind);
 
         var untestedTokenKinds = new SortedSet<SyntaxKind>(tokenKinds);
-        untestedTokenKinds.Remove(SyntaxKind.BadTokenTrivia);
+        untestedTokenKinds.Remove(SyntaxKind.BadToken);
         untestedTokenKinds.Remove(SyntaxKind.EndOfFileToken);
         untestedTokenKinds.ExceptWith(testedTokenKinds);
 
@@ -72,6 +72,21 @@ public class LexerTests {
         Assert.Equal(separatorText, tokens[1].Text);
         Assert.Equal(t2Kind, tokens[2].Kind);
         Assert.Equal(t2Text, tokens[2].Text);
+    }
+
+    [Theory]
+    [InlineData("foo")]
+    [InlineData("foo42")]
+    [InlineData("foo_42")]
+    [InlineData("_foo")]
+    public void Lexer_Lexes_Identifiers(string name) {
+        var tokens = SyntaxTree.ParseTokens(name).ToArray();
+
+        Assert.Single(tokens);
+
+        var token = tokens[0];
+        Assert.Equal(SyntaxKind.IdentifierToken, token.Kind);
+        Assert.Equal(name, token.Text);
     }
 
     public static IEnumerable<object[]> GetTokensData() {
@@ -147,6 +162,14 @@ public class LexerTests {
         }
 
         if (t1Kind == SyntaxKind.IdentifierToken && t2IsKeyword) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.IdentifierToken && t2Kind == SyntaxKind.NumberToken) {
+            return true;
+        }
+
+        if (t1IsKeyword && t2Kind == SyntaxKind.NumberToken) {
             return true;
         }
 

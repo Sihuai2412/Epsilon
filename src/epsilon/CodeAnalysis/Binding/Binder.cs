@@ -15,7 +15,7 @@ internal sealed class Binder {
     private int _labelCounter;
     private BoundScope _scope;
 
-    public Binder(bool isScript, BoundScope parent, FunctionSymbol function) {
+    private Binder(bool isScript, BoundScope parent, FunctionSymbol function) {
         _scope = new BoundScope(parent);
         _isScript = isScript;
         _function = function;
@@ -30,6 +30,18 @@ internal sealed class Binder {
     public static BoundGlobalScope BindGlobalScope(bool isScript, BoundGlobalScope previous, ImmutableArray<SyntaxTree> syntaxTrees) {
         var parentScope = CreateParentScope(previous);
         var binder = new Binder(isScript, parentScope, function: null);
+
+        binder.Diagnostics.AddRange(syntaxTrees.SelectMany(st => st.Diagnostics));
+        if (binder.Diagnostics.Any()) {
+            return new BoundGlobalScope(
+                previous,
+                binder.Diagnostics.ToImmutableArray(),
+                null, null,
+                ImmutableArray<FunctionSymbol>.Empty,
+                ImmutableArray<VariableSymbol>.Empty,
+                ImmutableArray<BoundStatement>.Empty
+            );
+        }
 
         var functionDeclarations = syntaxTrees.SelectMany(st => st.Root.Members)
                                               .OfType<FunctionDeclarationSyntax>();
@@ -106,6 +118,15 @@ internal sealed class Binder {
 
     public static BoundProgram BindProgram(bool isScript, BoundProgram previous, BoundGlobalScope globalScope) {
         var parentScope = CreateParentScope(globalScope);
+
+        if (globalScope.Diagnostics.Any()) {
+            return new BoundProgram(
+                previous,
+                globalScope.Diagnostics,
+                null, null,
+                ImmutableDictionary<FunctionSymbol, BoundBlockStatement>.Empty
+            );
+        }
 
         var functionBodies = ImmutableDictionary.CreateBuilder<FunctionSymbol, BoundBlockStatement>();
         var diagnostics = ImmutableArray.CreateBuilder<Diagnostic>();
@@ -303,6 +324,15 @@ internal sealed class Binder {
 
     private BoundStatement BindIfStatement(IfStatementSyntax syntax) {
         var condition = BindExpression(syntax.Condition, TypeSymbol.Bool);
+
+        if (condition.ConstantValue != null) {
+            if ((bool)condition.ConstantValue.Value == false) {
+                _diagnostics.ReportUnreachableCode(syntax.ThenStatement);
+            } else if (syntax.ElseClause != null) {
+                _diagnostics.ReportUnreachableCode(syntax.ElseClause.ElseStatement);
+            }
+        }
+
         var thenStatement = BindStatement(syntax.ThenStatement);
         var elseStatement = syntax.ElseClause == null ? null : BindStatement(syntax.ElseClause.ElseStatement);
         return new BoundIfStatement(condition, thenStatement, elseStatement);
@@ -310,6 +340,13 @@ internal sealed class Binder {
 
     private BoundStatement BindWhileStatement(WhileStatementSyntax syntax) {
         var condition = BindExpression(syntax.Condition, TypeSymbol.Bool);
+
+        if (condition.ConstantValue != null) {
+            if (!(bool)condition.ConstantValue.Value) {
+                _diagnostics.ReportUnreachableCode(syntax.Body);
+            }
+        }
+
         var body = BindLoopBody(syntax.Body, out var breakLabel, out var continueLabel);
         return new BoundWhileStatement(condition, body, breakLabel, continueLabel);
     }

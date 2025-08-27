@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Text;
 using epsilon.CodeAnalysis.Symbols;
 using epsilon.CodeAnalysis.Text;
@@ -13,6 +14,7 @@ internal sealed class Lexer {
     private int _start;
     private SyntaxKind _kind;
     private object _value;
+    private ImmutableArray<SyntaxTrivia>.Builder _triviaBuilder = ImmutableArray.CreateBuilder<SyntaxTrivia>();
 
     public Lexer(SyntaxTree syntaxTree) {
         _syntaxTree = syntaxTree;
@@ -36,8 +38,29 @@ internal sealed class Lexer {
     }
 
     public SyntaxToken Lex() {
+        ReadTrivia(leading: true);
+        var leadingTrivia = _triviaBuilder.ToImmutable();
+
+        var tokenStart = _position;
+        ReadToken();
+        var tokenKind = _kind;
+        var tokenValue = _value;
+        var tokenLength = _position - _start;
+
+        ReadTrivia(leading: false);
+        var trailingTrivia = _triviaBuilder.ToImmutable();
+
+        var tokenText = SyntaxFacts.GetText(tokenKind);
+        if (tokenText == null) {
+            tokenText = _text.ToString(tokenStart, tokenLength);
+        }
+
+        return new SyntaxToken(_syntaxTree, tokenKind, tokenStart, tokenText, tokenValue, leadingTrivia, trailingTrivia);
+    }
+
+    private void ReadToken() {
         _start = _position;
-        _kind = SyntaxKind.BadTokenTrivia;
+        _kind = SyntaxKind.BadToken;
         _value = null;
         switch (Current) {
             case '\0': {
@@ -60,14 +83,8 @@ internal sealed class Lexer {
                     break;
                 }
             case '/': {
-                    if (Lookahead == '/') {
-                        ReadSingleLineComment();
-                    } else if (Lookahead == '*') {
-                        ReadMultiLineComment();
-                    } else {
-                        _kind = SyntaxKind.SlashToken;
-                        _position++;
-                    }
+                    _kind = SyntaxKind.SlashToken;
+                    _position++;
                     break;
                 }
             case '(': {
@@ -187,18 +204,13 @@ internal sealed class Lexer {
                     ReadNumberToken();
                     break;
                 }
-            case ' ':
-            case '\t':
-            case '\n':
-            case '\r': {
-                    ReadWhitespace();
+            case '_': {
+                    ReadIdentifierOrKeyword();
                     break;
                 }
             default: {
                     if (char.IsLetter(Current)) {
                         ReadIdentifierOrKeyword();
-                    } else if (char.IsWhiteSpace(Current)) {
-                        ReadWhitespace();
                     } else {
                         var span = new TextSpan(_position, 1);
                         var location = new TextLocation(_text, span);
@@ -208,14 +220,95 @@ internal sealed class Lexer {
                     break;
                 }
         }
+    }
 
-        var length = _position - _start;
-        var text = SyntaxFacts.GetText(_kind);
-        if (text == null) {
-            text = _text.ToString(_start, length);
+    private void ReadTrivia(bool leading) {
+        _triviaBuilder.Clear();
+
+        var done = false;
+        while (!done) {
+            _start = _position;
+            _kind = SyntaxKind.BadToken;
+            _value = null;
+            switch (Current) {
+                case '\0': {
+                        done = true;
+                        break;
+                    }
+                case '/': {
+                        if (Lookahead == '/') {
+                            ReadSingleLineComment();
+                        } else if (Lookahead == '*') {
+                            ReadMultiLineComment();
+                        } else {
+                            done = true;
+                        }
+                        break;
+                    }
+                case '\n':
+                case '\r': {
+                        if (!leading) {
+                            done = true;
+                        }
+                        ReadLineBreak();
+                        break;
+                    }
+                case ' ':
+                case '\t': {
+                        ReadWhitespace();
+                        break;
+                    }
+                default: {
+                        if (char.IsWhiteSpace(Current)) {
+                            ReadWhitespace();
+                        } else {
+                            done = true;
+                        }
+                        break;
+                    }
+            }
+
+            var length = _position - _start;
+            if (length > 0) {
+                var text = _text.ToString(_start, length);
+                var trivia = new SyntaxTrivia(_syntaxTree, _kind, _start, text);
+                _triviaBuilder.Add(trivia);
+            }
+        }
+    }
+
+    private void ReadWhitespace() {
+        var done = false;
+        while (!done) {
+            switch (Current) {
+                case '\0':
+                case '\r':
+                case '\n': {
+                        done = true;
+                        break;
+                    }
+                default: {
+                        if (!char.IsWhiteSpace(Current)) {
+                            done = true;
+                        } else {
+                            _position++;
+                        }
+                        break;
+                    }
+            }
         }
 
-        return new SyntaxToken(_syntaxTree, _kind, _start, text, _value);
+        _kind = SyntaxKind.WhitespaceTrivia;
+    }
+
+    private void ReadLineBreak() {
+        if (Current == '\r' && Lookahead == '\n') {
+            _position += 2;
+        } else {
+            _position++;
+        }
+
+        _kind = SyntaxKind.LineBreakTrivia;
     }
 
     private void ReadSingleLineComment() {
@@ -309,15 +402,6 @@ internal sealed class Lexer {
         _kind = SyntaxKind.StringToken;
         _value = sb.ToString();
     }
-
-    private void ReadWhitespace() {
-        while (char.IsWhiteSpace(Current)) {
-            _position++;
-        }
-
-        _kind = SyntaxKind.WhitespaceTrivia;
-    }
-
     private void ReadNumberToken() {
         while (char.IsDigit(Current)) {
             _position++;
@@ -336,7 +420,7 @@ internal sealed class Lexer {
     }
 
     private void ReadIdentifierOrKeyword() {
-        while (char.IsLetter(Current)) {
+        while (char.IsLetterOrDigit(Current) || Current == '_') {
             _position++;
         }
 

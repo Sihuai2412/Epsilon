@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 using epsilon.IO;
 
-namespace epsilon.Program;
+namespace epsilon.Repl;
 
 internal abstract class Repl {
     private readonly List<MetaCommand> _metaCommands = new List<MetaCommand>();
