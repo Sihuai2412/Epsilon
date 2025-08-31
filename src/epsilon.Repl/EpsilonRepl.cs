@@ -25,7 +25,6 @@ internal sealed class EpsilonRepl : Repl {
 
         if (state == null) {
             var text = string.Join(Environment.NewLine, lines);
-            var sourceText = SourceText.From(text);
             syntaxTree = SyntaxTree.Parse(text);
         } else {
             syntaxTree = (SyntaxTree)state;
@@ -66,7 +65,6 @@ internal sealed class EpsilonRepl : Repl {
             }
 
             Console.Write(classifiedText);
-
             Console.ResetColor();
         }
 
