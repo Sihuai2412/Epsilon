@@ -1,5 +1,4 @@
-﻿using System;
-using System.CodeDom.Compiler;
+﻿using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +13,8 @@ namespace epsilon.Generators;
 [Generator]
 public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
     public void Execute(GeneratorExecutionContext context) {
+#pragma warning disable IDE0063
+
         var compilation = (CSharpCompilation)context.Compilation;
 
         var immutableArrayType = compilation.GetTypeByMetadataName("System.Collections.Immutable.ImmutableArray`1");
@@ -22,10 +23,12 @@ public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
         var types = GetAllTypes(compilation.Assembly);
         var syntaxNodeTypes = types.Where(t => !t.IsAbstract && IsPartial(t) && IsDerivedFrom(t, syntaxNodeType));
 
+        var indentString = "    ";
+
         SourceText sourceText;
 
         using (var stringWriter = new StringWriter())
-        using (var indentedTextWriter = new IndentedTextWriter(stringWriter, "    ")) {
+        using (var indentedTextWriter = new IndentedTextWriter(stringWriter, indentString)) {
             indentedTextWriter.WriteLine("using System;");
             indentedTextWriter.WriteLine("using System.Collections.Generic;");
             indentedTextWriter.WriteLine("using System.Collections.Immutable;");
@@ -34,53 +37,37 @@ public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
             indentedTextWriter.WriteLine();
 
             foreach (var type in syntaxNodeTypes) {
-                indentedTextWriter.WriteLine($"partial class {type.Name}" + " {");
-                indentedTextWriter.Indent++;
-                indentedTextWriter.WriteLine("public override IEnumerable<SyntaxNode> GetChildren() {");
-                indentedTextWriter.Indent++;
+                using (var classCurly = new CurlyIndenter(indentedTextWriter, $"partial class {type.Name}"))
+                using (var getChildCurly = new CurlyIndenter(indentedTextWriter, "public override IEnumerable<SyntaxNode> GetChildren()")) {
+                    foreach (var property in type.GetMembers().OfType<IPropertySymbol>()) {
+                        if (property.Type is INamedTypeSymbol propertyType) {
+                            if (IsDerivedFrom(propertyType, syntaxNodeType)) {
+                                // TODO: check NullableAnnotation
 
-                foreach (var property in type.GetMembers().OfType<IPropertySymbol>()) {
-                    if (property.Type is INamedTypeSymbol propertyType) {
-                        if (IsDerivedFrom(propertyType, syntaxNodeType)) {
-                            // TODO: check NullableAnnotation
-
-                            indentedTextWriter.WriteLine($"if ({property.Name} != null)");
-                            indentedTextWriter.Indent++;
-                            indentedTextWriter.WriteLine($"yield return {property.Name};");
-                            indentedTextWriter.Indent--;
-                        } else if (
-                            propertyType.TypeArguments.Length == 1 &&
-                            IsDerivedFrom(propertyType.TypeArguments[0], syntaxNodeType) &&
-                            SymbolEqualityComparer.Default.Equals(propertyType.OriginalDefinition, immutableArrayType)
-                        ) {
-                            indentedTextWriter.WriteLine($"foreach (var child in {property.Name})" + " {");
-                            indentedTextWriter.Indent++;
-                            indentedTextWriter.WriteLine($"if (child != null)");
-                            indentedTextWriter.Indent++;
-                            indentedTextWriter.WriteLine($"yield return child;");
-                            indentedTextWriter.Indent--;
-                            indentedTextWriter.Indent--;
-                            indentedTextWriter.WriteLine("}");
-                        } else if (
-                            SymbolEqualityComparer.Default.Equals(propertyType.OriginalDefinition, separatedSyntaxListType) &&
-                            IsDerivedFrom(propertyType.TypeArguments[0], syntaxNodeType)
-                        ) {
-                            indentedTextWriter.WriteLine($"foreach (var child in {property.Name}.GetWithSeparators())" + " {");
-                            indentedTextWriter.Indent++;
-                            indentedTextWriter.WriteLine($"if (child != null)");
-                            indentedTextWriter.Indent++;
-                            indentedTextWriter.WriteLine($"yield return child;");
-                            indentedTextWriter.Indent--;
-                            indentedTextWriter.Indent--;
-                            indentedTextWriter.WriteLine("}");
+                                using (var ifNonNullCurly = new CurlyIndenter(indentedTextWriter, $"if ({property.Name} != null)")) {
+                                    indentedTextWriter.WriteLine($"yield return {property.Name};");
+                                }
+                            } else if (
+                                propertyType.TypeArguments.Length == 1 &&
+                                IsDerivedFrom(propertyType.TypeArguments[0], syntaxNodeType) &&
+                                SymbolEqualityComparer.Default.Equals(propertyType.OriginalDefinition, immutableArrayType)
+                            ) {
+                                using (var foreachCurly = new CurlyIndenter(indentedTextWriter, $"foreach (var child in {property.Name})"))
+                                using (var ifNonNullCurly = new CurlyIndenter(indentedTextWriter, $"if (child != null)")) {
+                                    indentedTextWriter.WriteLine($"yield return child;");
+                                }
+                            } else if (
+                                SymbolEqualityComparer.Default.Equals(propertyType.OriginalDefinition, separatedSyntaxListType) &&
+                                IsDerivedFrom(propertyType.TypeArguments[0], syntaxNodeType)
+                            ) {
+                                using (var foreachCurly = new CurlyIndenter(indentedTextWriter, $"foreach (var child in {property.Name}.GetWithSeparators())"))
+                                using (var ifNonNullCurly = new CurlyIndenter(indentedTextWriter, $"if (child != null)")) {
+                                    indentedTextWriter.WriteLine($"yield return child;");
+                                }
+                            }
                         }
                     }
                 }
-
-                indentedTextWriter.Indent--;
-                indentedTextWriter.WriteLine("}");
-                indentedTextWriter.Indent--;
-                indentedTextWriter.WriteLine("}");
             }
 
             indentedTextWriter.Flush();
@@ -96,6 +83,8 @@ public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
         using (var writer = new StreamWriter(fileName)) {
             sourceText.Write(writer);
         }
+
+#pragma warning restore IDE0063
     }
 
     private bool IsDerivedFrom(ITypeSymbol type, INamedTypeSymbol baseType) {

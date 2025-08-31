@@ -20,29 +20,29 @@ internal sealed class Conversion {
     public bool IsExplicit => Exists && !IsImplicit;
     public static Conversion Classify(TypeSymbol from, TypeSymbol to) {
         if (from == to) {
-            return Conversion.Identity;
+            return Identity;
         }
 
         if (from != TypeSymbol.Void && to == TypeSymbol.Any) {
-            return Conversion.Implicit;
+            return Implicit;
         }
 
         if (from == TypeSymbol.Any && to != TypeSymbol.Void) {
-            return Conversion.Explicit;
+            return Explicit;
         }
 
         if (from == TypeSymbol.Bool || from == TypeSymbol.Int) {
             if (to == TypeSymbol.String) {
-                return Conversion.Explicit;
+                return Explicit;
             }
         }
 
         if (from == TypeSymbol.String) {
             if (to == TypeSymbol.Bool || to == TypeSymbol.Int) {
-                return Conversion.Explicit;
+                return Explicit;
             }
         }
 
-        return Conversion.None;
+        return None;
     }
 }

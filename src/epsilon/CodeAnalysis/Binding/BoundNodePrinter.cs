@@ -271,7 +271,7 @@ internal static class BoundNodePrinter {
     }
 
     private static void WriteLiteralExpression(BoundLiteralExpression node, IndentedTextWriter writer) {
-        var value = node.Value.ToString();
+        var value = node.Value.ToString()!;
 
         if (node.Type == TypeSymbol.Bool) {
             writer.WriteKeyword((bool)node.Value ? SyntaxKind.TrueKeyword : SyntaxKind.FalseKeyword);

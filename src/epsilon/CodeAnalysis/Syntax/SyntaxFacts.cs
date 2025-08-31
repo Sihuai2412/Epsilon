@@ -104,7 +104,7 @@ public static class SyntaxFacts {
         }
     }
 
-    public static string GetText(SyntaxKind kind) {
+    public static string? GetText(SyntaxKind kind) {
         switch (kind) {
             case SyntaxKind.PlusToken:
                 return "+";

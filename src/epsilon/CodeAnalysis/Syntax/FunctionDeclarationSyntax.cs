@@ -8,7 +8,7 @@ public sealed partial class FunctionDeclarationSyntax : MemberSyntax {
                                         SyntaxToken openParenthesisToken,
                                         SeparatedSyntaxList<ParameterSyntax> parameters,
                                         SyntaxToken closeParenthesisToken,
-                                        TypeClauseSyntax type,
+                                        TypeClauseSyntax? type,
                                         BlockStatementSyntax body
                                     ) : base(syntaxTree) {
         FunctionKeyword = functionKeyword;
@@ -26,6 +26,6 @@ public sealed partial class FunctionDeclarationSyntax : MemberSyntax {
     public SyntaxToken OpenParenthesisToken { get; }
     public SeparatedSyntaxList<ParameterSyntax> Parameters { get; }
     public SyntaxToken CloseParenthesisToken { get; }
-    public TypeClauseSyntax Type { get; }
+    public TypeClauseSyntax? Type { get; }
     public BlockStatementSyntax Body { get; }
 }

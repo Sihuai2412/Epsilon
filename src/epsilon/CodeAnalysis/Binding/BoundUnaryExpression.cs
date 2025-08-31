@@ -13,5 +13,5 @@ internal sealed class BoundUnaryExpression : BoundExpression {
     public override TypeSymbol Type => Op.Type;
     public BoundUnaryOperator Op { get; }
     public BoundExpression Operand { get; }
-    public override BoundConstant ConstantValue { get; }
+    public override BoundConstant? ConstantValue { get; }
 }

@@ -1,7 +1,7 @@
 namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundIfStatement : BoundStatement {
-    public BoundIfStatement(BoundExpression condition, BoundStatement thenStatement, BoundStatement elseStatement) {
+    public BoundIfStatement(BoundExpression condition, BoundStatement thenStatement, BoundStatement? elseStatement) {
         Condition = condition;
         ThenStatement = thenStatement;
         ElseStatement = elseStatement;
@@ -10,5 +10,5 @@ internal sealed class BoundIfStatement : BoundStatement {
     public override BoundNodeKind Kind => BoundNodeKind.IfStatement;
     public BoundExpression Condition { get; }
     public BoundStatement ThenStatement { get; }
-    public BoundStatement ElseStatement { get; }
+    public BoundStatement? ElseStatement { get; }
 }

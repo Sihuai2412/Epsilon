@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using epsilon.CodeAnalysis.Binding;
 using epsilon.CodeAnalysis.Symbols;
 
@@ -8,9 +9,9 @@ internal sealed class Evaluator {
     private readonly Dictionary<VariableSymbol, object> _globals;
     private readonly Dictionary<FunctionSymbol, BoundBlockStatement> _functions = new Dictionary<FunctionSymbol, BoundBlockStatement>();
     private readonly Stack<Dictionary<VariableSymbol, object>> _locals = new Stack<Dictionary<VariableSymbol, object>>();
-    private Random _random;
+    private Random? _random;
 
-    private object _lastValue;
+    private object? _lastValue;
 
     public Evaluator(BoundProgram program, Dictionary<VariableSymbol, object> variables) {
         _program = program;
@@ -29,7 +30,7 @@ internal sealed class Evaluator {
         }
     }
 
-    public object Evaluate() {
+    public object? Evaluate() {
         var function = _program.MainFunction ?? _program.ScriptFunction;
         if (function == null) {
             return null;
@@ -39,7 +40,7 @@ internal sealed class Evaluator {
         return EvaluateStatement(body);
     }
 
-    private object EvaluateStatement(BoundBlockStatement body) {
+    private object? EvaluateStatement(BoundBlockStatement body) {
         var labelToIndex = new Dictionary<BoundLabel, int>();
 
         for (var i = 0; i < body.Statements.Length; i++) {
@@ -76,7 +77,7 @@ internal sealed class Evaluator {
                     }
                 case BoundNodeKind.ConditionalGotoStatement: {
                         var cgs = (BoundConditionalGotoStatement)s;
-                        var condition = (bool)EvaluateExpression(cgs.Condition);
+                        var condition = (bool)EvaluateExpression(cgs.Condition)!;
                         if (condition == cgs.JumpIfTrue) {
                             index = labelToIndex[cgs.Label];
                         } else {
@@ -103,6 +104,7 @@ internal sealed class Evaluator {
 
     private void EvaluateVariableDeclaration(BoundVariableDeclaration node) {
         var value = EvaluateExpression(node.Initializer);
+        Debug.Assert(value != null);
         _lastValue = value;
         Assign(node.Variable, value);
     }
@@ -111,7 +113,7 @@ internal sealed class Evaluator {
         _lastValue = EvaluateExpression(node.Expression);
     }
 
-    private object EvaluateExpression(BoundExpression node) {
+    private object? EvaluateExpression(BoundExpression node) {
         if (node.ConstantValue != null) {
             return EvaluateConstantExpression(node);
         }
@@ -135,6 +137,7 @@ internal sealed class Evaluator {
     }
 
     private static object EvaluateConstantExpression(BoundExpression n) {
+        Debug.Assert(n.ConstantValue != null);
         return n.ConstantValue.Value;
     }
 
@@ -149,7 +152,7 @@ internal sealed class Evaluator {
 
     private object EvaluateAssignmentExpression(BoundAssignmentExpression a) {
         var value = EvaluateExpression(a.Expression);
-
+        Debug.Assert(value != null);
         Assign(a.Variable, value);
 
         return value;
@@ -157,6 +160,8 @@ internal sealed class Evaluator {
 
     private object EvaluateUnaryExpression(BoundUnaryExpression u) {
         var operand = EvaluateExpression(u.Operand);
+
+        Debug.Assert(operand != null);
 
         switch (u.Op.Kind) {
             case BoundUnaryOperatorKind.Identity:
@@ -175,6 +180,8 @@ internal sealed class Evaluator {
     private object EvaluateBinaryExpression(BoundBinaryExpression b) {
         var left = EvaluateExpression(b.Left);
         var right = EvaluateExpression(b.Right);
+
+        Debug.Assert(left != null && right != null);
 
         switch (b.Op.Kind) {
             case BoundBinaryOperatorKind.Addition:
@@ -231,7 +238,7 @@ internal sealed class Evaluator {
         }
     }
 
-    private object EvaluateCallExpression(BoundCallExpression node) {
+    private object? EvaluateCallExpression(BoundCallExpression node) {
         if (node.Function == BuiltinFunctions.Input) {
             return Console.ReadLine();
         } else if (node.Function == BuiltinFunctions.Print) {
@@ -239,7 +246,7 @@ internal sealed class Evaluator {
             Console.WriteLine(value);
             return null;
         } else if (node.Function == BuiltinFunctions.Rnd) {
-            var max = (int)EvaluateExpression(node.Arguments[0]);
+            var max = (int)EvaluateExpression(node.Arguments[0])!;
             if (_random == null) {
                 _random = new Random();
             }
@@ -250,6 +257,7 @@ internal sealed class Evaluator {
             for (var i = 0; i < node.Arguments.Length; i++) {
                 var parameter = node.Function.Parameters[i];
                 var value = EvaluateExpression(node.Arguments[i]);
+                Debug.Assert(value != null);
                 locals.Add(parameter, value);
             }
 
@@ -264,7 +272,7 @@ internal sealed class Evaluator {
         }
     }
 
-    private object EvaluateConversionExpression(BoundConversionExpression node) {
+    private object? EvaluateConversionExpression(BoundConversionExpression node) {
         var value = EvaluateExpression(node.Expression);
         if (node.Type == TypeSymbol.Any) {
             return value;

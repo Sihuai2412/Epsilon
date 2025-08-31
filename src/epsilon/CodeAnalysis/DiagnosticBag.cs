@@ -173,14 +173,14 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
         Report(default, message);
     }
 
-    public void ReportRequiredTypeNotFound(string epsilonName, string metadataName) {
+    public void ReportRequiredTypeNotFound(string? epsilonName, string metadataName) {
         var message = epsilonName == null
             ? $"The built-in type '{metadataName}' cannot be resolve among the given references."
             : $"The built-in type '{epsilonName}' ('{metadataName}') cannot be resolve among the given references.";
         Report(default, message);
     }
 
-    public void ReportRequiredTypeAmbiguous(string epsilonName, string metadataName, TypeDefinition[] foundTypes) {
+    public void ReportRequiredTypeAmbiguous(string? epsilonName, string metadataName, TypeDefinition[] foundTypes) {
         var assemblyNames = foundTypes.Select(t => t.Module.Assembly.Name.Name);
         var assemblyNameList = string.Join(", ", assemblyNames);
         var message = epsilonName == null

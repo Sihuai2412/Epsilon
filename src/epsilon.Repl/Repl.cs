@@ -52,7 +52,7 @@ internal abstract class Repl {
         }
     }
 
-    private delegate object LineRenderHandler(IReadOnlyList<string> lines, int lineIndex, object state);
+    private delegate object? LineRenderHandler(IReadOnlyList<string> lines, int lineIndex, object? state);
 
     private sealed class SubmissionView {
         private readonly LineRenderHandler _lineRenderer;
@@ -78,7 +78,7 @@ internal abstract class Repl {
             Console.CursorVisible = false;
 
             var lineCount = 0;
-            var state = (object)null;
+            var state = (object?)null;
 
             foreach (var line in _submissionDocument) {
                 if (_cursorTop + lineCount >= Console.WindowHeight) {
@@ -165,7 +165,7 @@ internal abstract class Repl {
     }
 
     private void HandleKey(ConsoleKeyInfo key, ObservableCollection<string> document, SubmissionView view) {
-        if (key.Modifiers == default(ConsoleModifiers)) {
+        if (key.Modifiers == default) {
             switch (key.Key) {
                 case ConsoleKey.Escape: {
                         HandleEscape(document, view);
@@ -394,7 +394,7 @@ internal abstract class Repl {
         _submissionHistory.Clear();
     }
 
-    protected virtual object RenderLine(IReadOnlyList<string> lines, int lineIndex, object state) {
+    protected virtual object? RenderLine(IReadOnlyList<string> lines, int lineIndex, object? state) {
         Console.WriteLine(lines[lineIndex]);
         return state;
     }
@@ -512,7 +512,7 @@ internal abstract class Repl {
                 foreach (var pi in metaParams) {
                     Console.Out.WriteSpace();
                     Console.Out.WritePunctuation("<");
-                    Console.Out.WriteIdentifier(pi.Name);
+                    Console.Out.WriteIdentifier(pi.Name!);
                     Console.Out.WritePunctuation(">");
                 }
                 Console.Out.WriteLine();

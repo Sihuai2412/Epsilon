@@ -3,7 +3,7 @@ using epsilon.CodeAnalysis.Binding;
 namespace epsilon.CodeAnalysis.Symbols;
 
 public class LocalVariableSymbol : VariableSymbol {
-    internal LocalVariableSymbol(string name, bool isReadOnly, TypeSymbol type, BoundConstant constant) : base(name, isReadOnly, type, constant) {
+    internal LocalVariableSymbol(string name, bool isReadOnly, TypeSymbol type, BoundConstant? constant) : base(name, isReadOnly, type, constant) {
 
     }
 

@@ -221,7 +221,7 @@ internal sealed class Parser {
         return new VariableDeclarationSyntax(_syntaxTree, keyword, identifier, typeClause, equals, initializer);
     }
 
-    private TypeClauseSyntax ParseOptionalTypeClause() {
+    private TypeClauseSyntax? ParseOptionalTypeClause() {
         if (Current.Kind != SyntaxKind.ColonToken) {
             return null;
         }
@@ -239,12 +239,14 @@ internal sealed class Parser {
         var keyword = MatchToken(SyntaxKind.IfKeyword);
         var condition = ParseExpression();
         var statement = ParseStatement();
-        var elseClause = ParseElseClause();
+        var elseClause = ParseOptionalElseClause();
         return new IfStatementSyntax(_syntaxTree, keyword, condition, statement, elseClause);
     }
 
-    private ElseClauseSyntax ParseElseClause() {
-        if (Current.Kind != SyntaxKind.ElseKeyword) return null;
+    private ElseClauseSyntax? ParseOptionalElseClause() {
+        if (Current.Kind != SyntaxKind.ElseKeyword) {
+            return null;
+        }
 
         var keyword = NextToken();
         var statement = ParseStatement();

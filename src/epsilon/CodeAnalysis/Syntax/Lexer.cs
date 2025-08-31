@@ -13,7 +13,7 @@ internal sealed class Lexer {
 
     private int _start;
     private SyntaxKind _kind;
-    private object _value;
+    private object? _value;
     private ImmutableArray<SyntaxTrivia>.Builder _triviaBuilder = ImmutableArray.CreateBuilder<SyntaxTrivia>();
 
     public Lexer(SyntaxTree syntaxTree) {

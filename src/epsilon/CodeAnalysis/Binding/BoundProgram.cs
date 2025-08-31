@@ -4,7 +4,7 @@ using epsilon.CodeAnalysis.Symbols;
 namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundProgram {
-    public BoundProgram(BoundProgram previous, ImmutableArray<Diagnostic> diagnostics, FunctionSymbol mainFunction, FunctionSymbol scriptFunction, ImmutableDictionary<FunctionSymbol, BoundBlockStatement> functions) {
+    public BoundProgram(BoundProgram? previous, ImmutableArray<Diagnostic> diagnostics, FunctionSymbol? mainFunction, FunctionSymbol? scriptFunction, ImmutableDictionary<FunctionSymbol, BoundBlockStatement> functions) {
         Previous = previous;
         Diagnostics = diagnostics;
         MainFunction = mainFunction;
@@ -14,11 +14,11 @@ internal sealed class BoundProgram {
         WarningDiagnostics = Diagnostics.Where(d => d.IsWarning).ToImmutableArray();
     }
 
-    public BoundProgram Previous { get; }
+    public BoundProgram? Previous { get; }
     public ImmutableArray<Diagnostic> Diagnostics { get; }
     public ImmutableArray<Diagnostic> ErrorDiagnostics { get; }
     public ImmutableArray<Diagnostic> WarningDiagnostics { get; }
-    public FunctionSymbol MainFunction { get; }
-    public FunctionSymbol ScriptFunction { get; }
+    public FunctionSymbol? MainFunction { get; }
+    public FunctionSymbol? ScriptFunction { get; }
     public ImmutableDictionary<FunctionSymbol, BoundBlockStatement> Functions { get; }
 }

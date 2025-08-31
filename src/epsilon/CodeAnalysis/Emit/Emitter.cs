@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Text;
 using epsilon.CodeAnalysis.Binding;
 using epsilon.CodeAnalysis.Symbols;
@@ -12,7 +13,7 @@ namespace epsilon.CodeAnalysis.Emit;
 internal sealed class Emitter {
     private DiagnosticBag _diagnostics = new DiagnosticBag();
     private TypeDefinition _typeDefinition;
-    private FieldDefinition _randomFieldDefinition;
+    private FieldDefinition? _randomFieldDefinition;
 
     private readonly Dictionary<FunctionSymbol, MethodDefinition> _methods = new Dictionary<FunctionSymbol, MethodDefinition>();
     private readonly AssemblyDefinition _assemblyDefinition;
@@ -64,7 +65,7 @@ internal sealed class Emitter {
             _knownTypes.Add(typeSymbol, typeReference);
         }
 
-        TypeReference ResolveType(string epsilonName, string metadataName) {
+        TypeReference ResolveType(string? epsilonName, string metadataName) {
             var foundTypes = assemblies.SelectMany(a => a.Modules)
                                        .SelectMany(m => m.Types)
                                        .Where(t => t.FullName == metadataName)
@@ -79,7 +80,7 @@ internal sealed class Emitter {
                 _diagnostics.ReportRequiredTypeAmbiguous(epsilonName, metadataName, foundTypes);
             }
 
-            return null;
+            return null!;
         }
 
         MethodReference ResolveMethod(string typeName, string methodName, string[] parameterTypeNames) {
@@ -114,14 +115,14 @@ internal sealed class Emitter {
                 }
 
                 _diagnostics.ReportRequiredMethodNotFound(typeName, methodName, parameterTypeNames);
-                return null;
+                return null!;
             } else if (foundTypes.Length == 0) {
                 _diagnostics.ReportRequiredTypeNotFound(null, typeName);
             } else {
                 _diagnostics.ReportRequiredTypeAmbiguous(null, typeName, foundTypes);
             }
 
-            return null;
+            return null!;
         }
 
         _objectEqualsReference = ResolveMethod("System.Object", "Equals", ["System.Object", "System.Object"]);
@@ -137,6 +138,14 @@ internal sealed class Emitter {
         _randomReference = ResolveType(null, "System.Random");
         _randomCtorReference = ResolveMethod("System.Random", ".ctor", Array.Empty<string>());
         _randomNextReference = ResolveMethod("System.Random", "Next", ["System.Int32"]);
+
+        var objectType = _knownTypes[TypeSymbol.Any];
+        if (objectType != null) {
+            _typeDefinition = new TypeDefinition("", "Program", TypeAttributes.Abstract | TypeAttributes.Sealed, objectType);
+            _assemblyDefinition.MainModule.Types.Add(_typeDefinition);
+        } else {
+            _typeDefinition = null!;
+        }
     }
 
     public static ImmutableArray<Diagnostic> Emit(BoundProgram program, string moduleName, string[] references, string outputPath) {
@@ -152,10 +161,6 @@ internal sealed class Emitter {
         if (_diagnostics.Any()) {
             return _diagnostics.ToImmutableArray();
         }
-
-        var objectType = _knownTypes[TypeSymbol.Any];
-        _typeDefinition = new TypeDefinition("", "Program", TypeAttributes.Abstract | TypeAttributes.Sealed, objectType);
-        _assemblyDefinition.MainModule.Types.Add(_typeDefinition);
 
         foreach (var functionWithBody in program.Functions) {
             EmitFunctionDeclaration(functionWithBody.Key);
@@ -333,6 +338,8 @@ internal sealed class Emitter {
     }
 
     private void EmitConstantExpression(ILProcessor ilProcessor, BoundExpression node) {
+        Debug.Assert(node.ConstantValue != null);
+
         if (node.Type == TypeSymbol.Bool) {
             var value = (bool)node.ConstantValue.Value;
             var instruction = value ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0;
@@ -555,7 +562,7 @@ internal sealed class Emitter {
         }
 
         static IEnumerable<BoundExpression> FoldConstants(IEnumerable<BoundExpression> nodes) {
-            StringBuilder sb = null;
+            StringBuilder? sb = null;
 
             foreach (var node in nodes) {
                 if (node.ConstantValue != null) {

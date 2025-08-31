@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System.Diagnostics;
 using epsilon.CodeAnalysis.Symbols;
 using epsilon.CodeAnalysis.Syntax;
 
@@ -52,7 +53,7 @@ internal sealed class ControlFlowGraph {
     }
 
     public sealed class BasicBlockBranch {
-        public BasicBlockBranch(BasicBlock from, BasicBlock to, BoundExpression condition) {
+        public BasicBlockBranch(BasicBlock from, BasicBlock to, BoundExpression? condition) {
             From = from;
             To = to;
             Condition = condition;
@@ -60,7 +61,7 @@ internal sealed class ControlFlowGraph {
 
         public BasicBlock From { get; }
         public BasicBlock To { get; }
-        public BoundExpression Condition { get; }
+        public BoundExpression? Condition { get; }
 
         public override string ToString() {
             if (Condition == null) {
@@ -202,7 +203,7 @@ internal sealed class ControlFlowGraph {
             return new ControlFlowGraph(_start, _end, blocks, _branches);
         }
 
-        private void Connect(BasicBlock from, BasicBlock to, BoundExpression condition = null) {
+        private void Connect(BasicBlock from, BasicBlock to, BoundExpression? condition = null) {
             if (condition is BoundLiteralExpression l) {
                 var value = (bool)l.Value;
                 if (value) {
@@ -239,6 +240,7 @@ internal sealed class ControlFlowGraph {
             }
 
             var op = BoundUnaryOperator.Bind(SyntaxKind.BangToken, TypeSymbol.Bool);
+            Debug.Assert(op != null);
             return new BoundUnaryExpression(op, condition);
         }
     }

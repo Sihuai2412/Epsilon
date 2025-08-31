@@ -10,7 +10,7 @@ namespace epsilon.Repl;
 internal sealed class EpsilonRepl : Repl {
     private bool _loadingSubmissions;
     private static readonly Compilation _emptyCompilation = Compilation.CreateScript(null);
-    private Compilation _previous;
+    private Compilation? _previous;
     private bool _showTime;
     private bool _showTree;
     private bool _showProgram;
@@ -20,7 +20,7 @@ internal sealed class EpsilonRepl : Repl {
         LoadSubmissions();
     }
 
-    protected override object RenderLine(IReadOnlyList<string> lines, int lineIndex, object state) {
+    protected override object? RenderLine(IReadOnlyList<string> lines, int lineIndex, object? state) {
         SyntaxTree syntaxTree;
 
         if (state == null) {

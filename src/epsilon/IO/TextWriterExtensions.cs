@@ -1,4 +1,5 @@
 using System.CodeDom.Compiler;
+using System.Diagnostics;
 using epsilon.CodeAnalysis;
 using epsilon.CodeAnalysis.Syntax;
 using epsilon.CodeAnalysis.Text;
@@ -35,7 +36,9 @@ public static class TextWriterExtensions {
     }
 
     public static void WriteKeyword(this TextWriter writer, SyntaxKind kind) {
-        writer.WriteKeyword(SyntaxFacts.GetText(kind));
+        var text = SyntaxFacts.GetText(kind);
+        Debug.Assert(kind.IsKeyword() && text != null);
+        writer.WriteKeyword(text);
     }
 
     public static void WriteKeyword(this TextWriter writer, string text) {
@@ -67,7 +70,9 @@ public static class TextWriterExtensions {
     }
 
     public static void WritePunctuation(this TextWriter writer, SyntaxKind kind) {
-        writer.WritePunctuation(SyntaxFacts.GetText(kind));
+        var text = SyntaxFacts.GetText(kind);
+        Debug.Assert(text != null);
+        writer.WritePunctuation(text);
     }
 
     public static void WritePunctuation(this TextWriter writer, string text) {

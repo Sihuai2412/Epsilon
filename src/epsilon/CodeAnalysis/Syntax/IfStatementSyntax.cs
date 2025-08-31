@@ -1,7 +1,7 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
 public sealed partial class IfStatementSyntax : StatementSyntax {
-    public IfStatementSyntax(SyntaxTree syntaxTree, SyntaxToken ifKeyword, ExpressionSyntax condition, StatementSyntax thenStatement, ElseClauseSyntax elseClause) : base(syntaxTree) {
+    public IfStatementSyntax(SyntaxTree syntaxTree, SyntaxToken ifKeyword, ExpressionSyntax condition, StatementSyntax thenStatement, ElseClauseSyntax? elseClause) : base(syntaxTree) {
         IfKeyword = ifKeyword;
         Condition = condition;
         ThenStatement = thenStatement;
@@ -12,5 +12,5 @@ public sealed partial class IfStatementSyntax : StatementSyntax {
     public SyntaxToken IfKeyword { get; }
     public ExpressionSyntax Condition { get; }
     public StatementSyntax ThenStatement { get; }
-    public ElseClauseSyntax ElseClause { get; }
+    public ElseClauseSyntax? ElseClause { get; }
 }
