@@ -27,6 +27,7 @@ internal sealed class Emitter {
     private readonly MethodReference _stringConcatArrayReference;
     private readonly MethodReference _convertToBooleanReference;
     private readonly MethodReference _convertToInt32Reference;
+    private readonly MethodReference _convertToSingleReference;
     private readonly MethodReference _convertToStringReference;
     private readonly TypeReference _randomReference;
     private readonly MethodReference _randomCtorReference;
@@ -52,6 +53,7 @@ internal sealed class Emitter {
             (TypeSymbol.Any, "System.Object"),
             (TypeSymbol.Bool, "System.Boolean"),
             (TypeSymbol.Int, "System.Int32"),
+            (TypeSymbol.Float, "System.Single"),
             (TypeSymbol.String, "System.String"),
             (TypeSymbol.Void, "System.Void"),
         };
@@ -134,6 +136,7 @@ internal sealed class Emitter {
         _stringConcatArrayReference = ResolveMethod("System.String", "Concat", ["System.String[]"]);
         _convertToBooleanReference = ResolveMethod("System.Convert", "ToBoolean", ["System.Object"]);
         _convertToInt32Reference = ResolveMethod("System.Convert", "ToInt32", ["System.Object"]);
+        _convertToSingleReference = ResolveMethod("System.Convert", "ToSingle", ["System.Object"]);
         _convertToStringReference = ResolveMethod("System.Convert", "ToString", ["System.Object"]);
         _randomReference = ResolveType(null, "System.Random");
         _randomCtorReference = ResolveMethod("System.Random", ".ctor", Array.Empty<string>());
@@ -347,6 +350,9 @@ internal sealed class Emitter {
         } else if (node.Type == TypeSymbol.Int) {
             var value = (int)node.ConstantValue.Value;
             ilProcessor.Emit(OpCodes.Ldc_I4, value);
+        } else if (node.Type == TypeSymbol.Float) {
+            var value = (float)node.ConstantValue.Value;
+            ilProcessor.Emit(OpCodes.Ldc_R4, value);
         } else if (node.Type == TypeSymbol.String) {
             var value = (string)node.ConstantValue.Value;
             ilProcessor.Emit(OpCodes.Ldstr, value);
@@ -645,7 +651,8 @@ internal sealed class Emitter {
     private void EmitConversionExpression(ILProcessor ilProcessor, BoundConversionExpression node) {
         EmitExpression(ilProcessor, node.Expression);
         var needsBoxing = node.Expression.Type == TypeSymbol.Bool ||
-                          node.Expression.Type == TypeSymbol.Int;
+                          node.Expression.Type == TypeSymbol.Int ||
+                          node.Expression.Type == TypeSymbol.Float;
         if (needsBoxing) {
             ilProcessor.Emit(OpCodes.Box, _knownTypes[node.Expression.Type]);
         }
@@ -656,6 +663,8 @@ internal sealed class Emitter {
             ilProcessor.Emit(OpCodes.Call, _convertToBooleanReference);
         } else if (node.Type == TypeSymbol.Int) {
             ilProcessor.Emit(OpCodes.Call, _convertToInt32Reference);
+        } else if (node.Type == TypeSymbol.Float) {
+            ilProcessor.Emit(OpCodes.Call, _convertToSingleReference);
         } else if (node.Type == TypeSymbol.String) {
             ilProcessor.Emit(OpCodes.Call, _convertToStringReference);
         } else {

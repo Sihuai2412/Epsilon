@@ -434,16 +434,45 @@ internal sealed class Lexer {
         _value = sb.ToString();
     }
     private void ReadNumberToken() {
+        var floatFlag = false;
+        object value;
+
         while (char.IsDigit(Current)) {
+            _position++;
+        }
+
+        if (Current == '.' && char.IsDigit(Lookahead)) {
+            floatFlag = true;
+            _position++;
+            while (char.IsDigit(Current)) {
+                _position++;
+            }
+        }
+
+        if (Current == 'f' || Current == 'F') {
+            floatFlag = true;
             _position++;
         }
 
         var length = _position - _start;
         var text = _text.ToString(_start, length);
-        if (!int.TryParse(text, out var value)) {
-            var span = new TextSpan(_start, length);
-            var location = new TextLocation(_text, span);
-            _diagnostics.ReportInvalidNumber(location, text, TypeSymbol.Int);
+        if (!floatFlag) {
+            if (!int.TryParse(text, out var intValue)) {
+                var span = new TextSpan(_start, length);
+                var location = new TextLocation(_text, span);
+                _diagnostics.ReportInvalidNumber(location, text, TypeSymbol.Int);
+            }
+            value = intValue;
+        } else {
+            if (text.EndsWith('f') || text.EndsWith('F')) {
+                text = text[..^1];
+            }
+            if (!float.TryParse(text, out var floatValue)) {
+                var span = new TextSpan(_start, length);
+                var location = new TextLocation(_text, span);
+                _diagnostics.ReportInvalidNumber(location, text, TypeSymbol.Float);
+            }
+            value = floatValue;
         }
 
         _value = value;

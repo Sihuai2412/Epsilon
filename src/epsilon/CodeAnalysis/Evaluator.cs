@@ -158,16 +158,26 @@ internal sealed class Evaluator {
         return value;
     }
 
-    private object EvaluateUnaryExpression(BoundUnaryExpression u) {
+    private object? EvaluateUnaryExpression(BoundUnaryExpression u) {
         var operand = EvaluateExpression(u.Operand);
 
         Debug.Assert(operand != null);
 
         switch (u.Op.Kind) {
             case BoundUnaryOperatorKind.Identity:
-                return (int)operand;
+                if (u.Type == TypeSymbol.Int) {
+                    return +(int)operand;
+                } else if (u.Type == TypeSymbol.Float) {
+                    return +(float)operand;
+                }
+                return null;
             case BoundUnaryOperatorKind.Negation:
-                return -(int)operand;
+                if (u.Type == TypeSymbol.Int) {
+                    return -(int)operand;
+                } else if (u.Type == TypeSymbol.Float) {
+                    return -(float)operand;
+                }
+                return null;
             case BoundUnaryOperatorKind.LogicalNegation:
                 return !(bool)operand;
             case BoundUnaryOperatorKind.OnesComplement:
@@ -177,7 +187,7 @@ internal sealed class Evaluator {
         }
     }
 
-    private object EvaluateBinaryExpression(BoundBinaryExpression b) {
+    private object? EvaluateBinaryExpression(BoundBinaryExpression b) {
         var left = EvaluateExpression(b.Left);
         var right = EvaluateExpression(b.Right);
 
@@ -187,15 +197,32 @@ internal sealed class Evaluator {
             case BoundBinaryOperatorKind.Addition:
                 if (b.Type == TypeSymbol.Int) {
                     return (int)left + (int)right;
+                } else if (b.Type == TypeSymbol.Float) {
+                    return (float)left + (float)right;
                 } else {
                     return (string)left + (string)right;
                 }
             case BoundBinaryOperatorKind.Subtraction:
-                return (int)left - (int)right;
+                if (b.Type == TypeSymbol.Int) {
+                    return (int)left - (int)right;
+                } else if (b.Type == TypeSymbol.Float) {
+                    return (float)left - (float)right;
+                }
+                return null;
             case BoundBinaryOperatorKind.Multiplication:
-                return (int)left * (int)right;
+                if (b.Type == TypeSymbol.Int) {
+                    return (int)left * (int)right;
+                } else if (b.Type == TypeSymbol.Float) {
+                    return (float)left * (float)right;
+                }
+                return null;
             case BoundBinaryOperatorKind.Division:
-                return (int)left / (int)right;
+                if (b.Type == TypeSymbol.Int) {
+                    return (int)left / (int)right;
+                } else if (b.Type == TypeSymbol.Float) {
+                    return (float)left / (float)right;
+                }
+                return null;
             case BoundBinaryOperatorKind.BitwiseAnd: {
                     if (b.Type == TypeSymbol.Int) {
                         return (int)left & (int)right;
@@ -226,13 +253,33 @@ internal sealed class Evaluator {
             case BoundBinaryOperatorKind.NotEquals:
                 return !Equals(left, right);
             case BoundBinaryOperatorKind.Less:
-                return (int)left < (int)right;
+                if (b.Left.Type == TypeSymbol.Int) {
+                    return (int)left < (int)right;
+                } else if (b.Left.Type == TypeSymbol.Float) {
+                    return (float)left < (float)right;
+                }
+                return null;
             case BoundBinaryOperatorKind.LessOrEquals:
-                return (int)left <= (int)right;
+                if (b.Left.Type == TypeSymbol.Int) {
+                    return (int)left <= (int)right;
+                } else if (b.Left.Type == TypeSymbol.Float) {
+                    return (float)left <= (float)right;
+                }
+                return null;
             case BoundBinaryOperatorKind.Greater:
-                return (int)left > (int)right;
+                if (b.Left.Type == TypeSymbol.Int) {
+                    return (int)left > (int)right;
+                } else if (b.Left.Type == TypeSymbol.Float) {
+                    return (float)left > (float)right;
+                }
+                return null;
             case BoundBinaryOperatorKind.GreaterOrEquals:
-                return (int)left >= (int)right;
+                if (b.Left.Type == TypeSymbol.Int) {
+                    return (int)left >= (int)right;
+                } else if (b.Left.Type == TypeSymbol.Float) {
+                    return (float)left >= (float)right;
+                }
+                return null;
             default:
                 throw new Exception($"Unexpected binary operator {b.Op}");
         }
@@ -280,6 +327,8 @@ internal sealed class Evaluator {
             return Convert.ToBoolean(value);
         } else if (node.Type == TypeSymbol.Int) {
             return Convert.ToInt32(value);
+        } else if (node.Type == TypeSymbol.Float) {
+            return Convert.ToSingle(value);
         } else if (node.Type == TypeSymbol.String) {
             return Convert.ToString(value);
         } else {

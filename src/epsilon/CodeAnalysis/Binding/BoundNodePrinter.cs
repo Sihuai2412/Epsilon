@@ -275,7 +275,7 @@ internal static class BoundNodePrinter {
 
         if (node.Type == TypeSymbol.Bool) {
             writer.WriteKeyword((bool)node.Value ? SyntaxKind.TrueKeyword : SyntaxKind.FalseKeyword);
-        } else if (node.Type == TypeSymbol.Int) {
+        } else if (node.Type == TypeSymbol.Int || node.Type == TypeSymbol.Float) {
             writer.WriteNumber(value);
         } else if (node.Type == TypeSymbol.String) {
             value = "\"" + value.Replace("\"", "\"\"") + "\"";

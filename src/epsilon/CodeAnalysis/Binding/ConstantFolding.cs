@@ -7,9 +7,19 @@ internal static class ConstantFolding {
         if (operand.ConstantValue != null) {
             switch (op.Kind) {
                 case BoundUnaryOperatorKind.Identity:
-                    return new BoundConstant((int)operand.ConstantValue.Value);
+                    if (op.Type == TypeSymbol.Int) {
+                        return new BoundConstant(+(int)operand.ConstantValue.Value);
+                    } else if (op.Type == TypeSymbol.Float) {
+                        return new BoundConstant(+(float)operand.ConstantValue.Value);
+                    }
+                    return null;
                 case BoundUnaryOperatorKind.Negation:
-                    return new BoundConstant(-(int)operand.ConstantValue.Value);
+                    if (op.Type == TypeSymbol.Int) {
+                        return new BoundConstant(-(int)operand.ConstantValue.Value);
+                    } else if (op.Type == TypeSymbol.Float) {
+                        return new BoundConstant(-(float)operand.ConstantValue.Value);
+                    }
+                    return null;
                 case BoundUnaryOperatorKind.LogicalNegation:
                     return new BoundConstant(!(bool)operand.ConstantValue.Value);
                 case BoundUnaryOperatorKind.OnesComplement:
@@ -51,15 +61,32 @@ internal static class ConstantFolding {
             case BoundBinaryOperatorKind.Addition:
                 if (left.Type == TypeSymbol.Int) {
                     return new BoundConstant((int)l + (int)r);
+                } else if (left.Type == TypeSymbol.Float) {
+                    return new BoundConstant((float)l + (float)r);
                 } else {
                     return new BoundConstant((string)l + (string)r);
                 }
             case BoundBinaryOperatorKind.Subtraction:
-                return new BoundConstant((int)l - (int)r);
+                if (left.Type == TypeSymbol.Int) {
+                    return new BoundConstant((int)l - (int)r);
+                } else if (left.Type == TypeSymbol.Float) {
+                    return new BoundConstant((float)l - (float)r);
+                }
+                return null;
             case BoundBinaryOperatorKind.Multiplication:
-                return new BoundConstant((int)l * (int)r);
+                if (left.Type == TypeSymbol.Int) {
+                    return new BoundConstant((int)l * (int)r);
+                } else if (left.Type == TypeSymbol.Float) {
+                    return new BoundConstant((float)l * (float)r);
+                }
+                return null;
             case BoundBinaryOperatorKind.Division:
-                return new BoundConstant((int)l / (int)r);
+                if (left.Type == TypeSymbol.Int) {
+                    return new BoundConstant((int)l / (int)r);
+                } else if (left.Type == TypeSymbol.Float) {
+                    return new BoundConstant((float)l / (float)r);
+                }
+                return null;
             case BoundBinaryOperatorKind.BitwiseAnd: {
                     if (left.Type == TypeSymbol.Int) {
                         return new BoundConstant((int)l & (int)r);
@@ -90,13 +117,33 @@ internal static class ConstantFolding {
             case BoundBinaryOperatorKind.NotEquals:
                 return new BoundConstant(!Equals(l, r));
             case BoundBinaryOperatorKind.Less:
-                return new BoundConstant((int)l < (int)r);
+                if (left.Type == TypeSymbol.Int) {
+                    return new BoundConstant((int)l < (int)r);
+                } else if (left.Type == TypeSymbol.Float) {
+                    return new BoundConstant((float)l < (float)r);
+                }
+                return null;
             case BoundBinaryOperatorKind.LessOrEquals:
-                return new BoundConstant((int)l <= (int)r);
+                if (left.Type == TypeSymbol.Int) {
+                    return new BoundConstant((int)l <= (int)r);
+                } else if (left.Type == TypeSymbol.Float) {
+                    return new BoundConstant((float)l <= (float)r);
+                }
+                return null;
             case BoundBinaryOperatorKind.Greater:
-                return new BoundConstant((int)l > (int)r);
+                if (left.Type == TypeSymbol.Int) {
+                    return new BoundConstant((int)l > (int)r);
+                } else if (left.Type == TypeSymbol.Float) {
+                    return new BoundConstant((float)l > (float)r);
+                }
+                return null;
             case BoundBinaryOperatorKind.GreaterOrEquals:
-                return new BoundConstant((int)l >= (int)r);
+                if (left.Type == TypeSymbol.Int) {
+                    return new BoundConstant((int)l >= (int)r);
+                } else if (left.Type == TypeSymbol.Float) {
+                    return new BoundConstant((float)l >= (float)r);
+                }
+                return null;
             default:
                 throw new Exception($"Unexpected binary operator {op.Kind}");
         }

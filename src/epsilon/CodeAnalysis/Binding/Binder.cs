@@ -688,17 +688,12 @@ internal sealed class Binder {
     }
 
     private TypeSymbol? LookupType(string name) {
-        switch (name) {
-            case "any":
-                return TypeSymbol.Any;
-            case "bool":
-                return TypeSymbol.Bool;
-            case "int":
-                return TypeSymbol.Int;
-            case "string":
-                return TypeSymbol.String;
-            default:
-                return null;
+        foreach (var type in TypeSymbol.allTypes) {
+            if (name == type.Name) {
+                return type;
+            }
         }
+
+        return null;
     }
 }

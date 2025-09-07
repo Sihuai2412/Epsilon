@@ -201,6 +201,18 @@ public class LexerTests {
             return true;
         }
 
+        if (t1Kind == SyntaxKind.NumberToken && t2Kind == SyntaxKind.ForKeyword) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.NumberToken && t2Kind == SyntaxKind.FalseKeyword) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.NumberToken && t2Kind == SyntaxKind.FunctionKeyword) {
+            return true;
+        }
+
         if (t1Kind == SyntaxKind.StringToken && t2Kind == SyntaxKind.StringToken) {
             return true;
         }
