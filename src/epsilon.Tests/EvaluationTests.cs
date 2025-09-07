@@ -500,7 +500,7 @@ public class EvaluationTests {
         var diagnostics = @"
                 Unreachable code detected.
             ";
-        AssertDiagnostics(text, diagnostics, assertWarnings: true);
+        AssertDiagnostics(text, diagnostics);
     }
 
     [Fact]
@@ -519,7 +519,7 @@ public class EvaluationTests {
                 Unreachable code detected.
             ";
 
-        AssertDiagnostics(text, diagnostics, assertWarnings: true);
+        AssertDiagnostics(text, diagnostics);
     }
 
     [Fact]
@@ -536,7 +536,7 @@ public class EvaluationTests {
                 Unreachable code detected.
             ";
 
-        AssertDiagnostics(text, diagnostics, assertWarnings: true);
+        AssertDiagnostics(text, diagnostics);
     }
 
     [Theory]
@@ -626,11 +626,11 @@ public class EvaluationTests {
         var variables = new Dictionary<VariableSymbol, object>();
         var result = compilation.Evaluate(variables);
 
-        Assert.Empty(result.ErrorDiagnostics);
+        Assert.False(result.Diagnostics.HasErrors());
         Assert.Equal(expectedValue, result.Value);
     }
 
-    private void AssertDiagnostics(string text, string diagnosticText, bool assertWarnings = false) {
+    private void AssertDiagnostics(string text, string diagnosticText) {
         var annotatedText = AnnotatedText.Parse(text);
         var syntaxTree = SyntaxTree.Parse(annotatedText.Text);
         var compilation = Compilation.CreateScript(null, syntaxTree);
@@ -642,7 +642,7 @@ public class EvaluationTests {
             throw new Exception("ERROR: Must mark as many spans as there are expected diagnostics");
         }
 
-        var diagnostics = assertWarnings ? result.Diagnostics : result.ErrorDiagnostics;
+        var diagnostics = result.Diagnostics;
         Assert.Equal(expectedDiagnostics.Length, diagnostics.Length);
 
         for (var i = 0; i < expectedDiagnostics.Length; i++) {

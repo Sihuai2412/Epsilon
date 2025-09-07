@@ -93,14 +93,14 @@ public sealed class Compilation {
         //     cfg.WriteTo(streamWriter);
         // }
 
-        if (program.ErrorDiagnostics.Any()) {
+        if (program.Diagnostics.HasErrors()) {
             return new EvaluationResult(program.Diagnostics, null);
         }
 
         var evaluator = new Evaluator(program, variables);
         var value = evaluator.Evaluate();
         
-        return new EvaluationResult(program.WarningDiagnostics, value);
+        return new EvaluationResult(program.Diagnostics, value);
     }
 
     public void EmitTree(TextWriter writer) {
@@ -128,8 +128,7 @@ public sealed class Compilation {
         var parseDiagnostics = SyntaxTrees.SelectMany(st => st.Diagnostics);
 
         var diagnostics = parseDiagnostics.Concat(GlobalScope.Diagnostics).ToImmutableArray();
-        var errorDiagnostics = diagnostics.Where(d => d.IsError);
-        if (errorDiagnostics.Any()) {
+        if (diagnostics.HasErrors()) {
             return diagnostics;
         }
 

@@ -185,6 +185,7 @@ internal sealed class EpsilonRepl : Repl {
         }
 
         var result = compilation.Evaluate(_variables);
+        Console.Out.WriteDiagnostics(result.Diagnostics);
 
         var endMilliseconds = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
@@ -195,9 +196,7 @@ internal sealed class EpsilonRepl : Repl {
             Console.ResetColor();
         }
 
-        if (!result.ErrorDiagnostics.Any()) {
-            Console.Out.WriteDiagnostics(result.WarningDiagnostics);
-
+        if (!result.Diagnostics.HasErrors()) {
             if (result.Value != null) {
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(result.Value);
@@ -206,8 +205,6 @@ internal sealed class EpsilonRepl : Repl {
 
             _previous = compilation;
             SaveSubmissions(text);
-        } else {
-            Console.Out.WriteDiagnostics(result.Diagnostics);
         }
     }
 
