@@ -6,7 +6,7 @@ internal sealed class BoundUnaryExpression : BoundExpression {
     public BoundUnaryExpression(BoundUnaryOperator op, BoundExpression operand) {
         Op = op;
         Operand = operand;
-        ConstantValue = ConstantFolding.ComputeConstant(op, operand);
+        ConstantValue = ConstantFolding.Fold(op, operand);
     }
 
     public override BoundNodeKind Kind => BoundNodeKind.UnaryExpression;
