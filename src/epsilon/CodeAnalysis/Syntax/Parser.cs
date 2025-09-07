@@ -309,14 +309,23 @@ internal sealed class Parser {
     }
 
     private ExpressionSyntax ParseAssignmentExpression() {
-        if (Peek(0).Kind == SyntaxKind.IdentifierToken &&
-            Peek(1).Kind == SyntaxKind.EqualsToken) {
-            var identifierToken = NextToken();
-            var operatorToken = NextToken();
-            var right = ParseAssignmentExpression();
-            return new AssignmentExpressionSyntax(_syntaxTree, identifierToken, operatorToken, right);
+        if (Peek(0).Kind == SyntaxKind.IdentifierToken) {
+            switch (Peek(1).Kind) {
+                case SyntaxKind.PlusEqualsToken:
+                case SyntaxKind.MinusEqualsToken:
+                case SyntaxKind.StarEqualsToken:
+                case SyntaxKind.SlashEqualsToken:
+                case SyntaxKind.AmpersandEqualsToken:
+                case SyntaxKind.PipeEqualsToken:
+                case SyntaxKind.HatEqualsToken:
+                case SyntaxKind.EqualsToken: {
+                        var identifierToken = NextToken();
+                        var operatorToken = NextToken();
+                        var right = ParseAssignmentExpression();
+                        return new AssignmentExpressionSyntax(_syntaxTree, identifierToken, operatorToken, right);
+                    }
+            }
         }
-
         return ParseBinaryExpression();
     }
 

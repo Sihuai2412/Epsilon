@@ -48,7 +48,7 @@ internal sealed class Emitter {
             }
         }
 
-        var builtInTypes = new List<(TypeSymbol type, string metadataName)>() {
+        var builtInTypes = new List<(TypeSymbol Type, string MetadataName)>() {
             (TypeSymbol.Any, "System.Object"),
             (TypeSymbol.Bool, "System.Boolean"),
             (TypeSymbol.Int, "System.Int32"),

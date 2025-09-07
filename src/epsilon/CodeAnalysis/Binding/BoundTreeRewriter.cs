@@ -164,6 +164,8 @@ internal abstract class BoundTreeRewriter {
                 return RewriteVariableExpression((BoundVariableExpression)node);
             case BoundNodeKind.AssignmentExpression:
                 return RewriteAssignmentExpression((BoundAssignmentExpression)node);
+            case BoundNodeKind.CompoundAssignmentExpression:
+                return RewriteCompoundAssignmentExpression((BoundCompoundAssignmentExpression)node);
             case BoundNodeKind.UnaryExpression:
                 return RewriteUnaryExpression((BoundUnaryExpression)node);
             case BoundNodeKind.BinaryExpression:
@@ -196,6 +198,14 @@ internal abstract class BoundTreeRewriter {
         }
 
         return new BoundAssignmentExpression(node.Variable, expression);
+    }
+
+    protected virtual BoundExpression RewriteCompoundAssignmentExpression(BoundCompoundAssignmentExpression node) {
+        var boundVariableExpression = new BoundVariableExpression(node.Variable);
+        var boundBinaryExpression = new BoundBinaryExpression(boundVariableExpression, node.Op, node.Expression);
+        var boundAssignmentExpression = new BoundAssignmentExpression(node.Variable, boundBinaryExpression);
+
+        return RewriteAssignmentExpression(boundAssignmentExpression);
     }
 
     protected virtual BoundExpression RewriteUnaryExpression(BoundUnaryExpression node) {

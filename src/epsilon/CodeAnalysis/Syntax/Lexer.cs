@@ -68,23 +68,43 @@ internal sealed class Lexer {
                     break;
                 }
             case '+': {
-                    _kind = SyntaxKind.PlusToken;
                     _position++;
+                    if (Current != '=') {
+                        _kind = SyntaxKind.PlusToken;
+                    } else {
+                        _kind = SyntaxKind.PlusEqualsToken;
+                        _position++;
+                    }
                     break;
                 }
             case '-': {
-                    _kind = SyntaxKind.MinusToken;
                     _position++;
+                    if (Current != '=') {
+                        _kind = SyntaxKind.MinusToken;
+                    } else {
+                        _kind = SyntaxKind.MinusEqualsToken;
+                        _position++;
+                    }
                     break;
                 }
             case '*': {
-                    _kind = SyntaxKind.StarToken;
                     _position++;
+                    if (Current != '=') {
+                        _kind = SyntaxKind.StarToken;
+                    } else {
+                        _kind = SyntaxKind.StarEqualsToken;
+                        _position++;
+                    }
                     break;
                 }
             case '/': {
-                    _kind = SyntaxKind.SlashToken;
                     _position++;
+                    if (Current != '=') {
+                        _kind = SyntaxKind.SlashToken;
+                    } else {
+                        _kind = SyntaxKind.SlashEqualsToken;
+                        _position++;
+                    }
                     break;
                 }
             case '(': {
@@ -123,27 +143,38 @@ internal sealed class Lexer {
                     break;
                 }
             case '^': {
-                    _kind = SyntaxKind.HatToken;
                     _position++;
+                    if (Current != '=') {
+                        _kind = SyntaxKind.HatToken;
+                    } else {
+                        _kind = SyntaxKind.HatEqualsToken;
+                        _position++;
+                    }
                     break;
                 }
             case '&': {
                     _position++;
-                    if (Current != '&') {
-                        _kind = SyntaxKind.AmpersandToken;
-                    } else {
-                        _position++;
+                    if (Current == '&') {
                         _kind = SyntaxKind.AmpersandAmpersandToken;
+                        _position++;
+                    } else if (Current == '=') {
+                        _kind = SyntaxKind.AmpersandEqualsToken;
+                        _position++;
+                    } else {
+                        _kind = SyntaxKind.AmpersandToken;
                     }
                     break;
                 }
             case '|': {
                     _position++;
-                    if (Current != '|') {
-                        _kind = SyntaxKind.PipeToken;
-                    } else {
-                        _position++;
+                    if (Current == '|') {
                         _kind = SyntaxKind.PipePipeToken;
+                        _position++;
+                    } else if (Current == '=') {
+                        _kind = SyntaxKind.PipeEqualsToken;
+                        _position++;
+                    } else {
+                        _kind = SyntaxKind.PipeToken;
                     }
                     break;
                 }

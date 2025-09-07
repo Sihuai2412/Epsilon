@@ -221,6 +221,38 @@ public class LexerTests {
             return true;
         }
 
+        if (t1Kind == SyntaxKind.PlusToken && t2Kind == SyntaxKind.EqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.PlusToken && t2Kind == SyntaxKind.EqualsEqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.MinusToken && t2Kind == SyntaxKind.EqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.MinusToken && t2Kind == SyntaxKind.EqualsEqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.StarToken && t2Kind == SyntaxKind.EqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.StarToken && t2Kind == SyntaxKind.EqualsEqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.EqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.EqualsEqualsToken) {
+            return true;
+        }
+
         if (t1Kind == SyntaxKind.LessToken && t2Kind == SyntaxKind.EqualsToken) {
             return true;
         }
@@ -245,6 +277,18 @@ public class LexerTests {
             return true;
         }
 
+        if (t1Kind == SyntaxKind.AmpersandToken && t2Kind == SyntaxKind.EqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.AmpersandToken && t2Kind == SyntaxKind.EqualsEqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.AmpersandToken && t2Kind == SyntaxKind.AmpersandEqualsToken) {
+            return true;
+        }
+
         if (t1Kind == SyntaxKind.PipeToken && t2Kind == SyntaxKind.PipeToken) {
             return true;
         }
@@ -253,11 +297,39 @@ public class LexerTests {
             return true;
         }
 
+        if (t1Kind == SyntaxKind.PipeToken && t2Kind == SyntaxKind.EqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.PipeToken && t2Kind == SyntaxKind.EqualsEqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.PipeToken && t2Kind == SyntaxKind.PipeEqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.HatToken && t2Kind == SyntaxKind.EqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.HatToken && t2Kind == SyntaxKind.EqualsEqualsToken) {
+            return true;
+        }
+
         if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.SlashToken) {
             return true;
         }
 
         if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.StarToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.SlashEqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.StarEqualsToken) {
             return true;
         }
 
