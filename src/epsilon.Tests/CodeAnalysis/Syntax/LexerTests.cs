@@ -142,8 +142,9 @@ public class LexerTests {
     private static IEnumerable<(SyntaxKind kind, string text)> GetTokens() {
         var fixedTokens = Enum.GetValues(typeof(SyntaxKind))
                               .Cast<SyntaxKind>()
-                              .Select(k => (kind: k, text: SyntaxFacts.GetText(k)))
-                              .Where(t => t.text != null);
+                              .Select(k => (k, text: SyntaxFacts.GetText(k)))
+                              .Where(t => t.text != null)
+                              .Cast<(SyntaxKind, string)>();
 
         var dynamicTokens = new[] {
             (SyntaxKind.NumberToken, "1"),

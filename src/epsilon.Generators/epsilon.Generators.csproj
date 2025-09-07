@@ -6,6 +6,7 @@
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <EnableRoslynAnalyzers>false</EnableRoslynAnalyzers>
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>

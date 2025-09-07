@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using epsilon.CodeAnalysis.Syntax;
 
 namespace epsilon.Tests.CodeAnalysis.Syntax;
@@ -10,6 +11,10 @@ public class ParserTests {
         var op2Precedence = SyntaxFacts.GetBinaryOperatorPrecedence(op2);
         var op1Text = SyntaxFacts.GetText(op1);
         var op2Text = SyntaxFacts.GetText(op2);
+
+        Debug.Assert(op1Text != null);
+        Debug.Assert(op2Text != null);
+
         var text = $"a {op1Text} b {op2Text} c";
         var expression = ParseExpression(text);
 
@@ -51,6 +56,9 @@ public class ParserTests {
         var binaryText = SyntaxFacts.GetText(binaryKind);
         var text = $"{unaryText} a {binaryText} b";
         var expression = ParseExpression(text);
+
+        Debug.Assert(unaryText != null);
+        Debug.Assert(binaryText != null);
 
         if (unaryPrecedence >= binaryPrecedence) {
             using (var e = new AssertingEnumerator(expression)) {

@@ -20,6 +20,10 @@ public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
         var immutableArrayType = compilation.GetTypeByMetadataName("System.Collections.Immutable.ImmutableArray`1");
         var separatedSyntaxListType = compilation.GetTypeByMetadataName("epsilon.CodeAnalysis.Syntax.SeparatedSyntaxList`1");
         var syntaxNodeType = compilation.GetTypeByMetadataName("epsilon.CodeAnalysis.Syntax.SyntaxNode");
+        if (immutableArrayType == null || separatedSyntaxListType == null || syntaxNodeType == null) {
+            return;
+        }
+
         var types = GetAllTypes(compilation.Assembly);
         var syntaxNodeTypes = types.Where(t => !t.IsAbstract && IsPartial(t) && IsDerivedFrom(t, syntaxNodeType));
 
@@ -94,12 +98,14 @@ public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
     }
 
     private bool IsDerivedFrom(ITypeSymbol type, INamedTypeSymbol baseType) {
-        while (type != null) {
-            if (SymbolEqualityComparer.Default.Equals(type, baseType)) {
+        var current = type;
+
+        while (current != null) {
+            if (SymbolEqualityComparer.Default.Equals(current, baseType)) {
                 return true;
             }
 
-            type = type.BaseType;
+            current = current.BaseType;
         }
 
         return false;

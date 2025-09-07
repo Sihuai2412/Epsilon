@@ -56,7 +56,7 @@ internal sealed class AnnotatedText {
         var lines = new List<string>();
 
         using (var reader = new StringReader(text)) {
-            string line;
+            string? line;
             while ((line = reader.ReadLine()) != null) lines.Add(line);
         }
 
