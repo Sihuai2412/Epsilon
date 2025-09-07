@@ -42,26 +42,32 @@ public class SyntaxNodeGetChildrenGenerator : ISourceGenerator {
                     foreach (var property in type.GetMembers().OfType<IPropertySymbol>()) {
                         if (property.Type is INamedTypeSymbol propertyType) {
                             if (IsDerivedFrom(propertyType, syntaxNodeType)) {
-                                // TODO: check NullableAnnotation
+                                var canBeNull = property.NullableAnnotation == NullableAnnotation.Annotated;
+                                if (canBeNull) {
+                                    indentedTextWriter.Write($"if ({property.Name} != null)");
+                                    indentedTextWriter.WriteLine(" {");
+                                    indentedTextWriter.Indent++;
+                                }
 
-                                using (var ifNonNullCurly = new CurlyIndenter(indentedTextWriter, $"if ({property.Name} != null)")) {
-                                    indentedTextWriter.WriteLine($"yield return {property.Name};");
+                                indentedTextWriter.WriteLine($"yield return {property.Name};");
+
+                                if (canBeNull) {
+                                    indentedTextWriter.Indent--;
+                                    indentedTextWriter.WriteLine("}");
                                 }
                             } else if (
                                 propertyType.TypeArguments.Length == 1 &&
                                 IsDerivedFrom(propertyType.TypeArguments[0], syntaxNodeType) &&
                                 SymbolEqualityComparer.Default.Equals(propertyType.OriginalDefinition, immutableArrayType)
                             ) {
-                                using (var foreachCurly = new CurlyIndenter(indentedTextWriter, $"foreach (var child in {property.Name})"))
-                                using (var ifNonNullCurly = new CurlyIndenter(indentedTextWriter, $"if (child != null)")) {
+                                using (var foreachCurly = new CurlyIndenter(indentedTextWriter, $"foreach (var child in {property.Name})")) {
                                     indentedTextWriter.WriteLine($"yield return child;");
                                 }
                             } else if (
                                 SymbolEqualityComparer.Default.Equals(propertyType.OriginalDefinition, separatedSyntaxListType) &&
                                 IsDerivedFrom(propertyType.TypeArguments[0], syntaxNodeType)
                             ) {
-                                using (var foreachCurly = new CurlyIndenter(indentedTextWriter, $"foreach (var child in {property.Name}.GetWithSeparators())"))
-                                using (var ifNonNullCurly = new CurlyIndenter(indentedTextWriter, $"if (child != null)")) {
+                                using (var foreachCurly = new CurlyIndenter(indentedTextWriter, $"foreach (var child in {property.Name}.GetWithSeparators())")) {
                                     indentedTextWriter.WriteLine($"yield return child;");
                                 }
                             }
