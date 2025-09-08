@@ -199,9 +199,10 @@ internal sealed class Evaluator {
                     return (int)left + (int)right;
                 } else if (b.Type == TypeSymbol.Float) {
                     return (float)left + (float)right;
-                } else {
+                } else if (b.Type == TypeSymbol.String) {
                     return (string)left + (string)right;
                 }
+                return null;
             case BoundBinaryOperatorKind.Subtraction:
                 if (b.Type == TypeSymbol.Int) {
                     return (int)left - (int)right;

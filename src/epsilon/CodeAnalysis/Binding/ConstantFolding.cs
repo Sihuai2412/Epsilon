@@ -63,9 +63,10 @@ internal static class ConstantFolding {
                     return new BoundConstant((int)l + (int)r);
                 } else if (left.Type == TypeSymbol.Float) {
                     return new BoundConstant((float)l + (float)r);
-                } else {
+                } else if (left.Type == TypeSymbol.String) {
                     return new BoundConstant((string)l + (string)r);
                 }
+                return null;
             case BoundBinaryOperatorKind.Subtraction:
                 if (left.Type == TypeSymbol.Int) {
                     return new BoundConstant((int)l - (int)r);

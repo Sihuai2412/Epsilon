@@ -434,7 +434,8 @@ internal sealed class Lexer {
         _value = sb.ToString();
     }
     private void ReadNumberToken() {
-        var floatFlag = false;
+        var isFloat = false;
+        var hasF = false;
         object value;
 
         while (char.IsDigit(Current)) {
@@ -442,7 +443,7 @@ internal sealed class Lexer {
         }
 
         if (Current == '.' && char.IsDigit(Lookahead)) {
-            floatFlag = true;
+            isFloat = true;
             _position++;
             while (char.IsDigit(Current)) {
                 _position++;
@@ -450,21 +451,14 @@ internal sealed class Lexer {
         }
 
         if (Current == 'f' || Current == 'F') {
-            floatFlag = true;
+            hasF = true;
             _position++;
         }
 
         var length = _position - _start;
         var text = _text.ToString(_start, length);
-        if (!floatFlag) {
-            if (!int.TryParse(text, out var intValue)) {
-                var span = new TextSpan(_start, length);
-                var location = new TextLocation(_text, span);
-                _diagnostics.ReportInvalidNumber(location, text, TypeSymbol.Int);
-            }
-            value = intValue;
-        } else {
-            if (text.EndsWith('f') || text.EndsWith('F')) {
+        if (isFloat || hasF) {
+            if (hasF) {
                 text = text[..^1];
             }
             if (!float.TryParse(text, out var floatValue)) {
@@ -473,8 +467,14 @@ internal sealed class Lexer {
                 _diagnostics.ReportInvalidNumber(location, text, TypeSymbol.Float);
             }
             value = floatValue;
+        } else {
+            if (!int.TryParse(text, out var intValue)) {
+                var span = new TextSpan(_start, length);
+                var location = new TextLocation(_text, span);
+                _diagnostics.ReportInvalidNumber(location, text, TypeSymbol.Int);
+            }
+            value = intValue;
         }
-
         _value = value;
         _kind = SyntaxKind.NumberToken;
     }
