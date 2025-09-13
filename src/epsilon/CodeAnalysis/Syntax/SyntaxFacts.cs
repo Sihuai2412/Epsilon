@@ -166,6 +166,8 @@ public static class SyntaxFacts {
                 return "}";
             case SyntaxKind.ColonToken:
                 return ":";
+            case SyntaxKind.SemicolonToken:
+                return ";";
             case SyntaxKind.CommaToken:
                 return ",";
             case SyntaxKind.BreakKeyword:

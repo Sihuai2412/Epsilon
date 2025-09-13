@@ -40,6 +40,7 @@ public enum SyntaxKind {
     OpenBraceToken,
     CloseBraceToken,
     ColonToken,
+    SemicolonToken,
     CommaToken,
     TildeToken,
     HatToken,

@@ -401,13 +401,13 @@ internal sealed class Parser {
         var keywordToken = isTrue ? MatchToken(SyntaxKind.TrueKeyword) : MatchToken(SyntaxKind.FalseKeyword);
         return new LiteralExpressionSyntax(_syntaxTree, keywordToken, isTrue);
     }
-
+    
     private ExpressionSyntax ParseNameOrCallExpression() {
         if (Peek(0).Kind == SyntaxKind.IdentifierToken && Peek(1).Kind == SyntaxKind.OpenParenthesisToken) {
             return ParseCallExpression();
         }
 
-        return ParseNameExpression();
+        return ParseNameExpression(Current.Kind);
     }
 
     private ExpressionSyntax ParseCallExpression() {
@@ -437,8 +437,8 @@ internal sealed class Parser {
         return new SeparatedSyntaxList<ExpressionSyntax>(nodesAndSeparators.ToImmutable());
     }
 
-    private ExpressionSyntax ParseNameExpression() {
-        var identifierToken = MatchToken(SyntaxKind.IdentifierToken);
-        return new NameExpressionSyntax(_syntaxTree, identifierToken);
+    private ExpressionSyntax ParseNameExpression(SyntaxKind kind) {
+        var token = MatchToken(kind);
+        return new NameExpressionSyntax(_syntaxTree, token);
     }
 }
