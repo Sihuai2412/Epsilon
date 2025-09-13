@@ -37,6 +37,11 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
         ReportError(location, message);
     }
 
+    public void ReportBadInput(TextLocation location, string text) {
+        var message = $"Bad input: \"{text}\".";
+        ReportError(location, message);
+    }
+
     public void ReportUnterminatedString(TextLocation location) {
         var message = $"Unterminated string literal.";
         ReportError(location, message);

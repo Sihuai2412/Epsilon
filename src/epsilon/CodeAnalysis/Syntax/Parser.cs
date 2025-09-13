@@ -401,13 +401,17 @@ internal sealed class Parser {
         var keywordToken = isTrue ? MatchToken(SyntaxKind.TrueKeyword) : MatchToken(SyntaxKind.FalseKeyword);
         return new LiteralExpressionSyntax(_syntaxTree, keywordToken, isTrue);
     }
-    
+
     private ExpressionSyntax ParseNameOrCallExpression() {
         if (Peek(0).Kind == SyntaxKind.IdentifierToken && Peek(1).Kind == SyntaxKind.OpenParenthesisToken) {
             return ParseCallExpression();
         }
 
-        return ParseNameExpression(Current.Kind);
+        if (Current.Kind == SyntaxKind.IdentifierToken || Current.Kind == SyntaxKind.EndOfFileToken) {
+            return ParseNameExpression();
+        }
+
+        return ParseTokenExpression(Current.Kind);  // TODO: We shouldn't use it
     }
 
     private ExpressionSyntax ParseCallExpression() {
@@ -437,8 +441,13 @@ internal sealed class Parser {
         return new SeparatedSyntaxList<ExpressionSyntax>(nodesAndSeparators.ToImmutable());
     }
 
-    private ExpressionSyntax ParseNameExpression(SyntaxKind kind) {
-        var token = MatchToken(kind);
+    private ExpressionSyntax ParseNameExpression() {
+        var token = MatchToken(SyntaxKind.IdentifierToken);
         return new NameExpressionSyntax(_syntaxTree, token);
+    }
+
+    private ExpressionSyntax ParseTokenExpression(SyntaxKind kind) {
+        var token = MatchToken(kind);
+        return new TokenExpressionSyntax(_syntaxTree, token);
     }
 }

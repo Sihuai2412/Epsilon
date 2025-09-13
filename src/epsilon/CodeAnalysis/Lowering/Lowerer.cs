@@ -1,7 +1,6 @@
 using System.Collections.Immutable;
 using epsilon.CodeAnalysis.Binding;
 using epsilon.CodeAnalysis.Symbols;
-using epsilon.CodeAnalysis.Syntax;
 
 using static epsilon.CodeAnalysis.Binding.BoundNodeFactory;
 

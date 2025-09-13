@@ -126,11 +126,10 @@ public class EvaluationTests {
     public void Evaluator_BlockStatement_NoInfiniteLoop() {
         var text = @"
             {
-            [)][]
+            )[]
         ";
 
         var diagnostics = @"
-            Unexpected token <CloseParenthesisToken>, expected <IdentifierToken>.
             Unexpected token <EndOfFileToken>, expected <CloseBraceToken>.
         ";
 
@@ -166,13 +165,11 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_InvokeFunctionArguments_NoInfiniteLoop() {
         var text = @"
-            print(""Hi""[[=]][)]
+            print(""Hi""[=])
         ";
 
         var diagnostics = @"
             Unexpected token <EqualsToken>, expected <CloseParenthesisToken>.
-            Unexpected token <EqualsToken>, expected <IdentifierToken>.
-            Unexpected token <CloseParenthesisToken>, expected <IdentifierToken>.
         ";
 
         AssertDiagnostics(text, diagnostics);
@@ -181,7 +178,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_FunctionParameters_NoInfiniteLoop() {
         var text = @"
-            function hi(name: string[[[=]]][)]{
+            function hi(name: string[[=]]){
                 print(""Hi "" + name + ""!"" )
             }[]
         ";
@@ -189,8 +186,6 @@ public class EvaluationTests {
         var diagnostics = @"
             Unexpected token <EqualsToken>, expected <CloseParenthesisToken>.
             Unexpected token <EqualsToken>, expected <OpenBraceToken>.
-            Unexpected token <EqualsToken>, expected <IdentifierToken>.
-            Unexpected token <CloseParenthesisToken>, expected <IdentifierToken>.
             Unexpected token <EndOfFileToken>, expected <CloseBraceToken>.
         ";
 

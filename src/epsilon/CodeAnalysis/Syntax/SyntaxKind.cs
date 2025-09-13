@@ -93,4 +93,5 @@ public enum SyntaxKind {
     ParenthesizedExpression,
     AssignmentExpression,
     CallExpression,
+    TokenExpression,
 }
