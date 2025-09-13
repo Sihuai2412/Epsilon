@@ -10,6 +10,24 @@
                 "${workspaceFolder}/Epsilon.sln"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "epsi",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/samples",
+                "shell": {
+                    "executable": "powershell.exe",
+                    "args": ["-NoProfile", "-Command"]
+                }
+            },
+            "command": "& { dotnet run --project \"${workspaceFolder}/src/epsilon.Compiler\" -- \"${file}\" -r \"${workspaceFolder}/libs/mscorlib.dll\"; & \"${fileDirname}\\${fileBasenameNoExtension}.exe\" }",
+            "presentation": {
+                "focus": true,
+                "panel": "shared",
+                "clear": true,
+                "echo": true
+            }
         }
     ]
 }
