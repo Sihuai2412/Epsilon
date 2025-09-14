@@ -69,10 +69,10 @@ public class EvaluationTests {
     [InlineData("\"test\" == \"abc\";", false)]
     [InlineData("\"test\" != \"abc\";", true)]
     [InlineData("\"test\" + \"abc\";", "testabc")]
-    [InlineData("{ var a : any = 0; var b : any = \"b\"; return a == b; }", false)]
-    [InlineData("{ var a : any = 0; var b : any = \"b\"; return a != b; }", true)]
-    [InlineData("{ var a : any = 0; var b : any = 0; return a == b; }", true)]
-    [InlineData("{ var a : any = 0; var b : any = 0; return a != b; }", false)]
+    [InlineData("{ var a as any = 0; var b as any = \"b\"; return a == b; }", false)]
+    [InlineData("{ var a as any = 0; var b as any = \"b\"; return a != b; }", true)]
+    [InlineData("{ var a as any = 0; var b as any = 0; return a == b; }", true)]
+    [InlineData("{ var a as any = 0; var b as any = 0; return a != b; }", false)]
     [InlineData("{ var a = 10; return a * a; }", 100)]
     [InlineData("{ var a = 0; return (a = 10) * a; }", 100)]
     [InlineData("{ var a = 0; if a == 0 a = 10; return a; }", 10)]
@@ -181,7 +181,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_FunctionParameters_NoInfiniteLoop() {
         var text = @"
-            function hi(name: string[[=]][)][{]
+            function hi(name as string[[=]][)][{]
                 print(""Hi "" + name + ""!"" );
             }[]
         ";
@@ -200,7 +200,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_FunctionReturn_Missing() {
         var text = @"
-            function [add](a: int, b: int): int{
+            function [add](a as int, b as int) as int{
             }
         ";
 
@@ -496,7 +496,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Function_With_ReturnValue_Should_Not_Return_Void() {
         var text = @"
-            function test(): int{
+            function test() as int{
                 [return];
             }
         ";
@@ -511,7 +511,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Not_All_Code_Paths_Return_Value() {
         var text = @"
-            function [test](n: int): bool{
+            function [test](n as int) as bool{
                 if (n > 10)
                    return true;
             }
@@ -527,7 +527,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Expression_Must_Have_Value() {
         var text = @"
-            function test(n: int){
+            function test(n as int){
                 return;
             }
             let value = [test(100)];
@@ -562,7 +562,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_ElseStatement_Reports_NotReachableCode_Warning() {
         var text = @"
-                function test(): int{
+                function test() as int{
                     if true {
                         return 1;
                     } else {
@@ -618,7 +618,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Parameter_Already_Declared() {
         var text = @"
-            function sum(a: int, b: int, [a: int]): int{
+            function sum(a as int, b as int, [a as int]) as int{
                 return a + b + c;
             }
         ";
@@ -633,7 +633,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Function_Must_Have_Name() {
         var text = @"
-            function [(]a: int, b: int): int{
+            function [(]a as int, b as int) as int{
                 return a + b;
             }
         ";
@@ -648,7 +648,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Wrong_Argument_Type() {
         var text = @"
-            function test(n: int): bool{
+            function test(n as int) as bool{
                 return n > 10;
             }
             let testValue = ""string"";
@@ -665,7 +665,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Bad_Type() {
         var text = @"
-            function test(n: [invalidtype]){
+            function test(n as [invalidtype]){
             }
         ";
 

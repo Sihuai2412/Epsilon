@@ -223,7 +223,7 @@ internal sealed class Parser {
     }
 
     private TypeClauseSyntax? ParseOptionalTypeClause() {
-        if (Current.Kind != SyntaxKind.ColonToken) {
+        if (Current.Kind != SyntaxKind.AsKeyword) {
             return null;
         }
 
@@ -231,9 +231,9 @@ internal sealed class Parser {
     }
 
     private TypeClauseSyntax ParseTypeClause() {
-        var colonToken = MatchToken(SyntaxKind.ColonToken);
+        var asKeyword = MatchToken(SyntaxKind.AsKeyword);
         var identifier = MatchToken(SyntaxKind.IdentifierToken);
-        return new TypeClauseSyntax(_syntaxTree, colonToken, identifier);
+        return new TypeClauseSyntax(_syntaxTree, asKeyword, identifier);
     }
 
     private StatementSyntax ParseIfStatement() {

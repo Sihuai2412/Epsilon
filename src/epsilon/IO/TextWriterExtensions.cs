@@ -81,6 +81,10 @@ public static class TextWriterExtensions {
         writer.ResetColor();
     }
 
+    public static void WriteSemicolon(this TextWriter writer) {
+        writer.WritePunctuation(SyntaxKind.SemicolonToken);
+    }
+
     public static void WriteDiagnostics(this TextWriter writer, IEnumerable<Diagnostic> diagnostics) {
         foreach (var diagnostic in diagnostics.Where(d => d.Location.Text == null)) {
             var messageColor = diagnostic.IsWarning ? ConsoleColor.DarkYellow : ConsoleColor.DarkRed;

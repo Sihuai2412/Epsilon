@@ -49,6 +49,7 @@ public enum SyntaxKind {
     IdentifierToken,
 
     // Keywords
+    AsKeyword,
     ContinueKeyword,
     BreakKeyword,
     ElseKeyword,

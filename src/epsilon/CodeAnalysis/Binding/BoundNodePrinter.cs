@@ -157,6 +157,7 @@ internal static class BoundNodePrinter {
 
     private static void WriteNopStatement(BoundNopStatement node, IndentedTextWriter writer) {
         writer.WriteKeyword("nop");
+        writer.WriteSemicolon();
         writer.WriteLine();
     }
 
@@ -168,6 +169,7 @@ internal static class BoundNodePrinter {
         writer.WritePunctuation(SyntaxKind.EqualsToken);
         writer.WriteSpace();
         node.Initializer.WriteTo(writer);
+        writer.WriteSemicolon();
         writer.WriteLine();
     }
 
@@ -200,6 +202,7 @@ internal static class BoundNodePrinter {
         writer.WriteKeyword(SyntaxKind.WhileKeyword);
         writer.WriteSpace();
         node.Condition.WriteTo(writer);
+        writer.WriteSemicolon();
         writer.WriteLine();
     }
 
@@ -238,6 +241,7 @@ internal static class BoundNodePrinter {
         writer.WriteKeyword("goto");
         writer.WriteSpace();
         writer.WriteIdentifier(node.Label.Name);
+        writer.WriteSemicolon();
         writer.WriteLine();
     }
 
@@ -249,6 +253,7 @@ internal static class BoundNodePrinter {
         writer.WriteKeyword(node.JumpIfTrue ? "if" : "unless");
         writer.WriteSpace();
         node.Condition.WriteTo(writer);
+        writer.WriteSemicolon();
         writer.WriteLine();
     }
 
@@ -258,11 +263,13 @@ internal static class BoundNodePrinter {
             writer.WriteSpace();
             node.Expression.WriteTo(writer);
         }
+        writer.WriteSemicolon();
         writer.WriteLine();
     }
 
     private static void WriteExpressionStatement(BoundExpressionStatement node, IndentedTextWriter writer) {
         node.Expression.WriteTo(writer);
+        writer.WriteSemicolon();
         writer.WriteLine();
     }
 

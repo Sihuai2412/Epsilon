@@ -1,12 +1,12 @@
 namespace epsilon.CodeAnalysis.Syntax;
 
 public sealed partial class TypeClauseSyntax : SyntaxNode {
-    public TypeClauseSyntax(SyntaxTree syntaxTree, SyntaxToken colonToken, SyntaxToken identifier) : base(syntaxTree) {
-        ColonToken = colonToken;
+    public TypeClauseSyntax(SyntaxTree syntaxTree, SyntaxToken asKeyword, SyntaxToken identifier) : base(syntaxTree) {
+        AsKeyword = asKeyword;
         Identifier = identifier;
     }
 
     public override SyntaxKind Kind => SyntaxKind.TypeClause;
-    public SyntaxToken ColonToken { get; }
+    public SyntaxToken AsKeyword { get; }
     public SyntaxToken Identifier { get; }
 }

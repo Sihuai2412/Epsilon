@@ -53,6 +53,8 @@ public static class SyntaxFacts {
 
     public static SyntaxKind GetKeywordKind(string text) {
         switch (text) {
+            case "as":
+                return SyntaxKind.AsKeyword;
             case "break":
                 return SyntaxKind.BreakKeyword;
             case "continue":
@@ -170,6 +172,8 @@ public static class SyntaxFacts {
                 return ";";
             case SyntaxKind.CommaToken:
                 return ",";
+            case SyntaxKind.AsKeyword:
+                return "as";
             case SyntaxKind.BreakKeyword:
                 return "break";
             case SyntaxKind.ContinueKeyword:

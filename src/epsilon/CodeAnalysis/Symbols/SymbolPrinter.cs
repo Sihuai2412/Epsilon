@@ -51,7 +51,7 @@ internal static class SymbolPrinter {
 
         if (symbol.Type != TypeSymbol.Void) {
             writer.WriteSpace();
-            writer.WritePunctuation(SyntaxKind.ColonToken);
+            writer.WriteKeyword(SyntaxKind.AsKeyword);
             writer.WriteSpace();
             symbol.Type.WriteTo(writer);
         }
@@ -61,7 +61,7 @@ internal static class SymbolPrinter {
         writer.WriteKeyword(symbol.IsReadOnly ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword);
         writer.WriteSpace();
         writer.WriteIdentifier(symbol.Name);
-        writer.WritePunctuation(SyntaxKind.ColonToken);
+        writer.WriteKeyword(SyntaxKind.AsKeyword);
         writer.WriteSpace();
         symbol.Type.WriteTo(writer);
     }
@@ -70,14 +70,14 @@ internal static class SymbolPrinter {
         writer.WriteKeyword(symbol.IsReadOnly ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword);
         writer.WriteSpace();
         writer.WriteIdentifier(symbol.Name);
-        writer.WritePunctuation(SyntaxKind.ColonToken);
+        writer.WriteKeyword(SyntaxKind.AsKeyword);
         writer.WriteSpace();
         symbol.Type.WriteTo(writer);
     }
 
     private static void WriteParameterTo(ParameterSymbol symbol, TextWriter writer) {
         writer.WriteIdentifier(symbol.Name);
-        writer.WritePunctuation(SyntaxKind.ColonToken);
+        writer.WriteKeyword(SyntaxKind.AsKeyword);
         writer.WriteSpace();
         symbol.Type.WriteTo(writer);
     }
