@@ -217,7 +217,7 @@ internal sealed class Parser {
         var identifier = MatchToken(SyntaxKind.IdentifierToken);
         var typeClause = ParseOptionalTypeClause();
         var equals = MatchToken(SyntaxKind.EqualsToken);
-        var initializer = ParseExpression(true);
+        var initializer = ParseExpression();
         var semicolon = MatchToken(SyntaxKind.SemicolonToken);
         return new VariableDeclarationSyntax(_syntaxTree, keyword, identifier, typeClause, equals, initializer, semicolon);
     }
@@ -309,14 +309,15 @@ internal sealed class Parser {
 
     private ExpressionStatementSyntax ParseExpressionStatement() {
         var expression = ParseExpression();
-        return new ExpressionStatementSyntax(_syntaxTree, expression);
+        var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+        return new ExpressionStatementSyntax(_syntaxTree, expression, semicolon);
     }
 
-    private ExpressionSyntax ParseExpression(bool needSemicolon = false) {
-        return ParseAssignmentExpression(needSemicolon);
+    private ExpressionSyntax ParseExpression() {
+        return ParseAssignmentExpression();
     }
 
-    private ExpressionSyntax ParseAssignmentExpression(bool needSemicolon) {
+    private ExpressionSyntax ParseAssignmentExpression() {
         if (Peek(0).Kind == SyntaxKind.IdentifierToken) {
             switch (Peek(1).Kind) {
                 case SyntaxKind.PlusEqualsToken:
@@ -329,24 +330,23 @@ internal sealed class Parser {
                 case SyntaxKind.EqualsToken: {
                         var identifierToken = NextToken();
                         var operatorToken = NextToken();
-                        var right = ParseAssignmentExpression(true);
-                        var semicolon = needSemicolon ? null : MatchToken(SyntaxKind.SemicolonToken);
-                        return new AssignmentExpressionSyntax(_syntaxTree, identifierToken, operatorToken, right, semicolon);
+                        var right = ParseAssignmentExpression();
+                        return new AssignmentExpressionSyntax(_syntaxTree, identifierToken, operatorToken, right);
                     }
             }
         }
-        return ParseBinaryExpression(needSemicolon);
+        return ParseBinaryExpression();
     }
 
-    private ExpressionSyntax ParseBinaryExpression(bool needSemicolon, int parentPrecedence = 0) {
+    private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0) {
         ExpressionSyntax left;
         var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
         if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence) {
             var operatorToken = NextToken();
-            var operand = ParseBinaryExpression(needSemicolon, unaryOperatorPrecedence);
+            var operand = ParseBinaryExpression(unaryOperatorPrecedence);
             left = new UnaryExpressionSyntax(_syntaxTree, operatorToken, operand);
         } else {
-            left = ParsePrimaryExpression(needSemicolon);
+            left = ParsePrimaryExpression();
         }
 
         while (true) {
@@ -354,14 +354,14 @@ internal sealed class Parser {
             if (precedence == 0 || precedence <= parentPrecedence) break;
 
             var operatorToken = NextToken();
-            var right = ParseBinaryExpression(needSemicolon, precedence);
+            var right = ParseBinaryExpression(precedence);
             left = new BinaryExpressionSyntax(_syntaxTree, left, operatorToken, right);
         }
 
         return left;
     }
 
-    private ExpressionSyntax ParsePrimaryExpression(bool needSemicolon) {
+    private ExpressionSyntax ParsePrimaryExpression() {
         switch (Current.Kind) {
             case SyntaxKind.OpenParenthesisToken: {
                     return ParseParenthesisExpression();
@@ -382,7 +382,7 @@ internal sealed class Parser {
 
             case SyntaxKind.IdentifierToken:
             default: {
-                    return ParseNameOrCallExpression(needSemicolon);
+                    return ParseNameOrCallExpression();
                 }
         }
     }
@@ -411,9 +411,9 @@ internal sealed class Parser {
         return new LiteralExpressionSyntax(_syntaxTree, keywordToken, isTrue);
     }
 
-    private ExpressionSyntax ParseNameOrCallExpression(bool needSemicolon) {
+    private ExpressionSyntax ParseNameOrCallExpression() {
         if (Peek(0).Kind == SyntaxKind.IdentifierToken && Peek(1).Kind == SyntaxKind.OpenParenthesisToken) {
-            return ParseCallExpression(needSemicolon);
+            return ParseCallExpression();
         }
 
         if (Current.Kind == SyntaxKind.IdentifierToken || Current.Kind == SyntaxKind.EndOfFileToken) {
@@ -423,13 +423,12 @@ internal sealed class Parser {
         return ParseTokenExpression(Current.Kind);  // TODO: We shouldn't use it
     }
 
-    private ExpressionSyntax ParseCallExpression(bool needSemicolon) {
+    private ExpressionSyntax ParseCallExpression() {
         var identifier = MatchToken(SyntaxKind.IdentifierToken);
         var openParenthesisToken = MatchToken(SyntaxKind.OpenParenthesisToken);
         var arguments = ParseArguments();
         var closeParenthesisToken = MatchToken(SyntaxKind.CloseParenthesisToken);
-        var semicolon = needSemicolon ? null : MatchToken(SyntaxKind.SemicolonToken);
-        return new CallExpressionSyntax(_syntaxTree, identifier, openParenthesisToken, arguments, closeParenthesisToken, semicolon);
+        return new CallExpressionSyntax(_syntaxTree, identifier, openParenthesisToken, arguments, closeParenthesisToken);
     }
 
     private SeparatedSyntaxList<ExpressionSyntax> ParseArguments() {
@@ -437,7 +436,7 @@ internal sealed class Parser {
 
         var parseNextArgument = true;
         while (parseNextArgument && Current.Kind != SyntaxKind.CloseParenthesisToken && Current.Kind != SyntaxKind.EndOfFileToken) {
-            var expression = ParseExpression(true);
+            var expression = ParseExpression();
             nodesAndSeparators.Add(expression);
 
             if (Current.Kind == SyntaxKind.CommaToken) {
