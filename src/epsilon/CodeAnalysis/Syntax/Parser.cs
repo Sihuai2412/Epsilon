@@ -217,8 +217,9 @@ internal sealed class Parser {
         var identifier = MatchToken(SyntaxKind.IdentifierToken);
         var typeClause = ParseOptionalTypeClause();
         var equals = MatchToken(SyntaxKind.EqualsToken);
-        var initializer = ParseExpression();
-        return new VariableDeclarationSyntax(_syntaxTree, keyword, identifier, typeClause, equals, initializer);
+        var initializer = ParseExpression(true);
+        var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+        return new VariableDeclarationSyntax(_syntaxTree, keyword, identifier, typeClause, equals, initializer, semicolon);
     }
 
     private TypeClauseSyntax? ParseOptionalTypeClause() {
@@ -265,7 +266,8 @@ internal sealed class Parser {
         var body = ParseStatement();
         var whileKeyword = MatchToken(SyntaxKind.WhileKeyword);
         var condition = ParseExpression();
-        return new DoWhileStatementSyntax(_syntaxTree, doKeyword, body, whileKeyword, condition);
+        var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+        return new DoWhileStatementSyntax(_syntaxTree, doKeyword, body, whileKeyword, condition, semicolon);
     }
 
     private ForStatementSyntax ParseForStatement() {
@@ -281,22 +283,28 @@ internal sealed class Parser {
 
     private StatementSyntax ParseBreakStatement() {
         var keyword = MatchToken(SyntaxKind.BreakKeyword);
-        return new BreakStatementSyntax(_syntaxTree, keyword);
+        var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+        return new BreakStatementSyntax(_syntaxTree, keyword, semicolon);
     }
 
     private StatementSyntax ParseContinueStatement() {
         var keyword = MatchToken(SyntaxKind.ContinueKeyword);
-        return new ContinueStatementSyntax(_syntaxTree, keyword);
+        var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+        return new ContinueStatementSyntax(_syntaxTree, keyword, semicolon);
     }
 
     private StatementSyntax ParseReturnStatement() {
         var keyword = MatchToken(SyntaxKind.ReturnKeyword);
-        var keywordLine = _text.GetLineIndex(keyword.Span.Start);
-        var currentLine = _text.GetLineIndex(Current.Span.Start);
-        var isEof = Current.Kind == SyntaxKind.EndOfFileToken;
-        var sameLine = !isEof && keywordLine == currentLine;
-        var expression = sameLine ? ParseExpression() : null;
-        return new ReturnStatementSyntax(_syntaxTree, keyword, expression);
+
+        ExpressionSyntax? expression = null;
+
+        if (Current.Kind != SyntaxKind.SemicolonToken &&
+            Current.Kind != SyntaxKind.EndOfFileToken) {
+            expression = ParseExpression();
+        }
+
+        var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+        return new ReturnStatementSyntax(_syntaxTree, keyword, expression, semicolon);
     }
 
     private ExpressionStatementSyntax ParseExpressionStatement() {
@@ -304,11 +312,11 @@ internal sealed class Parser {
         return new ExpressionStatementSyntax(_syntaxTree, expression);
     }
 
-    private ExpressionSyntax ParseExpression() {
-        return ParseAssignmentExpression();
+    private ExpressionSyntax ParseExpression(bool needSemicolon = false) {
+        return ParseAssignmentExpression(needSemicolon);
     }
 
-    private ExpressionSyntax ParseAssignmentExpression() {
+    private ExpressionSyntax ParseAssignmentExpression(bool needSemicolon) {
         if (Peek(0).Kind == SyntaxKind.IdentifierToken) {
             switch (Peek(1).Kind) {
                 case SyntaxKind.PlusEqualsToken:
@@ -321,23 +329,24 @@ internal sealed class Parser {
                 case SyntaxKind.EqualsToken: {
                         var identifierToken = NextToken();
                         var operatorToken = NextToken();
-                        var right = ParseAssignmentExpression();
-                        return new AssignmentExpressionSyntax(_syntaxTree, identifierToken, operatorToken, right);
+                        var right = ParseAssignmentExpression(true);
+                        var semicolon = needSemicolon ? null : MatchToken(SyntaxKind.SemicolonToken);
+                        return new AssignmentExpressionSyntax(_syntaxTree, identifierToken, operatorToken, right, semicolon);
                     }
             }
         }
-        return ParseBinaryExpression();
+        return ParseBinaryExpression(needSemicolon);
     }
 
-    private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0) {
+    private ExpressionSyntax ParseBinaryExpression(bool needSemicolon, int parentPrecedence = 0) {
         ExpressionSyntax left;
         var unaryOperatorPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
         if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence) {
             var operatorToken = NextToken();
-            var operand = ParseBinaryExpression(unaryOperatorPrecedence);
+            var operand = ParseBinaryExpression(needSemicolon, unaryOperatorPrecedence);
             left = new UnaryExpressionSyntax(_syntaxTree, operatorToken, operand);
         } else {
-            left = ParsePrimaryExpression();
+            left = ParsePrimaryExpression(needSemicolon);
         }
 
         while (true) {
@@ -345,14 +354,14 @@ internal sealed class Parser {
             if (precedence == 0 || precedence <= parentPrecedence) break;
 
             var operatorToken = NextToken();
-            var right = ParseBinaryExpression(precedence);
+            var right = ParseBinaryExpression(needSemicolon, precedence);
             left = new BinaryExpressionSyntax(_syntaxTree, left, operatorToken, right);
         }
 
         return left;
     }
 
-    private ExpressionSyntax ParsePrimaryExpression() {
+    private ExpressionSyntax ParsePrimaryExpression(bool needSemicolon) {
         switch (Current.Kind) {
             case SyntaxKind.OpenParenthesisToken: {
                     return ParseParenthesisExpression();
@@ -373,7 +382,7 @@ internal sealed class Parser {
 
             case SyntaxKind.IdentifierToken:
             default: {
-                    return ParseNameOrCallExpression();
+                    return ParseNameOrCallExpression(needSemicolon);
                 }
         }
     }
@@ -402,9 +411,9 @@ internal sealed class Parser {
         return new LiteralExpressionSyntax(_syntaxTree, keywordToken, isTrue);
     }
 
-    private ExpressionSyntax ParseNameOrCallExpression() {
+    private ExpressionSyntax ParseNameOrCallExpression(bool needSemicolon) {
         if (Peek(0).Kind == SyntaxKind.IdentifierToken && Peek(1).Kind == SyntaxKind.OpenParenthesisToken) {
-            return ParseCallExpression();
+            return ParseCallExpression(needSemicolon);
         }
 
         if (Current.Kind == SyntaxKind.IdentifierToken || Current.Kind == SyntaxKind.EndOfFileToken) {
@@ -414,12 +423,13 @@ internal sealed class Parser {
         return ParseTokenExpression(Current.Kind);  // TODO: We shouldn't use it
     }
 
-    private ExpressionSyntax ParseCallExpression() {
+    private ExpressionSyntax ParseCallExpression(bool needSemicolon) {
         var identifier = MatchToken(SyntaxKind.IdentifierToken);
         var openParenthesisToken = MatchToken(SyntaxKind.OpenParenthesisToken);
         var arguments = ParseArguments();
         var closeParenthesisToken = MatchToken(SyntaxKind.CloseParenthesisToken);
-        return new CallExpressionSyntax(_syntaxTree, identifier, openParenthesisToken, arguments, closeParenthesisToken);
+        var semicolon = needSemicolon ? null : MatchToken(SyntaxKind.SemicolonToken);
+        return new CallExpressionSyntax(_syntaxTree, identifier, openParenthesisToken, arguments, closeParenthesisToken, semicolon);
     }
 
     private SeparatedSyntaxList<ExpressionSyntax> ParseArguments() {
@@ -427,7 +437,7 @@ internal sealed class Parser {
 
         var parseNextArgument = true;
         while (parseNextArgument && Current.Kind != SyntaxKind.CloseParenthesisToken && Current.Kind != SyntaxKind.EndOfFileToken) {
-            var expression = ParseExpression();
+            var expression = ParseExpression(true);
             nodesAndSeparators.Add(expression);
 
             if (Current.Kind == SyntaxKind.CommaToken) {

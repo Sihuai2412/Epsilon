@@ -61,7 +61,7 @@ public class EvaluationTests {
     [InlineData("false", false)]
     [InlineData("!true", false)]
     [InlineData("!false", true)]
-    [InlineData("var a = 10 return a", 10)]
+    [InlineData("var a = 10; return a;", 10)]
     [InlineData("\"test\"", "test")]
     [InlineData("\"te\"\"st\"", "te\"st")]
     [InlineData("\"test\" == \"test\"", true)]
@@ -69,35 +69,35 @@ public class EvaluationTests {
     [InlineData("\"test\" == \"abc\"", false)]
     [InlineData("\"test\" != \"abc\"", true)]
     [InlineData("\"test\" + \"abc\"", "testabc")]
-    [InlineData("{ var a : any = 0 var b : any = \"b\" return a == b }", false)]
-    [InlineData("{ var a : any = 0 var b : any = \"b\" return a != b }", true)]
-    [InlineData("{ var a : any = 0 var b : any = 0 return a == b }", true)]
-    [InlineData("{ var a : any = 0 var b : any = 0 return a != b }", false)]
-    [InlineData("{ var a = 10 return a * a }", 100)]
-    [InlineData("{ var a = 0 return (a = 10) * a }", 100)]
-    [InlineData("{ var a = 0 if a == 0 a = 10 return a }", 10)]
-    [InlineData("{ var a = 0 if a == 4 a = 10 return a }", 0)]
-    [InlineData("{ var a = 0 if a == 0 a = 10 else a = 5 return a }", 10)]
-    [InlineData("{ var a = 0 if a == 4 a = 10 else a = 5 return a }", 5)]
-    [InlineData("{ var i = 10 var result = 0 while i > 0 { result = result + i i = i - 1} return result }", 55)]
-    [InlineData("{ var result = 0 for i = 1 to 10 { result = result + i } return result }", 55)]
-    [InlineData("{ var a = 10 for i = 1 to (a = a - 1) { } return a }", 9)]
-    [InlineData("{ var a = 0 do a = a + 1 while a < 10 return a}", 10)]
-    [InlineData("{ var i = 0 while i < 5 { i = i + 1 if i == 5 continue } return i }", 5)]
-    [InlineData("{ var i = 0 do { i = i + 1 if i == 5 continue } while i < 5 return i }", 5)]
-    [InlineData("{ var a = 1 a += (2 + 3) return a }", 6)]
-    [InlineData("{ var a = 1 a -= (2 + 3) return a }", -4)]
-    [InlineData("{ var a = 1 a *= (2 + 3) return a }", 5)]
-    [InlineData("{ var a = 1 a /= (2 + 3) return a }", 0)]
-    [InlineData("{ var a = true a &= (false) return a }", false)]
-    [InlineData("{ var a = true a |= (false) return a }", true)]
-    [InlineData("{ var a = true a ^= (true) return a }", false)]
-    [InlineData("{ var a = 1 a |= 0 return a }", 1)]
-    [InlineData("{ var a = 1 a &= 3 return a }", 1)]
-    [InlineData("{ var a = 1 a &= 0 return a }", 0)]
-    [InlineData("{ var a = 1 a ^= 0 return a }", 1)]
-    [InlineData("{ var a = 1 var b = 2 var c = 3 a += b += c return a }", 6)]
-    [InlineData("{ var a = 1 var b = 2 var c = 3 a += b += c return b }", 5)]
+    [InlineData("{ var a : any = 0; var b : any = \"b\"; return a == b; }", false)]
+    [InlineData("{ var a : any = 0; var b : any = \"b\"; return a != b; }", true)]
+    [InlineData("{ var a : any = 0; var b : any = 0; return a == b; }", true)]
+    [InlineData("{ var a : any = 0; var b : any = 0; return a != b; }", false)]
+    [InlineData("{ var a = 10; return a * a; }", 100)]
+    [InlineData("{ var a = 0; return (a = 10;) * a; }", 100)]
+    [InlineData("{ var a = 0; if a == 0 a = 10; return a; }", 10)]
+    [InlineData("{ var a = 0; if a == 4 a = 10; return a; }", 0)]
+    [InlineData("{ var a = 0; if a == 0 a = 10; else a = 5; return a; }", 10)]
+    [InlineData("{ var a = 0; if a == 4 a = 10; else a = 5; return a; }", 5)]
+    [InlineData("{ var i = 10; var result = 0; while i > 0 { result = result + i; i = i - 1;} return result; }", 55)]
+    [InlineData("{ var result = 0; for i = 1 to 10 { result = result + i; } return result; }", 55)]
+    [InlineData("{ var a = 10; for i = 1 to (a = a - 1;) { } return a; }", 9)]
+    [InlineData("{ var a = 0; do a = a + 1; while a < 10; return a;}", 10)]
+    [InlineData("{ var i = 0; while i < 5 { i = i + 1; if i == 5 continue; } return i; }", 5)]
+    [InlineData("{ var i = 0; do { i = i + 1; if i == 5 continue; } while i < 5; return i; }", 5)]
+    [InlineData("{ var a = 1; a += (2 + 3); return a; }", 6)]
+    [InlineData("{ var a = 1; a -= (2 + 3); return a; }", -4)]
+    [InlineData("{ var a = 1; a *= (2 + 3); return a; }", 5)]
+    [InlineData("{ var a = 1; a /= (2 + 3); return a; }", 0)]
+    [InlineData("{ var a = true; a &= (false); return a; }", false)]
+    [InlineData("{ var a = true; a |= (false); return a; }", true)]
+    [InlineData("{ var a = true; a ^= (true); return a; }", false)]
+    [InlineData("{ var a = 1; a |= 0; return a; }", 1)]
+    [InlineData("{ var a = 1; a &= 3; return a; }", 1)]
+    [InlineData("{ var a = 1; a &= 0; return a; }", 0)]
+    [InlineData("{ var a = 1; a ^= 0; return a; }", 1)]
+    [InlineData("{ var a = 1; var b = 2; var c = 3; a += b += c; return a; }", 6)]
+    [InlineData("{ var a = 1; var b = 2; var c = 3; a += b += c; return b; }", 5)]
     public void Evaluator_Computes_CorrectValues(string text, object expectedValue) {
         AssertValue(text, expectedValue);
     }
@@ -106,12 +106,12 @@ public class EvaluationTests {
     public void Evaluator_VariableDeclaration_Reports_Redeclaration() {
         var text = @"
             {
-                var x = 10
-                var y = 100
+                var x = 10;
+                var y = 100;
                 {
-                    var x = 10
+                    var x = 10;
                 }
-                var [x] = 5
+                var [x] = 5;
             }
         ";
 
@@ -139,7 +139,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_InvokeFunctionArguments_Missing() {
         var text = @"
-            print([)]
+            print([)];
         ";
 
         var diagnostics = @"
@@ -152,7 +152,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_InvokeFunctionArguments_Exceeding() {
         var text = @"
-            print(""Hello""[, "" "", "" world!""])
+            print(""Hello""[, "" "", "" world!""]);
         ";
 
         var diagnostics = @"
@@ -165,11 +165,12 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_InvokeFunctionArguments_NoInfiniteLoop() {
         var text = @"
-            print(""Hi""[=])
+            print(""Hi""[[=]]);
         ";
 
         var diagnostics = @"
             Unexpected token <EqualsToken>, expected <CloseParenthesisToken>.
+            Unexpected token <EqualsToken>, expected <SemicolonToken>.
         ";
 
         AssertDiagnostics(text, diagnostics);
@@ -179,7 +180,7 @@ public class EvaluationTests {
     public void Evaluator_FunctionParameters_NoInfiniteLoop() {
         var text = @"
             function hi(name: string[[=]]){
-                print(""Hi "" + name + ""!"" )
+                print(""Hi "" + name + ""!"" );
             }[]
         ";
 
@@ -210,9 +211,9 @@ public class EvaluationTests {
     public void Evaluator_IfStatement_Reports_CannotConvert() {
         var text = @"
             {
-                var x = 0
+                var x = 0;
                 if [10]
-                    x = 10
+                    x = 10;
             }
         ";
 
@@ -227,9 +228,9 @@ public class EvaluationTests {
     public void Evaluator_WhileStatement_Reports_CannotConvert() {
         var text = @"
             {
-                var x = 0
+                var x = 0;
                 while [10]
-                    x = 10
+                    x = 10;
             }
         ";
 
@@ -244,10 +245,10 @@ public class EvaluationTests {
     public void Evaluator_DoWhileStatement_Reports_CannotConvert() {
         var text = @"
             {
-                var x = 0
+                var x = 0;
                 do
-                    x = 10
-                while [10]
+                    x = 10;
+                while [10];
             }
         ";
 
@@ -262,9 +263,9 @@ public class EvaluationTests {
     public void Evaluator_ForStatement_Reports_CannotConvert_LowerBound() {
         var text = @"
             {
-                var result = 0
+                var result = 0;
                 for i = [false] to 10
-                    result = result + i
+                    result = result + i;
             }
         ";
 
@@ -279,9 +280,9 @@ public class EvaluationTests {
     public void Evaluator_ForStatement_Reports_CannotConvert_UpperBound() {
         var text = @"
             {
-                var result = 0
+                var result = 0;
                 for i = 1 to [true]
-                    result = result + i
+                    result = result + i;
             }
         ";
 
@@ -338,8 +339,8 @@ public class EvaluationTests {
 
     [Fact]
     public void Evaluator_CompoundExpression_Reports_Undefined() {
-        var text = @"var x = 10
-                     x [+=] false";
+        var text = @"var x = 10;
+                     x [+=] false;";
 
         var diagnostics = @"
             Binary operator '+=' is not defined for types 'int' and 'bool'.
@@ -350,7 +351,7 @@ public class EvaluationTests {
 
     [Fact]
     public void Evaluator_AssignmentExpression_Reports_Undefined() {
-        var text = @"[x] = 10";
+        var text = @"[x] = 10;";
 
         var diagnostics = @"
             Variable 'x' doesn't exist.
@@ -361,7 +362,7 @@ public class EvaluationTests {
 
     [Fact]
     public void Evaluator_CompoundExpression_Assignment_NonDefinedVariable_Reports_Undefined() {
-        var text = @"[x] += 10";
+        var text = @"[x] += 10;";
 
         var diagnostics = @"
             Variable 'x' doesn't exist.
@@ -372,7 +373,7 @@ public class EvaluationTests {
 
     [Fact]
     public void Evaluator_AssignmentExpression_Reports_NotAVariable() {
-        var text = @"[print] = 42";
+        var text = @"[print] = 42;";
 
         var diagnostics = @"
             'print' is not a variable.
@@ -385,8 +386,8 @@ public class EvaluationTests {
     public void Evaluator_AssignmentExpression_Reports_CannotAssign() {
         var text = @"
             {
-                let x = 10
-                x [=] 0
+                let x = 10;
+                x [=] 0;
             }
         ";
 
@@ -401,8 +402,8 @@ public class EvaluationTests {
     public void Evaluator_CompoundDeclarationExpression_Reports_CannotAssign() {
         var text = @"
             {
-                let x = 10
-                x [+=] 1
+                let x = 10;
+                x [+=] 1;
             }
         ";
 
@@ -417,8 +418,8 @@ public class EvaluationTests {
     public void Evaluator_AssignmentExpression_Reports_CannotConvert() {
         var text = @"
             {
-                var x = 10
-                x = [true]
+                var x = 10;
+                x = [true];
             }
         ";
 
@@ -431,7 +432,7 @@ public class EvaluationTests {
 
     [Fact]
     public void Evaluator_CallExpression_Reports_Undefined() {
-        var text = @"[foo](42)";
+        var text = @"[foo](42);";
 
         var diagnostics = @"
             Function 'foo' doesn't exist.
@@ -444,8 +445,8 @@ public class EvaluationTests {
     public void Evaluator_CallExpression_Reports_NotAFunction() {
         var text = @"
             {
-                let foo = 42
-                [foo](42)
+                let foo = 42;
+                [foo](42);
             }
         ";
 
@@ -460,8 +461,8 @@ public class EvaluationTests {
     public void Evaluator_Variables_Can_Shadow_Functions() {
         var text = @"
             {
-                let print = 42
-                [print](""test"")
+                let print = 42;
+                [print](""test"");
             }
         ";
 
@@ -476,7 +477,7 @@ public class EvaluationTests {
     public void Evaluator_Void_Function_Should_Not_Return_Value() {
         var text = @"
             function test(){
-                return [1]
+                return [1];
             }
         ";
 
@@ -491,7 +492,7 @@ public class EvaluationTests {
     public void Evaluator_Function_With_ReturnValue_Should_Not_Return_Void() {
         var text = @"
             function test(): int{
-                [return]
+                [return];
             }
         ";
 
@@ -507,7 +508,7 @@ public class EvaluationTests {
         var text = @"
             function [test](n: int): bool{
                 if (n > 10)
-                   return true
+                   return true;
             }
         ";
 
@@ -522,9 +523,9 @@ public class EvaluationTests {
     public void Evaluator_Expression_Must_Have_Value() {
         var text = @"
             function test(n: int){
-                return
+                return;
             }
-            let value = [test(100)]
+            let value = [test(100)];
         ";
 
         var diagnostics = @"
@@ -538,11 +539,11 @@ public class EvaluationTests {
     public void Evaluator_IfStatement_Reports_NotReachableCode_Warning() {
         var text = @"
                 function test(){
-                    let x = 4 * 3
+                    let x = 4 * 3;
                     if x > 12 {
-                        [print](""x"")
+                        [print](""x"");
                     } else {
-                        print(""x"")
+                        print(""x"");
                     }
                 }
             ";
@@ -558,9 +559,9 @@ public class EvaluationTests {
         var text = @"
                 function test(): int{
                     if true {
-                        return 1
+                        return 1;
                     } else {
-                        [return] 0
+                        [return] 0;
                     }
                 }
             ";
@@ -577,7 +578,7 @@ public class EvaluationTests {
         var text = @"
                 function test() {
                     while false {
-                        [continue]
+                        [continue];
                     }
                 }
             ";
@@ -590,8 +591,8 @@ public class EvaluationTests {
     }
 
     [Theory]
-    [InlineData("[break]", "break")]
-    [InlineData("[continue]", "continue")]
+    [InlineData("[break];", "break")]
+    [InlineData("[continue];", "continue")]
     public void Evaluator_Invalid_Break_Or_Continue(string text, string keyword) {
         var diagnostics = $@"
             The keyword '{keyword}' can only be used inside of loops.
@@ -603,7 +604,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Script_Return() {
         var text = @"
-            return
+            return;
         ";
 
         AssertValue(text, "");
@@ -613,7 +614,7 @@ public class EvaluationTests {
     public void Evaluator_Parameter_Already_Declared() {
         var text = @"
             function sum(a: int, b: int, [a: int]): int{
-                return a + b + c
+                return a + b + c;
             }
         ";
 
@@ -628,7 +629,7 @@ public class EvaluationTests {
     public void Evaluator_Function_Must_Have_Name() {
         var text = @"
             function [(]a: int, b: int): int{
-                return a + b
+                return a + b;
             }
         ";
 
@@ -643,10 +644,10 @@ public class EvaluationTests {
     public void Evaluator_Wrong_Argument_Type() {
         var text = @"
             function test(n: int): bool{
-                return n > 10
+                return n > 10;
             }
-            let testValue = ""string""
-            test([testValue])
+            let testValue = ""string"";
+            test([testValue]);
         ";
 
         var diagnostics = @"
