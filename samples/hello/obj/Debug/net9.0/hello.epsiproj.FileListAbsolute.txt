@@ -1,8 +1,0 @@
-C:\Users\asus\Desktop\Epsilon\samples\hello\bin\Debug\net9.0\hello.exe
-C:\Users\asus\Desktop\Epsilon\samples\hello\bin\Debug\net9.0\hello.deps.json
-C:\Users\asus\Desktop\Epsilon\samples\hello\bin\Debug\net9.0\hello.runtimeconfig.json
-C:\Users\asus\Desktop\Epsilon\samples\hello\bin\Debug\net9.0\hello.dll
-C:\Users\asus\Desktop\Epsilon\samples\hello\obj\Debug\net9.0\hello.epsiproj.CoreCompileInputs.cache
-C:\Users\asus\Desktop\Epsilon\samples\hello\obj\Debug\net9.0\hello.sourcelink.json
-C:\Users\asus\Desktop\Epsilon\samples\hello\obj\Debug\net9.0\hello.dll
-C:\Users\asus\Desktop\Epsilon\samples\hello\obj\Debug\net9.0\hello.genruntimeconfig.cache

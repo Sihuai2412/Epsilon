@@ -1,0 +1,19 @@
+function main() {
+    print("Please enter a number between 0 and 100: ");
+    var inputNumber = -1;
+    var number = rnd(101);
+    var minimum = 0;
+    var maximum = 100;
+    while (inputNumber != number) {
+        inputNumber = int(input());
+        if (inputNumber > number) {
+            print("Too big!");
+            maximum = inputNumber;
+        } else if (inputNumber < number) {
+            print("Too small!");
+            minimum = inputNumber;
+        }
+        print("Number between " + string(minimum) + " and " + string(maximum));
+    }
+    print("Correct number is: " + string(number));
+}
