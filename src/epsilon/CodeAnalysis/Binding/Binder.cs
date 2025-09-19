@@ -224,7 +224,7 @@ internal sealed class Binder {
     private static BoundScope CreateRootScope() {
         var result = new BoundScope(null);
 
-        foreach (var f in BuiltinFunctions.GetAll()) {
+        foreach (var f in BuiltinFunctions.functions) {
             result.TryDeclareFunction(f);
         }
 
@@ -469,6 +469,8 @@ internal sealed class Binder {
                 return BindBinaryExpression((BinaryExpressionSyntax)syntax);
             case SyntaxKind.CallExpression:
                 return BindCallExpression((CallExpressionSyntax)syntax);
+            case SyntaxKind.IsExpression:
+                return BindIsExpression((IsExpressionSyntax)syntax);
             case SyntaxKind.TokenExpression:
                 return BindTokenExpression((TokenExpressionSyntax)syntax);
             default:
@@ -630,6 +632,19 @@ internal sealed class Binder {
         return new BoundCallExpression(function, boundArguments.ToImmutable());
     }
 
+    private BoundExpression BindIsExpression(IsExpressionSyntax syntax) {
+        var variable = BindVariableReference(syntax.IdentifierToken);
+
+        var type = syntax.Type.Text;
+
+        var typeSymbol = LookupType(type);
+        if (typeSymbol == null) {
+            _diagnostics.ReportUndefinedType(syntax.Type.Location, type);
+        }
+
+        return new BoundIsExpression(variable!, typeSymbol!);
+    }
+
     private BoundExpression BindTokenExpression(TokenExpressionSyntax syntax) {
         _diagnostics.ReportBadInput(syntax.Location, syntax.Token.Text);
         return new BoundErrorExpression();
@@ -695,7 +710,7 @@ internal sealed class Binder {
     }
 
     private TypeSymbol? LookupType(string name) {
-        foreach (var type in TypeSymbol.allTypes) {
+        foreach (var type in TypeSymbol.types) {
             if (name == type.Name) {
                 return type;
             }

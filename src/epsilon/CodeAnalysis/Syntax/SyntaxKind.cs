@@ -57,6 +57,7 @@ public enum SyntaxKind {
     ForKeyword,
     FunctionKeyword,
     IfKeyword,
+    IsKeyword,
     LetKeyword,
     ReturnKeyword,
     ToKeyword,
@@ -94,5 +95,6 @@ public enum SyntaxKind {
     ParenthesizedExpression,
     AssignmentExpression,
     CallExpression,
+    IsExpression,
     TokenExpression,
 }

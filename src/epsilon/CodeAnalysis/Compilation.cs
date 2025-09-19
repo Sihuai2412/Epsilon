@@ -45,7 +45,7 @@ public sealed class Compilation {
         var submission = this;
         var seenSymbolNames = new HashSet<string>();
 
-        var builtinFunctions = BuiltinFunctions.GetAll().ToList();
+        var builtinFunctions = BuiltinFunctions.functions.ToList();
 
         while (submission != null) {
             foreach (var function in submission.Functions) {

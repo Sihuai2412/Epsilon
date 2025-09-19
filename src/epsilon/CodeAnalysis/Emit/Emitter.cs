@@ -334,6 +334,10 @@ internal sealed class Emitter {
                     EmitConversionExpression(ilProcessor, (BoundConversionExpression)node);
                     break;
                 }
+            case BoundNodeKind.IsExpression: {
+                    EmitIsExpression(ilProcessor, (BoundIsExpression)node);
+                    break;
+                }
             default: {
                     throw new Exception($"Unexpected node kind {node.Kind}");
                 }
@@ -670,5 +674,31 @@ internal sealed class Emitter {
         } else {
             throw new Exception($"Unexpected conversion from {node.Expression.Type} to {node.Type}");
         }
+    }
+
+    private void EmitIsExpression(ILProcessor ilProcessor, BoundIsExpression node) {
+        if (node.TypeSymbol == TypeSymbol.Any) {
+            ilProcessor.Emit(OpCodes.Ldc_I4_1);
+            return;
+        }
+
+        var variableDefinition = _locals[node.Variable];
+        ilProcessor.Emit(OpCodes.Ldloc, variableDefinition);
+
+        var needsBoxing = node.Variable.Type != TypeSymbol.Any &&
+                         (node.Variable.Type == TypeSymbol.Bool ||
+                          node.Variable.Type == TypeSymbol.Int ||
+                          node.Variable.Type == TypeSymbol.Float);
+
+        if (needsBoxing) {
+            ilProcessor.Emit(OpCodes.Box, _knownTypes[node.Variable.Type]);
+        }
+
+        ilProcessor.Emit(OpCodes.Isinst, _knownTypes[node.TypeSymbol]);
+
+        ilProcessor.Emit(OpCodes.Ldnull);
+        ilProcessor.Emit(OpCodes.Ceq);
+        ilProcessor.Emit(OpCodes.Ldc_I4_0);
+        ilProcessor.Emit(OpCodes.Ceq);
     }
 }

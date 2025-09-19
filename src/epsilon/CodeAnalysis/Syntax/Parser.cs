@@ -333,6 +333,12 @@ internal sealed class Parser {
                         var right = ParseAssignmentExpression();
                         return new AssignmentExpressionSyntax(_syntaxTree, identifierToken, operatorToken, right);
                     }
+                case SyntaxKind.IsKeyword: {
+                    var identifierToken = NextToken();
+                    var isKeyword = NextToken();
+                    var type = NextToken();
+                    return new IsExpressionSyntax(_syntaxTree, identifierToken, isKeyword, type);
+                }
             }
         }
         return ParseBinaryExpression();

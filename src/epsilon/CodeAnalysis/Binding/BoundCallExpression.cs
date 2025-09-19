@@ -14,3 +14,15 @@ internal sealed class BoundCallExpression : BoundExpression {
     public FunctionSymbol Function { get; }
     public ImmutableArray<BoundExpression> Arguments { get; }
 }
+
+internal sealed class BoundIsExpression : BoundExpression {
+    public BoundIsExpression(VariableSymbol variable, TypeSymbol typeSymbol) {
+        Variable = variable;
+        TypeSymbol = typeSymbol;
+    }
+
+    public override BoundNodeKind Kind => BoundNodeKind.IsExpression;
+    public override TypeSymbol Type => TypeSymbol.Bool;
+    public VariableSymbol Variable { get; }
+    public TypeSymbol TypeSymbol { get; }
+}
