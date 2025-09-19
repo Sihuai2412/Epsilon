@@ -99,7 +99,7 @@ public sealed class Compilation {
 
         var evaluator = new Evaluator(program, variables);
         var value = evaluator.Evaluate();
-        
+
         return new EvaluationResult(program.Diagnostics, value);
     }
 
