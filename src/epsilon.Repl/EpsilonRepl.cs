@@ -117,7 +117,7 @@ internal sealed class EpsilonRepl : Repl {
             return;
         }
 
-        var text = File.ReadAllText(path) + "\n\nmain();";
+        var text = File.ReadAllText(path);
         EvaluateSubmission(text);
     }
 
