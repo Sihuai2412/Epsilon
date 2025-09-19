@@ -61,6 +61,7 @@ internal static class SymbolPrinter {
         writer.WriteKeyword(symbol.IsReadOnly ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword);
         writer.WriteSpace();
         writer.WriteIdentifier(symbol.Name);
+        writer.WriteSpace();
         writer.WriteKeyword(SyntaxKind.AsKeyword);
         writer.WriteSpace();
         symbol.Type.WriteTo(writer);
@@ -70,6 +71,7 @@ internal static class SymbolPrinter {
         writer.WriteKeyword(symbol.IsReadOnly ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword);
         writer.WriteSpace();
         writer.WriteIdentifier(symbol.Name);
+        writer.WriteSpace();
         writer.WriteKeyword(SyntaxKind.AsKeyword);
         writer.WriteSpace();
         symbol.Type.WriteTo(writer);
@@ -77,6 +79,7 @@ internal static class SymbolPrinter {
 
     private static void WriteParameterTo(ParameterSymbol symbol, TextWriter writer) {
         writer.WriteIdentifier(symbol.Name);
+        writer.WriteSpace();
         writer.WriteKeyword(SyntaxKind.AsKeyword);
         writer.WriteSpace();
         symbol.Type.WriteTo(writer);
