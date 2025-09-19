@@ -137,7 +137,7 @@ internal sealed class EpsilonRepl : Repl {
         var symbol = compilation.GetSymbols().OfType<FunctionSymbol>().SingleOrDefault(f => f.Name == functionName);
         if (symbol == null) {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"error: file '{functionName}' does not exist");
+            Console.WriteLine($"error: function '{functionName}' does not exist");
             Console.ResetColor();
             return;
         }
