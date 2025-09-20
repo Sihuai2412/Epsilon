@@ -340,7 +340,7 @@ internal sealed class Evaluator {
     }
 
     private object? EvaluateIsExpression(BoundIsExpression node) {
-        return node.Variable.Type == node.TypeSymbol || node.TypeSymbol == TypeSymbol.Any; // TODO
+        return node.Expression.Type == node.TypeSymbol || node.TypeSymbol == TypeSymbol.Any; // TODO
     }
 
     private void Assign(VariableSymbol variable, object value) {

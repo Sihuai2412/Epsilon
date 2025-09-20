@@ -633,7 +633,7 @@ internal sealed class Binder {
     }
 
     private BoundExpression BindIsExpression(IsExpressionSyntax syntax) {
-        var variable = BindVariableReference(syntax.IdentifierToken);
+        var expression = BindExpression(syntax.Expression);
 
         var type = syntax.Type.Text;
 
@@ -642,7 +642,7 @@ internal sealed class Binder {
             _diagnostics.ReportUndefinedType(syntax.Type.Location, type);
         }
 
-        return new BoundIsExpression(variable!, typeSymbol!);
+        return new BoundIsExpression(expression!, typeSymbol!);
     }
 
     private BoundExpression BindTokenExpression(TokenExpressionSyntax syntax) {

@@ -12,16 +12,3 @@ public sealed partial class AssignmentExpressionSyntax : ExpressionSyntax {
     public SyntaxToken AssignmentToken { get; }
     public ExpressionSyntax Expression { get; }
 }
-
-public sealed partial class IsExpressionSyntax : ExpressionSyntax {
-    public IsExpressionSyntax(SyntaxTree syntaxTree, SyntaxToken identifierToken, SyntaxToken isKeyword, SyntaxToken type) : base(syntaxTree) {
-        IdentifierToken = identifierToken;
-        IsKeyword = isKeyword;
-        Type = type;
-    }
-
-    public override SyntaxKind Kind => SyntaxKind.IsExpression;
-    public SyntaxToken IdentifierToken { get; }
-    public SyntaxToken IsKeyword { get; }
-    public SyntaxToken Type { get; }
-}

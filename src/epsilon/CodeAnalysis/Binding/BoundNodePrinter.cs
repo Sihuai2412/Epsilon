@@ -354,7 +354,7 @@ internal static class BoundNodePrinter {
     }
 
     private static void WriteIsExpression(BoundIsExpression node, IndentedTextWriter writer) {
-        writer.WriteIdentifier(node.Variable.Name);
+        node.Expression.WriteTo(writer);
         writer.WriteSpace();
         writer.WriteKeyword(SyntaxKind.IsKeyword);
         writer.WriteSpace();

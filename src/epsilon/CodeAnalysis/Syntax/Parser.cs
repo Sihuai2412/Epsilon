@@ -334,10 +334,10 @@ internal sealed class Parser {
                         return new AssignmentExpressionSyntax(_syntaxTree, identifierToken, operatorToken, right);
                     }
                 case SyntaxKind.IsKeyword: {
-                        var identifierToken = NextToken();
+                        var expression = ParseBinaryExpression();
                         var isKeyword = NextToken();
                         var type = NextToken();
-                        return new IsExpressionSyntax(_syntaxTree, identifierToken, isKeyword, type);
+                        return new IsExpressionSyntax(_syntaxTree, expression, isKeyword, type);
                     }
             }
         }

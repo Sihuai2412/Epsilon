@@ -265,6 +265,11 @@ internal abstract class BoundTreeRewriter {
     }
 
     private BoundExpression RewriteIsExpression(BoundIsExpression node) {
-        return new BoundIsExpression(node.Variable, node.TypeSymbol);
+        var expression = RewriteExpression(node.Expression);
+        if (expression == node.Expression) {
+            return node;
+        }
+
+        return new BoundIsExpression(expression, node.TypeSymbol);
     }
 }
