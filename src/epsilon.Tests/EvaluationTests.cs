@@ -397,7 +397,7 @@ public class EvaluationTests {
     public void Evaluator_AssignmentExpression_Reports_CannotAssign() {
         var text = @"
             {
-                let x = 10;
+                val x = 10;
                 x [=] 0;
             }
         ";
@@ -413,7 +413,7 @@ public class EvaluationTests {
     public void Evaluator_CompoundDeclarationExpression_Reports_CannotAssign() {
         var text = @"
             {
-                let x = 10;
+                val x = 10;
                 x [+=] 1;
             }
         ";
@@ -456,7 +456,7 @@ public class EvaluationTests {
     public void Evaluator_CallExpression_Reports_NotAFunction() {
         var text = @"
             {
-                let foo = 42;
+                val foo = 42;
                 [foo](42);
             }
         ";
@@ -472,7 +472,7 @@ public class EvaluationTests {
     public void Evaluator_Variables_Can_Shadow_Functions() {
         var text = @"
             {
-                let print = 42;
+                val print = 42;
                 [print](""test"");
             }
         ";
@@ -536,7 +536,7 @@ public class EvaluationTests {
             function test(n as int){
                 return;
             }
-            let value = [test(100)];
+            val value = [test(100)];
         ";
 
         var diagnostics = @"
@@ -550,7 +550,7 @@ public class EvaluationTests {
     public void Evaluator_IfStatement_Reports_NotReachableCode_Warning() {
         var text = @"
                 function test(){
-                    let x = 4 * 3;
+                    val x = 4 * 3;
                     if x > 12 {
                         [print](""x"");
                     } else {
@@ -657,7 +657,7 @@ public class EvaluationTests {
             function test(n as int) as bool{
                 return n > 10;
             }
-            let testValue = ""string"";
+            val testValue = ""string"";
             test([testValue]);
         ";
 

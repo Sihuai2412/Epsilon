@@ -58,7 +58,7 @@ internal static class SymbolPrinter {
     }
 
     private static void WriteGlobalVariableTo(GlobalVariableSymbol symbol, TextWriter writer) {
-        writer.WriteKeyword(symbol.IsReadOnly ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword);
+        writer.WriteKeyword(symbol.IsReadOnly ? SyntaxKind.ValKeyword : SyntaxKind.VarKeyword);
         writer.WriteSpace();
         writer.WriteIdentifier(symbol.Name);
         writer.WriteSpace();
@@ -68,7 +68,7 @@ internal static class SymbolPrinter {
     }
 
     private static void WriteLocalVariableTo(LocalVariableSymbol symbol, TextWriter writer) {
-        writer.WriteKeyword(symbol.IsReadOnly ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword);
+        writer.WriteKeyword(symbol.IsReadOnly ? SyntaxKind.ValKeyword : SyntaxKind.VarKeyword);
         writer.WriteSpace();
         writer.WriteIdentifier(symbol.Name);
         writer.WriteSpace();

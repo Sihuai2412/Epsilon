@@ -58,7 +58,7 @@ public enum SyntaxKind {
     FunctionKeyword,
     IfKeyword,
     IsKeyword,
-    LetKeyword,
+    ValKeyword,
     ReturnKeyword,
     ToKeyword,
     TrueKeyword,

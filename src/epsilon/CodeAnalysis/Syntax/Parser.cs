@@ -167,7 +167,7 @@ internal sealed class Parser {
         switch (Current.Kind) {
             case SyntaxKind.OpenBraceToken:
                 return ParseBlockStatement();
-            case SyntaxKind.LetKeyword:
+            case SyntaxKind.ValKeyword:
             case SyntaxKind.VarKeyword:
                 return ParseVariableDeclaration();
             case SyntaxKind.IfKeyword:
@@ -212,7 +212,7 @@ internal sealed class Parser {
     }
 
     private StatementSyntax ParseVariableDeclaration() {
-        var expected = Current.Kind == SyntaxKind.LetKeyword ? SyntaxKind.LetKeyword : SyntaxKind.VarKeyword;
+        var expected = Current.Kind == SyntaxKind.ValKeyword ? SyntaxKind.ValKeyword : SyntaxKind.VarKeyword;
         var keyword = MatchToken(expected);
         var identifier = MatchToken(SyntaxKind.IdentifierToken);
         var typeClause = ParseOptionalTypeClause();

@@ -71,14 +71,14 @@ public static class SyntaxFacts {
                 return SyntaxKind.IfKeyword;
             case "is":
                 return SyntaxKind.IsKeyword;
-            case "let":
-                return SyntaxKind.LetKeyword;
             case "return":
                 return SyntaxKind.ReturnKeyword;
             case "to":
                 return SyntaxKind.ToKeyword;
             case "true":
                 return SyntaxKind.TrueKeyword;
+            case "val":
+                return SyntaxKind.ValKeyword;
             case "var":
                 return SyntaxKind.VarKeyword;
             case "while":
@@ -192,14 +192,14 @@ public static class SyntaxFacts {
                 return "if";
             case SyntaxKind.IsKeyword:
                 return "is";
-            case SyntaxKind.LetKeyword:
-                return "let";
             case SyntaxKind.ReturnKeyword:
                 return "return";
             case SyntaxKind.ToKeyword:
                 return "to";
             case SyntaxKind.TrueKeyword:
                 return "true";
+            case SyntaxKind.ValKeyword:
+                return "val";
             case SyntaxKind.VarKeyword:
                 return "var";
             case SyntaxKind.WhileKeyword:

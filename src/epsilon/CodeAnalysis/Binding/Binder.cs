@@ -301,7 +301,7 @@ internal sealed class Binder {
     }
 
     private BoundStatement BindVariableDeclaration(VariableDeclarationSyntax syntax) {
-        var isReadOnly = syntax.Keyword.Kind == SyntaxKind.LetKeyword;
+        var isReadOnly = syntax.Keyword.Kind == SyntaxKind.ValKeyword;
         var type = BindTypeClause(syntax.TypeClause);
         var initializer = BindExpression(syntax.Initializer);
         var variableType = type ?? initializer.Type;
