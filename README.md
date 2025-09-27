@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Epsilon is a programming language of variables, methods and classes. It is currently in the development stage!
+Epsilon is a programming language of variables, functions and classes. It is currently in the development stage!
 
 ## Installation
 
