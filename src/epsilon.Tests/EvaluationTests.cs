@@ -187,7 +187,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_FunctionParameters_NoInfiniteLoop() {
         var text = @"
-            function hi(name as string[[=]][)][{]
+            fun hi(name as string[[=]][)][{]
                 print(""Hi "" + name + ""!"" );
             }[]
         ";
@@ -206,7 +206,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_FunctionReturn_Missing() {
         var text = @"
-            function [add](a as int, b as int) as int{
+            fun [add](a as int, b as int) as int{
             }
         ";
 
@@ -487,7 +487,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Void_Function_Should_Not_Return_Value() {
         var text = @"
-            function test(){
+            fun test(){
                 return [1];
             }
         ";
@@ -502,7 +502,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Function_With_ReturnValue_Should_Not_Return_Void() {
         var text = @"
-            function test() as int{
+            fun test() as int{
                 [return];
             }
         ";
@@ -517,7 +517,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Not_All_Code_Paths_Return_Value() {
         var text = @"
-            function [test](n as int) as bool{
+            fun [test](n as int) as bool{
                 if (n > 10)
                    return true;
             }
@@ -533,7 +533,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Expression_Must_Have_Value() {
         var text = @"
-            function test(n as int){
+            fun test(n as int){
                 return;
             }
             val value = [test(100)];
@@ -549,7 +549,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_IfStatement_Reports_NotReachableCode_Warning() {
         var text = @"
-                function test(){
+                fun test(){
                     val x = 4 * 3;
                     if x > 12 {
                         [print](""x"");
@@ -568,7 +568,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_ElseStatement_Reports_NotReachableCode_Warning() {
         var text = @"
-                function test() as int{
+                fun test() as int{
                     if true {
                         return 1;
                     } else {
@@ -587,7 +587,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_WhileStatement_Reports_NotReachableCode_Warning() {
         var text = @"
-                function test() {
+                fun test() {
                     while false {
                         [continue];
                     }
@@ -624,7 +624,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Parameter_Already_Declared() {
         var text = @"
-            function sum(a as int, b as int, [a as int]) as int{
+            fun sum(a as int, b as int, [a as int]) as int{
                 return a + b + c;
             }
         ";
@@ -639,7 +639,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Function_Must_Have_Name() {
         var text = @"
-            function [(]a as int, b as int) as int{
+            fun [(]a as int, b as int) as int{
                 return a + b;
             }
         ";
@@ -654,7 +654,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Wrong_Argument_Type() {
         var text = @"
-            function test(n as int) as bool{
+            fun test(n as int) as bool{
                 return n > 10;
             }
             val testValue = ""string"";
@@ -671,7 +671,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_Bad_Type() {
         var text = @"
-            function test(n as [invalidtype]){
+            fun test(n as [invalidtype]){
             }
         ";
 

@@ -106,7 +106,7 @@ internal sealed class Parser {
     }
 
     private MemberSyntax ParseMember() {
-        if (Current.Kind == SyntaxKind.FunctionKeyword) {
+        if (Current.Kind == SyntaxKind.FunKeyword) {
             return ParseFunctionDeclaration();
         }
 
@@ -114,7 +114,7 @@ internal sealed class Parser {
     }
 
     private MemberSyntax ParseFunctionDeclaration() {
-        var function = MatchToken(SyntaxKind.FunctionKeyword);
+        var function = MatchToken(SyntaxKind.FunKeyword);
         var identifier = MatchToken(SyntaxKind.IdentifierToken);
         var openParenthesisToken = MatchToken(SyntaxKind.OpenParenthesisToken);
         var parameters = ParseParameterList();

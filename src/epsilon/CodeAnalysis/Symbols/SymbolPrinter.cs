@@ -33,7 +33,7 @@ internal static class SymbolPrinter {
     }
 
     private static void WriteFunctionTo(FunctionSymbol symbol, TextWriter writer) {
-        writer.WriteKeyword(SyntaxKind.FunctionKeyword);
+        writer.WriteKeyword(SyntaxKind.FunKeyword);
         writer.WriteSpace();
         writer.WriteIdentifier(symbol.Name);
         writer.WritePunctuation(SyntaxKind.OpenParenthesisToken);

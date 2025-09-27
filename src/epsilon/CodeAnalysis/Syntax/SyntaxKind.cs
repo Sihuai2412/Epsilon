@@ -55,7 +55,7 @@ public enum SyntaxKind {
     ElseKeyword,
     FalseKeyword,
     ForKeyword,
-    FunctionKeyword,
+    FunKeyword,
     IfKeyword,
     IsKeyword,
     ValKeyword,

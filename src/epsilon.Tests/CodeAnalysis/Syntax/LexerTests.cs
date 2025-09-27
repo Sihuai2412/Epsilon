@@ -209,7 +209,7 @@ public class LexerTests {
             return true;
         }
 
-        if (t1Kind == SyntaxKind.NumberToken && t2Kind == SyntaxKind.FunctionKeyword) {
+        if (t1Kind == SyntaxKind.NumberToken && t2Kind == SyntaxKind.FunKeyword) {
             return true;
         }
 

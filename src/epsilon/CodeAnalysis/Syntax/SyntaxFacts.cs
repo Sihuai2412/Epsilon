@@ -65,8 +65,8 @@ public static class SyntaxFacts {
                 return SyntaxKind.FalseKeyword;
             case "for":
                 return SyntaxKind.ForKeyword;
-            case "function":
-                return SyntaxKind.FunctionKeyword;
+            case "fun":
+                return SyntaxKind.FunKeyword;
             case "if":
                 return SyntaxKind.IfKeyword;
             case "is":
@@ -186,8 +186,8 @@ public static class SyntaxFacts {
                 return "false";
             case SyntaxKind.ForKeyword:
                 return "for";
-            case SyntaxKind.FunctionKeyword:
-                return "function";
+            case SyntaxKind.FunKeyword:
+                return "fun";
             case SyntaxKind.IfKeyword:
                 return "if";
             case SyntaxKind.IsKeyword:
