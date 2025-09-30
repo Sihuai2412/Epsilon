@@ -303,10 +303,29 @@ internal sealed class Binder {
     private BoundStatement BindVariableDeclaration(VariableDeclarationSyntax syntax) {
         var isReadOnly = syntax.Keyword.Kind == SyntaxKind.ValKeyword;
         var type = BindTypeClause(syntax.TypeClause);
-        var initializer = BindExpression(syntax.Initializer);
-        var variableType = type ?? initializer.Type;
-        var variable = BindVariableDeclaration(syntax.Identifier, isReadOnly, variableType, initializer.ConstantValue);
-        var convertedInitializer = BindConversion(syntax.Initializer.Location, initializer, variableType);
+        var initializer = syntax.Initializer == null ? null : BindExpression(syntax.Initializer.Expression);
+        TypeSymbol variableType;
+        if (type != null) {
+            variableType = type;
+        } else if (initializer != null) {
+            variableType = initializer.Type;
+        } else {
+            _diagnostics.ReportCannotDeriveType(syntax.Identifier.Location);
+            variableType = TypeSymbol.Any;
+        }
+        var variable = BindVariableDeclaration(syntax.Identifier, isReadOnly, variableType, initializer?.ConstantValue);
+        BoundExpression convertedInitializer;
+
+        if (initializer != null) {
+            convertedInitializer = BindConversion(syntax.Initializer!.Location, initializer, variableType);
+        } else {
+            if (variableType == TypeSymbol.Error || variableType == TypeSymbol.Void || variableType == TypeSymbol.Any) {
+                _diagnostics.ReportCannotDeriveValue(syntax.Identifier.Location);
+                convertedInitializer = new BoundLiteralExpression(0);
+            } else {
+                convertedInitializer = new BoundLiteralExpression(variableType.DefaultValue);
+            }
+        }
 
         return new BoundVariableDeclaration(variable, convertedInitializer);
     }

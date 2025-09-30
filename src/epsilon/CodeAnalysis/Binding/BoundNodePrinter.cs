@@ -169,10 +169,12 @@ internal static class BoundNodePrinter {
         writer.WriteKeyword(node.Variable.IsReadOnly ? SyntaxKind.ValKeyword : SyntaxKind.VarKeyword);
         writer.WriteSpace();
         writer.WriteIdentifier(node.Variable.Name);
-        writer.WriteSpace();
-        writer.WritePunctuation(SyntaxKind.EqualsToken);
-        writer.WriteSpace();
-        node.Initializer.WriteTo(writer);
+        if (node.Initializer != null) {
+            writer.WriteSpace();
+            writer.WritePunctuation(SyntaxKind.EqualsToken);
+            writer.WriteSpace();
+            node.Initializer.WriteTo(writer);
+        }
         writer.WriteSemicolon();
         writer.WriteLine();
     }

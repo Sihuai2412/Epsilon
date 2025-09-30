@@ -216,10 +216,9 @@ internal sealed class Parser {
         var keyword = MatchToken(expected);
         var identifier = MatchToken(SyntaxKind.IdentifierToken);
         var typeClause = ParseOptionalTypeClause();
-        var equals = MatchToken(SyntaxKind.EqualsToken);
-        var initializer = ParseExpression();
+        var initializer = ParseOptionalInitializer();
         var semicolon = MatchToken(SyntaxKind.SemicolonToken);
-        return new VariableDeclarationSyntax(_syntaxTree, keyword, identifier, typeClause, equals, initializer, semicolon);
+        return new VariableDeclarationSyntax(_syntaxTree, keyword, identifier, typeClause, initializer, semicolon);
     }
 
     private TypeClauseSyntax? ParseOptionalTypeClause() {
@@ -234,6 +233,20 @@ internal sealed class Parser {
         var asKeyword = MatchToken(SyntaxKind.AsKeyword);
         var identifier = MatchToken(SyntaxKind.IdentifierToken);
         return new TypeClauseSyntax(_syntaxTree, asKeyword, identifier);
+    }
+
+    private InitializerSyntax? ParseOptionalInitializer() {
+        if (Current.Kind != SyntaxKind.EqualsToken) {
+            return null;
+        }
+
+        return ParseInitializer();
+    }
+
+    private InitializerSyntax ParseInitializer() {
+        var equalsKeyword = MatchToken(SyntaxKind.EqualsToken);
+        var expression = ParseExpression();
+        return new InitializerSyntax(_syntaxTree, equalsKeyword, expression);
     }
 
     private StatementSyntax ParseIfStatement() {

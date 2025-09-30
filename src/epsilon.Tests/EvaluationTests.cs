@@ -104,6 +104,9 @@ public class EvaluationTests {
     [InlineData("{ var a = 1; a ^= 0; return a; }", 1)]
     [InlineData("{ var a = 1; var b = 2; var c = 3; a += b += c; return a; }", 6)]
     [InlineData("{ var a = 1; var b = 2; var c = 3; a += b += c; return b; }", 5)]
+    [InlineData("{ var a as int; return a; }", 0)]
+    [InlineData("{ var a as bool; return a; }", false)]
+    [InlineData("{ var a as string; return a; }", "")]
     public void Evaluator_Computes_CorrectValues(string text, object expectedValue) {
         AssertValue(text, expectedValue);
     }
@@ -123,6 +126,37 @@ public class EvaluationTests {
 
         var diagnostics = @"
             'x' is already declared.
+        ";
+
+        AssertDiagnostics(text, diagnostics);
+    }
+
+    [Fact]
+    public void Evaluator_VariableDeclaration_Reports_CannotDeriveTypeAndValue() {
+        var text = @"
+            {
+                var [[x]];
+            }
+        ";
+
+        var diagnostics = @"
+            Unable to deduce type.
+            Unable to deduce value.
+        ";
+
+        AssertDiagnostics(text, diagnostics);
+    }
+
+    [Fact]
+    public void Evaluator_VariableDeclaration_Reports_CannotDeriveValue() {
+        var text = @"
+            {
+                var [x] as any;
+            }
+        ";
+
+        var diagnostics = @"
+            Unable to deduce value.
         ";
 
         AssertDiagnostics(text, diagnostics);

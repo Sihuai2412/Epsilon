@@ -73,6 +73,7 @@ public enum SyntaxKind {
     Parameter,
     TypeClause,
     ElseClause,
+    Initializer,
 
     // Statements
     BlockStatement,

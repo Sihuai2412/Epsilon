@@ -262,4 +262,14 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
                 }
         }
     }
+
+    public void ReportCannotDeriveType(TextLocation location) {
+        var message = $"Unable to deduce type.";
+        ReportError(location, message);
+    }
+
+    public void ReportCannotDeriveValue(TextLocation location) {
+        var message = $"Unable to deduce value.";
+        ReportError(location, message);
+    }
 }

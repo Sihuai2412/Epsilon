@@ -266,7 +266,7 @@ internal sealed class Emitter {
         _locals.Add(node.Variable, variableDefinition);
         ilProcessor.Body.Variables.Add(variableDefinition);
 
-        EmitExpression(ilProcessor, node.Initializer);
+        EmitExpression(ilProcessor, node.Initializer == null ? new BoundLiteralExpression(node.Variable.Type.DefaultValue) : node.Initializer);
         ilProcessor.Emit(OpCodes.Stloc, variableDefinition);
     }
 
