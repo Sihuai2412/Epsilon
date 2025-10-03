@@ -607,38 +607,19 @@ internal sealed class Binder {
             boundArguments.Add(boundArgument);
         }
 
-        var symbol = _scope.TryLookupSymbol(syntax.Identifier.Text);
+        var symbols = _scope.TryLookupFunction(syntax.Identifier.Text, boundArguments.ToImmutableArray());
 
-        if (symbol == null) {
-            _diagnostics.ReportUndefinedFunction(syntax.Identifier.Location, syntax.Identifier.Text);
+        if (symbols == null || !symbols.Any()) {
+            _diagnostics.ReportUndefinedFunction(syntax.Identifier.Location, syntax.Identifier.Text, boundArguments.ToImmutableArray());
             return new BoundErrorExpression();
         }
 
-        var function = symbol as FunctionSymbol;
-        if (function == null) {
-            _diagnostics.ReportNotAFunction(syntax.Identifier.Location, syntax.Identifier.Text);
+        if (symbols.Count() > 1) {
+            _diagnostics.ReportNoMatchingOverloadFunction(syntax.Identifier.Location, syntax.Identifier.Text, symbols!);
             return new BoundErrorExpression();
         }
 
-        if (syntax.Arguments.Count != function.Parameters.Length) {
-            TextSpan span;
-            if (syntax.Arguments.Count > function.Parameters.Length) {
-                SyntaxNode firstExceedingNode;
-                if (function.Parameters.Length > 0) {
-                    firstExceedingNode = syntax.Arguments.GetSeparator(function.Parameters.Length - 1);
-                } else {
-                    firstExceedingNode = syntax.Arguments[0];
-                }
-                var lastExceedingArgument = syntax.Arguments[syntax.Arguments.Count - 1];
-                span = TextSpan.FromBounds(firstExceedingNode.Span.Start, lastExceedingArgument.Span.End);
-            } else {
-                span = syntax.CloseParenthesisToken.Span;
-            }
-
-            var location = new TextLocation(syntax.SyntaxTree.Text, span);
-            _diagnostics.ReportWrongArgumentCount(location, function.Name, function.Parameters.Length, syntax.Arguments.Count);
-            return new BoundErrorExpression();
-        }
+        var function = symbols.First();
 
         for (var i = 0; i < syntax.Arguments.Count; i++) {
             var argumentLocation = syntax.Arguments[i].Location;
@@ -711,18 +692,14 @@ internal sealed class Binder {
 
     private VariableSymbol? BindVariableReference(SyntaxToken identifierToken) {
         var name = identifierToken.Text;
-        switch (_scope.TryLookupSymbol(name)) {
+        switch (_scope.TryLookupVariable(name)) {
             case VariableSymbol variable: {
                     return variable;
                 }
 
-            case null: {
-                    _diagnostics.ReportUndefinedVariable(identifierToken.Location, name);
-                    return null;
-                }
-
+            case null:
             default: {
-                    _diagnostics.ReportNotAVariable(identifierToken.Location, name);
+                    _diagnostics.ReportUndefinedVariable(identifierToken.Location, name);
                     return null;
                 }
         }

@@ -180,11 +180,11 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_InvokeFunctionArguments_Missing() {
         var text = @"
-            print([)];
+            [print]();
         ";
 
         var diagnostics = @"
-            Function 'print' requires 1 arguments but was given 0.
+            Function 'print()' doesn't exist.
         ";
 
         AssertDiagnostics(text, diagnostics);
@@ -193,11 +193,11 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_InvokeFunctionArguments_Exceeding() {
         var text = @"
-            print(""Hello""[, "" "", "" world!""]);
+            [print](""Hello"", "" "", "" world!"");
         ";
 
         var diagnostics = @"
-            Function 'print' requires 1 arguments but was given 3.
+            Function 'print(string, string, string)' doesn't exist.
         ";
 
         AssertDiagnostics(text, diagnostics);
@@ -417,17 +417,6 @@ public class EvaluationTests {
     }
 
     [Fact]
-    public void Evaluator_AssignmentExpression_Reports_NotAVariable() {
-        var text = @"[print] = 42;";
-
-        var diagnostics = @"
-            'print' is not a variable.
-        ";
-
-        AssertDiagnostics(text, diagnostics);
-    }
-
-    [Fact]
     public void Evaluator_AssignmentExpression_Reports_CannotAssign() {
         var text = @"
             {
@@ -480,39 +469,7 @@ public class EvaluationTests {
         var text = @"[foo](42);";
 
         var diagnostics = @"
-            Function 'foo' doesn't exist.
-        ";
-
-        AssertDiagnostics(text, diagnostics);
-    }
-
-    [Fact]
-    public void Evaluator_CallExpression_Reports_NotAFunction() {
-        var text = @"
-            {
-                val foo = 42;
-                [foo](42);
-            }
-        ";
-
-        var diagnostics = @"
-            'foo' is not a function.
-        ";
-
-        AssertDiagnostics(text, diagnostics);
-    }
-
-    [Fact]
-    public void Evaluator_Variables_Can_Shadow_Functions() {
-        var text = @"
-            {
-                val print = 42;
-                [print](""test"");
-            }
-        ";
-
-        var diagnostics = @"
-            'print' is not a function.
+            Function 'foo(int)' doesn't exist.
         ";
 
         AssertDiagnostics(text, diagnostics);
@@ -692,11 +649,11 @@ public class EvaluationTests {
                 return n > 10;
             }
             val testValue = ""string"";
-            test([testValue]);
+            [test](testValue);
         ";
 
         var diagnostics = @"
-            Cannot convert type 'string' to 'int'. An explicit conversion exits. (are you missing a cast?)
+            Function 'test(string)' doesn't exist.
         ";
 
         AssertDiagnostics(text, diagnostics);

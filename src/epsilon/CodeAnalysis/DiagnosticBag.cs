@@ -1,4 +1,7 @@
 using System.Collections;
+using System.Collections.Immutable;
+using System.Text;
+using epsilon.CodeAnalysis.Binding;
 using epsilon.CodeAnalysis.Symbols;
 using epsilon.CodeAnalysis.Syntax;
 using epsilon.CodeAnalysis.Text;
@@ -77,11 +80,6 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
         ReportError(location, message);
     }
 
-    public void ReportNotAVariable(TextLocation location, string name) {
-        var message = $"'{name}' is not a variable.";
-        ReportError(location, message);
-    }
-
     public void ReportUndefinedType(TextLocation location, string name) {
         var message = $"Type '{name}' doesn't exist.";
         ReportError(location, message);
@@ -108,19 +106,30 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
         ReportError(location, message);
     }
 
-    public void ReportUndefinedFunction(TextLocation location, string name) {
-        var message = $"Function '{name}' doesn't exist.";
+    public void ReportUndefinedFunction(TextLocation location, string name, ImmutableArray<BoundExpression> arguments) {
+        var message = $"Function '{name}({string.Join(", ", arguments.Select(a => a.Type.Name))})' doesn't exist.";
         ReportError(location, message);
     }
 
-    public void ReportNotAFunction(TextLocation location, string name) {
-        var message = $"'{name}' is not a function.";
-        ReportError(location, message);
-    }
-
-    public void ReportWrongArgumentCount(TextLocation location, string name, int expectedCount, int actualCount) {
-        var message = $"Function '{name}' requires {expectedCount} arguments but was given {actualCount}.";
-        ReportError(location, message);
+    public void ReportNoMatchingOverloadFunction(TextLocation location, string name, IEnumerable<FunctionSymbol> functions) {
+        var message = new StringBuilder();
+        message.Append($"Cannot find a matching overload for {name} in the following function: ");
+        foreach (var function in functions) {
+            var functionMessage = new StringBuilder();
+            functionMessage.Append(function.Name);
+            functionMessage.Append('(');
+            for (int i = 0; i < function.Parameters.Length; i++) {
+                var parameter = function.Parameters[i];
+                functionMessage.Append(parameter.Type.Name);
+                if (i != function.Parameters.Length - 1) {
+                    functionMessage.Append(", ");
+                }
+            }
+            functionMessage.Append(')');
+            message.Append($"\r\n    {functionMessage.ToString()}");
+        }
+        message.Append("\r\n");
+        ReportError(location, message.ToString());
     }
 
     public void ReportExpressionMustHaveValue(TextLocation location) {
