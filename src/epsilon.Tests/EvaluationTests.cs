@@ -118,14 +118,15 @@ public class EvaluationTests {
                 var x = 10;
                 var y = 100;
                 {
-                    var x = 10;
+                    var [x] = 10;
                 }
-                var [x] = 5;
+                var [y] = 5;
             }
         ";
 
         var diagnostics = @"
-            'x' is already declared.
+            Variable 'x' is already declared.
+            Variable 'y' is already declared.
         ";
 
         AssertDiagnostics(text, diagnostics);
