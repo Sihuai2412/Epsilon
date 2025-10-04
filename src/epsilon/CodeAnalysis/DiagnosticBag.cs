@@ -96,8 +96,13 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
 
     }
 
-    public void ReportSymbolAlreadyDeclared(TextLocation location, string name) {
-        var message = $"'{name}' is already declared.";
+    public void ReportVariableAlreadyDeclared(TextLocation location, VariableSymbol symbol) {
+        var message = $"Variable '{symbol.Name}' is already declared.";
+        ReportError(location, message);
+    }
+
+    public void ReportFunctionAlreadyDeclared(TextLocation location, FunctionSymbol symbol) {
+        var message = $"Function '{symbol}' is already declared.";
         ReportError(location, message);
     }
 
@@ -115,18 +120,7 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
         var message = new StringBuilder();
         message.Append($"Cannot find a matching overload for {name} in the following function: ");
         foreach (var function in functions) {
-            var functionMessage = new StringBuilder();
-            functionMessage.Append(function.Name);
-            functionMessage.Append('(');
-            for (int i = 0; i < function.Parameters.Length; i++) {
-                var parameter = function.Parameters[i];
-                functionMessage.Append(parameter.Type.Name);
-                if (i != function.Parameters.Length - 1) {
-                    functionMessage.Append(", ");
-                }
-            }
-            functionMessage.Append(')');
-            message.Append($"\r\n    {functionMessage.ToString()}");
+            message.Append($"\r\n    {function.ToString()}");
         }
         message.Append("\r\n");
         ReportError(location, message.ToString());

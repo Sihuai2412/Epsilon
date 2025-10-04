@@ -190,7 +190,7 @@ internal sealed class Binder {
             syntax
         );
         if (syntax.Identifier.Text != null && !_scope.TryDeclareFunction(function)) {
-            _diagnostics.ReportSymbolAlreadyDeclared(syntax.Identifier.Location, function.Name);
+            _diagnostics.ReportFunctionAlreadyDeclared(syntax.Identifier.Location, function);
         }
     }
 
@@ -684,7 +684,7 @@ internal sealed class Binder {
                              ? (VariableSymbol)new GlobalVariableSymbol(name, isReadOnly, type, constant)
                              : new LocalVariableSymbol(name, isReadOnly, type, constant);
         if (declare && !_scope.TryDeclareVariable(variable)) {
-            _diagnostics.ReportSymbolAlreadyDeclared(identifier.Location, name);
+            _diagnostics.ReportVariableAlreadyDeclared(identifier.Location, variable);
         }
 
         return variable;

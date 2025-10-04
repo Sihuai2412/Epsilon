@@ -18,17 +18,31 @@ internal sealed class BoundScope {
 
     private bool TryDeclareSymbol<TSymbol>(TSymbol symbol) where TSymbol : Symbol {
         var key = SymbolKey.Create(symbol);
-        if (_symbols == null) {
-            _symbols = [];
-        } else if (_symbols.ContainsKey(key)) {
+
+        if (HasKey(key)) {
             return false;
         }
+
+        _symbols ??= [];
         _symbols.Add(key, symbol);
         return true;
     }
 
+    private bool HasKey(SymbolKey key) {
+        BoundScope? current = this;
+        while (current != null) {
+            if (current._symbols != null) {
+                if (current._symbols.ContainsKey(key)) {
+                    return true;
+                }
+            }
+            current = current.Parent;
+        }
+        return false;
+    }
+
     public VariableSymbol? TryLookupVariable(string name) {
-        if (_symbols != null && _symbols.TryGetValue(new SymbolKey(name, SymbolKeyType.VARIABLE), out var symbol)) {
+        if (_symbols != null && _symbols.TryGetValue(new SymbolKey(name, SymbolKeyType.Variable), out var symbol)) {
             return symbol as VariableSymbol;
         }
 
@@ -50,6 +64,11 @@ internal sealed class BoundScope {
                 }
                 current = current.Parent;
             }
+            functions = functions
+                .GroupBy(SymbolKey.Create)
+                .Select(g => g.First())
+                .ToList();
+
             var sameArgumentCountFunctions = functions.Where(
                 f => f.Parameters.Length == parameters.Length
             );
@@ -98,75 +117,4 @@ internal sealed class BoundScope {
 
         return _symbols.Values.OfType<TSymbol>().ToImmutableArray();
     }
-}
-
-
-internal sealed class SymbolKey {
-    public SymbolKey(string name, SymbolKeyType type, IEnumerable<SymbolKey>? parameters = null) {
-        Name = name;
-        Type = type;
-        Parameters = (parameters ?? Array.Empty<SymbolKey>()).ToArray();
-    }
-
-    public string Name { get; }
-    public SymbolKeyType Type { get; }
-    public SymbolKey[] Parameters { get; }
-
-    public static SymbolKey Create(Symbol symbol) {
-        return symbol switch {
-            VariableSymbol variable => new SymbolKey(variable.Name, SymbolKeyType.VARIABLE),
-            FunctionSymbol function => new SymbolKey(
-                function.Name, SymbolKeyType.FUNCTION,
-                function.Parameters.Select(
-                    p => new SymbolKey(p.Type?.Name ?? "<unknown>", SymbolKeyType.TYPE)
-                )
-            ),
-            _ => throw new Exception($"Unexpected symbol type: {symbol.GetType()}")
-        };
-    }
-
-    public override bool Equals(object? obj) {
-        if (obj is not SymbolKey other) {
-            return false;
-        }
-
-        if (Name != other.Name || Type != other.Type) {
-            return false;
-        }
-
-        if (Parameters.Length != other.Parameters.Length) {
-            return false;
-        }
-
-        return Parameters.Zip(other.Parameters, (a, b) => a.Equals(b)).All(x => x);
-    }
-
-    public override int GetHashCode() {
-        var hash = new HashCode();
-        hash.Add(Name);
-        hash.Add(Type);
-        hash.Add(Parameters.Length);
-
-        foreach (var p in Parameters) {
-            hash.Add(GetRecursiveHash(p));
-        }
-
-        return hash.ToHashCode();
-    }
-
-    private static int GetRecursiveHash(SymbolKey key) {
-        var h = new HashCode();
-        h.Add(key.Name);
-        h.Add(key.Type);
-        foreach (var p in key.Parameters) {
-            h.Add(GetRecursiveHash(p));
-        }
-        return h.ToHashCode();
-    }
-}
-
-public enum SymbolKeyType {
-    VARIABLE,
-    FUNCTION,
-    TYPE
 }
