@@ -81,6 +81,14 @@ internal sealed class Parser {
         return new SyntaxToken(_syntaxTree, kind, Current.Position, null, null, ImmutableArray<SyntaxTrivia>.Empty, ImmutableArray<SyntaxTrivia>.Empty);
     }
 
+    private SyntaxToken? ParseOptionalSemicolon() {
+        if (Current.Kind != SyntaxKind.SemicolonToken) {
+            return null;
+        }
+
+        return MatchToken(SyntaxKind.SemicolonToken);
+    }
+
     public CompilationUnitSyntax ParseCompilationUnit() {
         var members = ParseMembers();
         var endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
@@ -217,7 +225,7 @@ internal sealed class Parser {
         var identifier = MatchToken(SyntaxKind.IdentifierToken);
         var typeClause = ParseOptionalTypeClause();
         var initializer = ParseOptionalInitializer();
-        var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+        var semicolon = ParseOptionalSemicolon();
         return new VariableDeclarationSyntax(_syntaxTree, keyword, identifier, typeClause, initializer, semicolon);
     }
 
@@ -279,7 +287,7 @@ internal sealed class Parser {
         var body = ParseStatement();
         var whileKeyword = MatchToken(SyntaxKind.WhileKeyword);
         var condition = ParseExpression();
-        var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+        var semicolon = ParseOptionalSemicolon();
         return new DoWhileStatementSyntax(_syntaxTree, doKeyword, body, whileKeyword, condition, semicolon);
     }
 
@@ -296,13 +304,13 @@ internal sealed class Parser {
 
     private StatementSyntax ParseBreakStatement() {
         var keyword = MatchToken(SyntaxKind.BreakKeyword);
-        var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+        var semicolon = ParseOptionalSemicolon();
         return new BreakStatementSyntax(_syntaxTree, keyword, semicolon);
     }
 
     private StatementSyntax ParseContinueStatement() {
         var keyword = MatchToken(SyntaxKind.ContinueKeyword);
-        var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+        var semicolon = ParseOptionalSemicolon();
         return new ContinueStatementSyntax(_syntaxTree, keyword, semicolon);
     }
 
@@ -311,18 +319,17 @@ internal sealed class Parser {
 
         ExpressionSyntax? expression = null;
 
-        if (Current.Kind != SyntaxKind.SemicolonToken &&
-            Current.Kind != SyntaxKind.EndOfFileToken) {
+        if (Current.Kind != SyntaxKind.SemicolonToken) {
             expression = ParseExpression();
         }
 
-        var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+        var semicolon = ParseOptionalSemicolon();
         return new ReturnStatementSyntax(_syntaxTree, keyword, expression, semicolon);
     }
 
     private ExpressionStatementSyntax ParseExpressionStatement() {
         var expression = ParseExpression();
-        var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+        var semicolon = ParseOptionalSemicolon();
         return new ExpressionStatementSyntax(_syntaxTree, expression, semicolon);
     }
 
