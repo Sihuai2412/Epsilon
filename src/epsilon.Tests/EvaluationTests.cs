@@ -167,11 +167,10 @@ public class EvaluationTests {
     public void Evaluator_BlockStatement_NoInfiniteLoop() {
         var text = @"
             {
-            )[[]]
+            )[]
         ";
 
         var diagnostics = @"
-            Unexpected token <EndOfFileToken>, expected <SemicolonToken>.
             Unexpected token <EndOfFileToken>, expected <CloseBraceToken>.
         ";
 
@@ -207,13 +206,11 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_InvokeFunctionArguments_NoInfiniteLoop() {
         var text = @"
-            print(""Hi""[[=]][)];
+            print(""Hi""[=]);
         ";
 
         var diagnostics = @"
             Unexpected token <EqualsToken>, expected <CloseParenthesisToken>.
-            Unexpected token <EqualsToken>, expected <SemicolonToken>.
-            Unexpected token <CloseParenthesisToken>, expected <SemicolonToken>.
         ";
 
         AssertDiagnostics(text, diagnostics);
@@ -222,7 +219,7 @@ public class EvaluationTests {
     [Fact]
     public void Evaluator_FunctionParameters_NoInfiniteLoop() {
         var text = @"
-            fun hi(name as string[[=]][)][{]
+            fun hi(name as string[[=]]){
                 print(""Hi "" + name + ""!"" );
             }[]
         ";
@@ -230,8 +227,6 @@ public class EvaluationTests {
         var diagnostics = @"
             Unexpected token <EqualsToken>, expected <CloseParenthesisToken>.
             Unexpected token <EqualsToken>, expected <OpenBraceToken>.
-            Unexpected token <CloseParenthesisToken>, expected <SemicolonToken>.
-            Unexpected token <OpenBraceToken>, expected <SemicolonToken>.
             Unexpected token <EndOfFileToken>, expected <CloseBraceToken>.
         ";
 
@@ -351,11 +346,10 @@ public class EvaluationTests {
 
     [Fact]
     public void Evaluator_NameExpression_Reports_NoErrorForInsertedToken() {
-        var text = @"1 + [[]]";
+        var text = @"1 + []";
 
         var diagnostics = @"
             Unexpected token <EndOfFileToken>, expected <IdentifierToken>.
-            Unexpected token <EndOfFileToken>, expected <SemicolonToken>.
         ";
 
         AssertDiagnostics(text, diagnostics);
