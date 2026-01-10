@@ -97,10 +97,6 @@ internal static class BoundNodePrinter {
                     WriteConversionExpression((BoundConversionExpression)node, writer);
                     break;
                 }
-            case BoundNodeKind.IsExpression: {
-                    WriteIsExpression((BoundIsExpression)node, writer);
-                    break;
-                }
             default: {
                     throw new Exception($"Unexpected node {node.Kind}");
                 }
@@ -353,13 +349,5 @@ internal static class BoundNodePrinter {
         writer.WritePunctuation(SyntaxKind.OpenParenthesisToken);
         node.Expression.WriteTo(writer);
         writer.WritePunctuation(SyntaxKind.CloseParenthesisToken);
-    }
-
-    private static void WriteIsExpression(BoundIsExpression node, IndentedTextWriter writer) {
-        node.Expression.WriteTo(writer);
-        writer.WriteSpace();
-        writer.WriteKeyword(SyntaxKind.IsKeyword);
-        writer.WriteSpace();
-        writer.WriteIdentifier(node.TypeSymbol.Name);
     }
 }

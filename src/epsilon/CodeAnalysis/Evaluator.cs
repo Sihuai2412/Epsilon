@@ -136,8 +136,6 @@ internal sealed class Evaluator {
                 return EvaluateCallExpression((BoundCallExpression)node);
             case BoundNodeKind.ConversionExpression:
                 return EvaluateConversionExpression((BoundConversionExpression)node);
-            case BoundNodeKind.IsExpression:
-                return EvaluateIsExpression((BoundIsExpression)node);
             default:
                 throw new Exception($"Unexpected node {node.Kind}");
         }
@@ -342,10 +340,6 @@ internal sealed class Evaluator {
         } else {
             throw new Exception($"Unexpected type {node.Type}");
         }
-    }
-
-    private object? EvaluateIsExpression(BoundIsExpression node) {
-        return node.Expression.Type == node.TypeSymbol || node.TypeSymbol == TypeSymbol.Any; // TODO
     }
 
     private void Assign(VariableSymbol variable, object value) {

@@ -47,6 +47,14 @@ internal sealed class Conversion {
             }
         }
 
+        if (from == TypeSymbol.Bool && to == TypeSymbol.Int) {
+            return Explicit;
+        }
+
+        if (from == TypeSymbol.Int && to == TypeSymbol.Bool) {
+            return Explicit;
+        }
+
         return None;
     }
 }

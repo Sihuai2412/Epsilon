@@ -334,10 +334,6 @@ internal sealed class Emitter {
                     EmitConversionExpression(ilProcessor, (BoundConversionExpression)node);
                     break;
                 }
-            case BoundNodeKind.IsExpression: {
-                    EmitIsExpression(ilProcessor, (BoundIsExpression)node);
-                    break;
-                }
             default: {
                     throw new Exception($"Unexpected node kind {node.Kind}");
                 }
@@ -674,20 +670,5 @@ internal sealed class Emitter {
         } else {
             throw new Exception($"Unexpected conversion from {node.Expression.Type} to {node.Type}");
         }
-    }
-
-    private void EmitIsExpression(ILProcessor ilProcessor, BoundIsExpression node) {
-        EmitExpression(ilProcessor, node.Expression);
-        var needsBoxing = node.Expression.Type == TypeSymbol.Bool ||
-                          node.Expression.Type == TypeSymbol.Int ||
-                          node.Expression.Type == TypeSymbol.Float;
-        if (needsBoxing) {
-            ilProcessor.Emit(OpCodes.Box, _knownTypes[node.Expression.Type]);
-        }
-
-        ilProcessor.Emit(OpCodes.Isinst, _knownTypes[node.TypeSymbol]);
-
-        ilProcessor.Emit(OpCodes.Ldnull);
-        ilProcessor.Emit(OpCodes.Cgt_Un);
     }
 }

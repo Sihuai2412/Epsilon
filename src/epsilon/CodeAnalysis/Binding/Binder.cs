@@ -488,8 +488,6 @@ internal sealed class Binder {
                 return BindBinaryExpression((BinaryExpressionSyntax)syntax);
             case SyntaxKind.CallExpression:
                 return BindCallExpression((CallExpressionSyntax)syntax);
-            case SyntaxKind.IsExpression:
-                return BindIsExpression((IsExpressionSyntax)syntax);
             case SyntaxKind.TokenExpression:
                 return BindTokenExpression((TokenExpressionSyntax)syntax);
             default:
@@ -630,19 +628,6 @@ internal sealed class Binder {
         }
 
         return new BoundCallExpression(function, boundArguments.ToImmutable());
-    }
-
-    private BoundExpression BindIsExpression(IsExpressionSyntax syntax) {
-        var expression = BindExpression(syntax.Expression);
-
-        var type = syntax.Type.Text;
-
-        var typeSymbol = LookupType(type);
-        if (typeSymbol == null) {
-            _diagnostics.ReportUndefinedType(syntax.Type.Location, type);
-        }
-
-        return new BoundIsExpression(expression!, typeSymbol!);
     }
 
     private BoundExpression BindTokenExpression(TokenExpressionSyntax syntax) {

@@ -174,8 +174,6 @@ internal abstract class BoundTreeRewriter {
                 return RewriteCallExpression((BoundCallExpression)node);
             case BoundNodeKind.ConversionExpression:
                 return RewriteConversionExpression((BoundConversionExpression)node);
-            case BoundNodeKind.IsExpression:
-                return RewriteIsExpression((BoundIsExpression)node);
             default:
                 throw new Exception($"Unexpected node: {node.Kind}");
         }
@@ -262,14 +260,5 @@ internal abstract class BoundTreeRewriter {
         }
 
         return new BoundConversionExpression(node.Type, expression);
-    }
-
-    private BoundExpression RewriteIsExpression(BoundIsExpression node) {
-        var expression = RewriteExpression(node.Expression);
-        if (expression == node.Expression) {
-            return node;
-        }
-
-        return new BoundIsExpression(expression, node.TypeSymbol);
     }
 }

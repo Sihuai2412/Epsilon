@@ -73,12 +73,6 @@ public class EvaluationTests {
     [InlineData("{ var a as any = 0; var b as any = \"b\"; return a != b; }", true)]
     [InlineData("{ var a as any = 0; var b as any = 0; return a == b; }", true)]
     [InlineData("{ var a as any = 0; var b as any = 0; return a != b; }", false)]
-    [InlineData("{ var a = 7; return a is bool; }", false)]
-    [InlineData("{ var a = 7; return a is int; }", true)]
-    [InlineData("{ var a = 7; return a is any; }", true)]
-    [InlineData("{ var a = false; return a is bool; }", true)]
-    [InlineData("{ var a = 8.2; return a is float; }", true)]
-    [InlineData("{ var a = \"hello\"; return a is string; }", true)]
     [InlineData("{ var a = 10; return a * a; }", 100)]
     [InlineData("{ var a = 0; return (a = 10) * a; }", 100)]
     [InlineData("{ var a = 0; if a == 0 a = 10; return a; }", 10)]
@@ -258,7 +252,7 @@ public class EvaluationTests {
         ";
 
         var diagnostics = @"
-            Cannot convert type 'int' to 'bool'.
+            Cannot convert type 'int' to 'bool'. An explicit conversion exits. (are you missing a cast?)
         ";
 
         AssertDiagnostics(text, diagnostics);
@@ -275,7 +269,7 @@ public class EvaluationTests {
         ";
 
         var diagnostics = @"
-            Cannot convert type 'int' to 'bool'.
+            Cannot convert type 'int' to 'bool'. An explicit conversion exits. (are you missing a cast?)
         ";
 
         AssertDiagnostics(text, diagnostics);
@@ -293,7 +287,7 @@ public class EvaluationTests {
         ";
 
         var diagnostics = @"
-            Cannot convert type 'int' to 'bool'.
+            Cannot convert type 'int' to 'bool'. An explicit conversion exits. (are you missing a cast?)
         ";
 
         AssertDiagnostics(text, diagnostics);
@@ -310,7 +304,7 @@ public class EvaluationTests {
         ";
 
         var diagnostics = @"
-            Cannot convert type 'bool' to 'int'.
+            Cannot convert type 'bool' to 'int'. An explicit conversion exits. (are you missing a cast?)
         ";
 
         AssertDiagnostics(text, diagnostics);
@@ -327,7 +321,7 @@ public class EvaluationTests {
         ";
 
         var diagnostics = @"
-            Cannot convert type 'bool' to 'int'.
+            Cannot convert type 'bool' to 'int'. An explicit conversion exits. (are you missing a cast?)
         ";
 
         AssertDiagnostics(text, diagnostics);
@@ -453,7 +447,7 @@ public class EvaluationTests {
         ";
 
         var diagnostics = @"
-            Cannot convert type 'bool' to 'int'.
+            Cannot convert type 'bool' to 'int'. An explicit conversion exits. (are you missing a cast?)
         ";
 
         AssertDiagnostics(text, diagnostics);
