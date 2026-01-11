@@ -222,11 +222,32 @@ internal sealed class Parser {
     private StatementSyntax ParseVariableDeclaration() {
         var expected = Current.Kind == SyntaxKind.ValKeyword ? SyntaxKind.ValKeyword : SyntaxKind.VarKeyword;
         var keyword = MatchToken(expected);
+        var clauses = ImmutableArray.CreateBuilder<VariableDeclarationClause>();
+
+        ParseVariableClause(clauses, null);
+
+        while (Current.Kind == SyntaxKind.CommaToken) {
+            var comma = MatchToken(SyntaxKind.CommaToken);
+            ParseVariableClause(clauses, comma);
+        }
+
+        var semicolon = ParseOptionalSemicolon();
+        return new VariableDeclarationSyntax(_syntaxTree, keyword, clauses.ToImmutable(), semicolon);
+    }
+
+    private void ParseVariableClause(ImmutableArray<VariableDeclarationClause>.Builder clauses, SyntaxToken? comma) {
         var identifier = MatchToken(SyntaxKind.IdentifierToken);
         var typeClause = ParseOptionalTypeClause();
         var initializer = ParseOptionalInitializer();
-        var semicolon = ParseOptionalSemicolon();
-        return new VariableDeclarationSyntax(_syntaxTree, keyword, identifier, typeClause, initializer, semicolon);
+
+        var clause = new VariableDeclarationClause(
+            comma,
+            _syntaxTree,
+            identifier,
+            typeClause,
+            initializer
+        );
+        clauses.Add(clause);
     }
 
     private TypeClauseSyntax? ParseOptionalTypeClause() {

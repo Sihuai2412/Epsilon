@@ -218,7 +218,7 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
                     }
                     return;
                 }
-            case SyntaxKind.VariableDeclaration: {
+            case SyntaxKind.VariableDeclarationStatement: {
                     ReportUnreachableCode(((VariableDeclarationSyntax)node).Keyword.Location);
                     return;
                 }

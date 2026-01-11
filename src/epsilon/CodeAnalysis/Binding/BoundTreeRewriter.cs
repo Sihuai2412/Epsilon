@@ -65,12 +65,17 @@ internal abstract class BoundTreeRewriter {
     }
 
     protected virtual BoundStatement RewriteVariableDeclaration(BoundVariableDeclaration node) {
-        var initializer = node.Initializer;
-        if (initializer == node.Initializer) {
+        var declarations = node.Declarations;
+        declarations.Select(declaration => {
+            var initializer = declaration.initializer;
+            return (declaration.variable, initializer);
+        }).ToImmutableArray();
+
+        if (declarations == node.Declarations) {
             return node;
         }
 
-        return new BoundVariableDeclaration(node.Variable, initializer);
+        return new BoundVariableDeclaration(declarations);
     }
 
     protected virtual BoundStatement RewriteIfStatement(BoundIfStatement node) {

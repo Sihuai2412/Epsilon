@@ -72,11 +72,12 @@ public enum SyntaxKind {
     Parameter,
     TypeClause,
     ElseClause,
+    VariableDeclarationClause,
     Initializer,
 
     // Statements
     BlockStatement,
-    VariableDeclaration,
+    VariableDeclarationStatement,
     IfStatement,
     WhileStatement,
     DoWhileStatement,

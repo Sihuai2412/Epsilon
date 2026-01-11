@@ -42,12 +42,16 @@ internal static class BoundNodeFactory {
     public static BoundConditionalGotoStatement GotoFalse(BoundLabelStatement label, BoundExpression condition)
         => GotoIf(label, condition, jumpIfTrue: false);
 
-    public static BoundVariableExpression Variable(BoundVariableDeclaration variable) {
-        return new BoundVariableExpression(variable.Variable);
+    public static BoundVariableExpression Variable(BoundVariableDeclaration variable, int index = 0) {
+        return new BoundVariableExpression(variable.Declarations[index].variable);
     }
 
-    public static BoundVariableDeclaration VariableDeclaration(VariableSymbol symbol, BoundExpression initializer) {
-        return new BoundVariableDeclaration(symbol, initializer);
+    public static BoundVariableDeclaration VariableDeclaration(VariableSymbol variable, BoundExpression? initializer) {
+        return new BoundVariableDeclaration([(variable, initializer)]);
+    }
+
+    public static BoundVariableDeclaration VariableDeclarations(ImmutableArray<(VariableSymbol variable, BoundExpression? initializer)> declarations) {
+        return new BoundVariableDeclaration(declarations);
     }
 
     public static BoundVariableDeclaration VariableDeclaration(string name, BoundExpression initializer)
@@ -58,7 +62,7 @@ internal static class BoundNodeFactory {
 
     private static BoundVariableDeclaration VariableDeclarationInternal(string name, BoundExpression initializer, bool isReadOnly) {
         var local = new LocalVariableSymbol(name, isReadOnly, initializer.Type, initializer.ConstantValue);
-        return new BoundVariableDeclaration(local, initializer);
+        return new BoundVariableDeclaration([(local, initializer)]);
     }
 
     public static BoundBinaryExpression Binary(BoundExpression left, SyntaxKind kind, BoundExpression right) {

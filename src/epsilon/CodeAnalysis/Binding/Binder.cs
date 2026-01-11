@@ -263,7 +263,7 @@ internal sealed class Binder {
         switch (syntax.Kind) {
             case SyntaxKind.BlockStatement:
                 return BindBlockStatement((BlockStatementSyntax)syntax);
-            case SyntaxKind.VariableDeclaration:
+            case SyntaxKind.VariableDeclarationStatement:
                 return BindVariableDeclaration((VariableDeclarationSyntax)syntax);
             case SyntaxKind.IfStatement:
                 return BindIfStatement((IfStatementSyntax)syntax);
@@ -302,32 +302,37 @@ internal sealed class Binder {
 
     private BoundStatement BindVariableDeclaration(VariableDeclarationSyntax syntax) {
         var isReadOnly = syntax.Keyword.Kind == SyntaxKind.ValKeyword;
-        var type = BindTypeClause(syntax.TypeClause);
-        var initializer = syntax.Initializer == null ? null : BindExpression(syntax.Initializer.Expression);
-        TypeSymbol variableType;
-        if (type != null) {
-            variableType = type;
-        } else if (initializer != null) {
-            variableType = initializer.Type;
-        } else {
-            _diagnostics.ReportCannotDeriveType(syntax.Identifier.Location);
-            variableType = TypeSymbol.Any;
-        }
-        var variable = BindVariableDeclaration(syntax.Identifier, isReadOnly, variableType, initializer?.ConstantValue);
-        BoundExpression convertedInitializer;
-
-        if (initializer != null) {
-            convertedInitializer = BindConversion(syntax.Initializer!.Location, initializer, variableType);
-        } else {
-            if (variableType == TypeSymbol.Error || variableType == TypeSymbol.Void || variableType == TypeSymbol.Any) {
-                _diagnostics.ReportCannotDeriveValue(syntax.Identifier.Location);
-                convertedInitializer = new BoundLiteralExpression(0);
+        var declarations = ImmutableArray.CreateBuilder<(VariableSymbol variable, BoundExpression? initializer)>();
+        foreach (var clause in syntax.Clauses) {
+            var type = BindTypeClause(clause.TypeClause);
+            var initializer = clause.Initializer == null ? null : BindExpression(clause.Initializer.Expression);
+            TypeSymbol variableType;
+            if (type != null) {
+                variableType = type;
+            } else if (initializer != null) {
+                variableType = initializer.Type;
             } else {
-                convertedInitializer = new BoundLiteralExpression(variableType.DefaultValue);
+                _diagnostics.ReportCannotDeriveType(clause.Identifier.Location);
+                variableType = TypeSymbol.Any;
             }
+            var variable = BindVariableDeclaration(clause.Identifier, isReadOnly, variableType, initializer?.ConstantValue);
+            BoundExpression convertedInitializer;
+
+            if (initializer != null) {
+                convertedInitializer = BindConversion(clause.Initializer!.Location, initializer, variableType);
+            } else {
+                if (variableType == TypeSymbol.Error || variableType == TypeSymbol.Void || variableType == TypeSymbol.Any) {
+                    _diagnostics.ReportCannotDeriveValue(clause.Identifier.Location);
+                    convertedInitializer = new BoundLiteralExpression(0);
+                } else {
+                    convertedInitializer = new BoundLiteralExpression(variableType.DefaultValue);
+                }
+            }
+
+            declarations.Add((variable, convertedInitializer));
         }
 
-        return new BoundVariableDeclaration(variable, convertedInitializer);
+        return new BoundVariableDeclaration(declarations.ToImmutable());
     }
 
     [return: NotNullIfNotNull(nameof(syntax))]

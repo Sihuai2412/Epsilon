@@ -1,18 +1,16 @@
+using System.Collections.Immutable;
+
 namespace epsilon.CodeAnalysis.Syntax;
 
 public sealed partial class VariableDeclarationSyntax : StatementSyntax {
-    public VariableDeclarationSyntax(SyntaxTree syntaxTree, SyntaxToken keyword, SyntaxToken identifier, TypeClauseSyntax? typeClause, InitializerSyntax? initializer, SyntaxToken? semicolon) : base(syntaxTree) {
+    public VariableDeclarationSyntax(SyntaxTree syntaxTree, SyntaxToken keyword, ImmutableArray<VariableDeclarationClause> clauses, SyntaxToken? semicolon) : base(syntaxTree) {
         Keyword = keyword;
-        Identifier = identifier;
-        TypeClause = typeClause;
-        Initializer = initializer;
+        Clauses = clauses;
         Semicolon = semicolon;
     }
 
-    public override SyntaxKind Kind => SyntaxKind.VariableDeclaration;
+    public override SyntaxKind Kind => SyntaxKind.VariableDeclarationStatement;
     public SyntaxToken Keyword { get; }
-    public SyntaxToken Identifier { get; }
-    public TypeClauseSyntax? TypeClause { get; }
-    public InitializerSyntax? Initializer { get; }
+    public ImmutableArray<VariableDeclarationClause> Clauses { get; }
     public SyntaxToken? Semicolon { get; }
 }

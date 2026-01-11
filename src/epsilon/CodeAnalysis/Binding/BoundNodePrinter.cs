@@ -162,15 +162,23 @@ internal static class BoundNodePrinter {
     }
 
     private static void WriteVariableDeclaration(BoundVariableDeclaration node, IndentedTextWriter writer) {
-        writer.WriteKeyword(node.Variable.IsReadOnly ? SyntaxKind.ValKeyword : SyntaxKind.VarKeyword);
-        writer.WriteSpace();
-        writer.WriteIdentifier(node.Variable.Name);
-        if (node.Initializer != null) {
+        foreach (var declaration in node.Declarations) {
+            writer.WriteKeyword(declaration.variable.IsReadOnly ? SyntaxKind.ValKeyword : SyntaxKind.VarKeyword);
             writer.WriteSpace();
-            writer.WritePunctuation(SyntaxKind.EqualsToken);
-            writer.WriteSpace();
-            node.Initializer.WriteTo(writer);
+            writer.WriteIdentifier(declaration.variable.Name);
+            if (declaration.initializer != null) {
+                writer.WriteSpace();
+                writer.WritePunctuation(SyntaxKind.EqualsToken);
+                writer.WriteSpace();
+                declaration.initializer.WriteTo(writer);
+            }
+
+            if (declaration != node.Declarations.Last()) {
+                writer.WritePunctuation(SyntaxKind.CommaToken);
+                writer.WriteSpace();
+            }  
         }
+
         writer.WriteSemicolon();
         writer.WriteLine();
     }

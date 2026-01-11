@@ -73,6 +73,8 @@ public class EvaluationTests {
     [InlineData("{ var a as any = 0; var b as any = \"b\"; return a != b; }", true)]
     [InlineData("{ var a as any = 0; var b as any = 0; return a == b; }", true)]
     [InlineData("{ var a as any = 0; var b as any = 0; return a != b; }", false)]
+    [InlineData("{ var a = 7, b = 13; return a + b; }", 20)]
+    [InlineData("{ var a = true, b as bool, c = 7; return a && b; }", false)]
     [InlineData("{ var a = 10; return a * a; }", 100)]
     [InlineData("{ var a = 0; return (a = 10) * a; }", 100)]
     [InlineData("{ var a = 0; if a == 0 a = 10; return a; }", 10)]
@@ -152,6 +154,21 @@ public class EvaluationTests {
 
         var diagnostics = @"
             Unable to deduce value.
+        ";
+
+        AssertDiagnostics(text, diagnostics);
+    }
+
+    [Fact]
+    public void Evaluator_VariableDeclaration_Reports_MissingNameAfterComma() {
+        var text = @"
+            {
+                var x = 7,
+            [}]
+        ";
+
+        var diagnostics = @"
+            Unexpected token <CloseBraceToken>, expected <IdentifierToken>.
         ";
 
         AssertDiagnostics(text, diagnostics);

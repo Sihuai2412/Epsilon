@@ -15,7 +15,7 @@
             "label": "epsi",
             "type": "shell",
             "options": {
-                "cwd": "${workspaceFolder}/samples",
+                "cwd": "${workspaceFolder}/examples",
                 "shell": {
                     "executable": "powershell.exe",
                     "args": ["-NoProfile", "-Command"]

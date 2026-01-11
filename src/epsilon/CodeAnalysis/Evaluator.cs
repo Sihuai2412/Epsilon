@@ -103,15 +103,17 @@ internal sealed class Evaluator {
     }
 
     private void EvaluateVariableDeclaration(BoundVariableDeclaration node) {
-        object value;
-        if (node.Initializer == null) {
-            value = node.Variable.Type.DefaultValue;
-        } else {
-            value = EvaluateExpression(node.Initializer)!;
+        foreach (var declaration in node.Declarations){
+            object value;
+            if (declaration.initializer == null) {
+                value = declaration.variable.Type.DefaultValue;
+            } else {
+                value = EvaluateExpression(declaration.initializer)!;
+            }
+            Debug.Assert(value != null);
+            _lastValue = value;
+            Assign(declaration.variable, value);
         }
-        Debug.Assert(value != null);
-        _lastValue = value;
-        Assign(node.Variable, value);
     }
 
     private void EvaluateExpressionStatement(BoundExpressionStatement node) {

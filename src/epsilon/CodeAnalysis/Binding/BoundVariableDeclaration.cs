@@ -1,14 +1,13 @@
+using System.Collections.Immutable;
 using epsilon.CodeAnalysis.Symbols;
 
 namespace epsilon.CodeAnalysis.Binding;
 
 internal sealed class BoundVariableDeclaration : BoundStatement {
-    public BoundVariableDeclaration(VariableSymbol variable, BoundExpression? initializer) {
-        Variable = variable;
-        Initializer = initializer;
+    public BoundVariableDeclaration(ImmutableArray<(VariableSymbol variable, BoundExpression? initializer)> declarations) {
+        Declarations = declarations;
     }
 
     public override BoundNodeKind Kind => BoundNodeKind.VariableDeclaration;
-    public VariableSymbol Variable { get; }
-    public BoundExpression? Initializer { get; }
+    public ImmutableArray<(VariableSymbol variable, BoundExpression? initializer)> Declarations { get; }
 }

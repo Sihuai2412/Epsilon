@@ -261,13 +261,15 @@ internal sealed class Emitter {
     }
 
     private void EmitVariableDeclaration(ILProcessor ilProcessor, BoundVariableDeclaration node) {
-        var typeReference = _knownTypes[node.Variable.Type];
-        var variableDefinition = new VariableDefinition(typeReference);
-        _locals.Add(node.Variable, variableDefinition);
-        ilProcessor.Body.Variables.Add(variableDefinition);
+        foreach (var declaration in node.Declarations){
+            var typeReference = _knownTypes[declaration.variable.Type];
+            var variableDefinition = new VariableDefinition(typeReference);
+            _locals.Add(declaration.variable, variableDefinition);
+            ilProcessor.Body.Variables.Add(variableDefinition);
 
-        EmitExpression(ilProcessor, node.Initializer == null ? new BoundLiteralExpression(node.Variable.Type.DefaultValue) : node.Initializer);
-        ilProcessor.Emit(OpCodes.Stloc, variableDefinition);
+            EmitExpression(ilProcessor, declaration.initializer == null ? new BoundLiteralExpression(declaration.variable.Type.DefaultValue) : declaration.initializer);
+            ilProcessor.Emit(OpCodes.Stloc, variableDefinition);
+        }
     }
 
     private void EmitLabelStatement(ILProcessor ilProcessor, BoundLabelStatement node) {
