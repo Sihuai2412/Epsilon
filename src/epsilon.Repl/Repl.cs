@@ -120,7 +120,52 @@ internal abstract class Repl {
 
         private void UpdateCursorPosition() {
             Console.CursorTop = _cursorTop + _currentLine;
-            Console.CursorLeft = 2 + _currentCharacter;
+            Console.CursorLeft = 2;
+
+            if (_currentLine >= _submissionDocument.Count) {
+                return;
+            }
+            var line = _submissionDocument[_currentLine];
+            var length = Math.Min(_currentCharacter, line.Length);
+
+            for (int i = 0; i < length; i++) {
+                Console.CursorLeft += IsFullWidth(line[i]) ? 2 : 1;
+            }
+        }
+
+        public static bool IsFullWidth(char c) {
+            int code = c;
+
+            if (code >= 0xFF00 && code <= 0xFFEF) {
+                if ((code >= 0xFF01 && code <= 0xFF5E) || (code >= 0xFFE0 && code <= 0xFFE6)) {
+                    return true;
+                }
+            }
+
+            if ((code >= 0x4E00 && code <= 0x9FFF) || (code >= 0x3400 && code <= 0x4DBF) ||
+                (code >= 0x20000 && code <= 0x2A6DF) || (code >= 0xF900 && code <= 0xFAFF) ||
+                (code >= 0x2F800 && code <= 0x2FA1F)) {
+                return true;
+            }
+
+            if ((code >= 0x3040 && code <= 0x309F) || (code >= 0x30A0 && code <= 0x30FF) ||
+                (code >= 0x31F0 && code <= 0x31FF) || (code >= 0xFF65 && code <= 0xFF9F)) {
+                return true;
+            }
+
+            if ((code >= 0xAC00 && code <= 0xD7AF) || (code >= 0x1100 && code <= 0x11FF) ||
+                (code >= 0x3130 && code <= 0x318F) || (code >= 0xA960 && code <= 0xA97F) ||
+                (code >= 0xD7B0 && code <= 0xD7FF)) {
+                return true;
+            }
+
+            if ((code >= 0x3000 && code <= 0x303F) || (code == 0x3000) ||
+                (code >= 0xFE10 && code <= 0xFE1F) || (code >= 0xFE30 && code <= 0xFE4F) ||
+                (code >= 0xFE50 && code <= 0xFE6F)) {
+                return true;
+            }
+
+            return false;
         }
 
         public int CurrentLine {
@@ -368,6 +413,10 @@ internal abstract class Repl {
 
     private void UpdateDocumentFromHistory(ObservableCollection<string> document, SubmissionView view) {
         if (_submissionHistory.Count == 0) {
+            document.Clear();
+            document.Add("");
+            view.CurrentLine = 0;
+            view.CurrentCharacter = 0;
             return;
         }
 

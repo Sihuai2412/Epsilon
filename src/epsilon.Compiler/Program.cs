@@ -7,19 +7,19 @@ namespace epsilon.Compiler;
 
 internal static class Program {
     private static int Main(string[] args) {
-        var outputPath = (string?)null;
-        var moduleName = (string?)null;
+        string? outputPath = null;
+        string? moduleName = null;
         var referencePaths = new List<string>();
         var sourcePaths = new List<string>();
         var helpRequested = false;
 
         var options = new OptionSet() {
             "usage: epsi <source-paths> [options]",
-            { "r=", "The {path} of an assembly to reference", v => referencePaths.Add(v) },
+            { "r=", "The {path} of an assembly to reference", referencePaths.Add },
             { "o=", "The output {path} of the assembly to create", v => outputPath = v },
             { "m=", "The {name} of the module", v => moduleName = v },
             { "?|h|help", "Prints help", v => helpRequested = true },
-            { "<>", v => sourcePaths.Add(v) },
+            { "<>", sourcePaths.Add },
         };
 
         options.Parse(args);
