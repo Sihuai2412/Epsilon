@@ -120,9 +120,10 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
         var message = new StringBuilder();
         message.Append($"Cannot find a matching overload for {name} in the following function: ");
         foreach (var function in functions) {
-            message.Append($"\r\n    {function.ToString()}");
+            message.AppendLine();
+            message.Append($"    {function.ToString()}");
         }
-        message.Append("\r\n");
+        message.AppendLine();
         ReportError(location, message.ToString());
     }
 
