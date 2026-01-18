@@ -58,7 +58,7 @@ internal sealed class BoundScope {
             BoundScope? current = this;
             while (current != null) {
                 if (current._symbols != null) {
-                    var parentFunctions = current._symbols.Values.OfType<FunctionSymbol>()
+                    var parentFunctions = current.GetDeclaredFunctions()
                                            .Where(f => f.Name == name);
                     functions.AddRange(parentFunctions);
                 }
