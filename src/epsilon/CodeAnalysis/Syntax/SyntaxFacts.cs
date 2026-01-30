@@ -16,8 +16,11 @@ public static class SyntaxFacts {
 
     public static int GetBinaryOperatorPrecedence(this SyntaxKind kind) {
         switch (kind) {
+            case SyntaxKind.StarStarToken:
+                return 7;
             case SyntaxKind.StarToken:
             case SyntaxKind.SlashToken:
+            case SyntaxKind.PercentToken:
                 return 5;
 
             case SyntaxKind.PlusToken:
@@ -120,10 +123,18 @@ public static class SyntaxFacts {
                 return "*";
             case SyntaxKind.StarEqualsToken:
                 return "*=";
+            case SyntaxKind.StarStarToken:
+                return "**";
+            case SyntaxKind.StarStarEqualsToken:
+                return "**=";
             case SyntaxKind.SlashToken:
                 return "/";
             case SyntaxKind.SlashEqualsToken:
                 return "/=";
+            case SyntaxKind.PercentToken:
+                return "%";
+            case SyntaxKind.PercentEqualsToken:
+                return "%=";
             case SyntaxKind.BangToken:
                 return "!";
             case SyntaxKind.EqualsToken:
@@ -240,8 +251,12 @@ public static class SyntaxFacts {
                 return SyntaxKind.MinusToken;
             case SyntaxKind.StarEqualsToken:
                 return SyntaxKind.StarToken;
+            case SyntaxKind.StarStarEqualsToken:
+                return SyntaxKind.StarStarToken;
             case SyntaxKind.SlashEqualsToken:
                 return SyntaxKind.SlashToken;
+            case SyntaxKind.PercentEqualsToken:
+                return SyntaxKind.PercentToken;
             case SyntaxKind.AmpersandEqualsToken:
                 return SyntaxKind.AmpersandToken;
             case SyntaxKind.PipeEqualsToken:

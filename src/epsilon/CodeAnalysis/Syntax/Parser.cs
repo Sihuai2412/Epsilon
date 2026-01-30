@@ -364,6 +364,8 @@ internal sealed class Parser {
                 case SyntaxKind.PlusEqualsToken:
                 case SyntaxKind.MinusEqualsToken:
                 case SyntaxKind.StarEqualsToken:
+                case SyntaxKind.StarStarEqualsToken:
+                case SyntaxKind.PercentEqualsToken:
                 case SyntaxKind.SlashEqualsToken:
                 case SyntaxKind.AmpersandEqualsToken:
                 case SyntaxKind.PipeEqualsToken:

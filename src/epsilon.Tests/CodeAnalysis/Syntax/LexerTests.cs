@@ -257,11 +257,51 @@ public class LexerTests {
             return true;
         }
 
+        if (t1Kind == SyntaxKind.StarToken && t2Kind == SyntaxKind.StarToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.StarToken && t2Kind == SyntaxKind.StarEqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.StarToken && t2Kind == SyntaxKind.StarStarToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.StarToken && t2Kind == SyntaxKind.StarStarEqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.StarStarToken && t2Kind == SyntaxKind.EqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.StarStarToken && t2Kind == SyntaxKind.EqualsEqualsToken) {
+            return true;
+        }
+
         if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.EqualsToken) {
             return true;
         }
 
         if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.EqualsEqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.StarStarToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.SlashToken && t2Kind == SyntaxKind.StarStarEqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.PercentToken && t2Kind == SyntaxKind.EqualsToken) {
+            return true;
+        }
+
+        if (t1Kind == SyntaxKind.PercentToken && t2Kind == SyntaxKind.EqualsEqualsToken) {
             return true;
         }
 

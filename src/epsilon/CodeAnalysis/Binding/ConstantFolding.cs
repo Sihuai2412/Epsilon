@@ -81,6 +81,13 @@ internal static class ConstantFolding {
                     return new BoundConstant((float)l * (float)r);
                 }
                 return null;
+            case BoundBinaryOperatorKind.Exponentiation:
+                if (left.Type == TypeSymbol.Int) {
+                    return new BoundConstant((int)Math.Pow((int)l, (int)r));
+                } else if (left.Type == TypeSymbol.Float) {
+                    return new BoundConstant((float)Math.Pow((float)l, (float)r));
+                }
+                return null;
             case BoundBinaryOperatorKind.Division:
                 if (left.Type == TypeSymbol.Int) {
                     return new BoundConstant((int)l / (int)r);
@@ -88,6 +95,8 @@ internal static class ConstantFolding {
                     return new BoundConstant((float)l / (float)r);
                 }
                 return null;
+            case BoundBinaryOperatorKind.Modulo:
+                return new BoundConstant((int)l % (int)r);
             case BoundBinaryOperatorKind.BitwiseAnd: {
                     if (left.Type == TypeSymbol.Int) {
                         return new BoundConstant((int)l & (int)r);

@@ -89,11 +89,19 @@ internal sealed class Lexer {
                 }
             case '*': {
                     _position++;
-                    if (Current != '=') {
-                        _kind = SyntaxKind.StarToken;
-                    } else {
+                    if (Current == '=') {
                         _kind = SyntaxKind.StarEqualsToken;
                         _position++;
+                    } else if (Current == '*') {
+                        _position++;
+                        if (Current == '=') {
+                            _kind = SyntaxKind.StarStarEqualsToken;
+                            _position++;
+                        } else {
+                            _kind = SyntaxKind.StarStarToken;
+                        }
+                    } else {
+                        _kind = SyntaxKind.StarToken;
                     }
                     break;
                 }
@@ -103,6 +111,16 @@ internal sealed class Lexer {
                         _kind = SyntaxKind.SlashToken;
                     } else {
                         _kind = SyntaxKind.SlashEqualsToken;
+                        _position++;
+                    }
+                    break;
+                }
+            case '%': {
+                    _position++;
+                    if (Current != '=') {
+                        _kind = SyntaxKind.PercentToken;
+                    } else {
+                        _kind = SyntaxKind.PercentEqualsToken;
                         _position++;
                     }
                     break;

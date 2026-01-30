@@ -18,6 +18,7 @@ internal sealed class Emitter {
     private readonly Dictionary<FunctionSymbol, MethodDefinition> _methods = new Dictionary<FunctionSymbol, MethodDefinition>();
     private readonly AssemblyDefinition _assemblyDefinition;
     private readonly Dictionary<TypeSymbol, TypeReference> _knownTypes;
+    private readonly MethodReference _mathPowerReference;
     private readonly MethodReference _objectEqualsReference;
     private readonly MethodReference _consoleWriteLineReference;
     private readonly MethodReference _consoleReadLineReference;
@@ -127,9 +128,10 @@ internal sealed class Emitter {
             return null!;
         }
 
+        _mathPowerReference = ResolveMethod("System.Math", "Pow", ["System.Double", "System.Double"]);
         _objectEqualsReference = ResolveMethod("System.Object", "Equals", ["System.Object", "System.Object"]);
         _consoleWriteLineReference = ResolveMethod("System.Console", "WriteLine", ["System.Object"]);
-        _consoleReadLineReference = ResolveMethod("System.Console", "ReadLine", Array.Empty<string>());
+        _consoleReadLineReference = ResolveMethod("System.Console", "ReadLine", []);
         _stringConcat2Reference = ResolveMethod("System.String", "Concat", ["System.String", "System.String"]);
         _stringConcat3Reference = ResolveMethod("System.String", "Concat", ["System.String", "System.String", "System.String"]);
         _stringConcat4Reference = ResolveMethod("System.String", "Concat", ["System.String", "System.String", "System.String", "System.String"]);
@@ -261,7 +263,7 @@ internal sealed class Emitter {
     }
 
     private void EmitVariableDeclaration(ILProcessor ilProcessor, BoundVariableDeclaration node) {
-        foreach (var declaration in node.Declarations){
+        foreach (var declaration in node.Declarations) {
             var typeReference = _knownTypes[declaration.variable.Type];
             var variableDefinition = new VariableDefinition(typeReference);
             _locals.Add(declaration.variable, variableDefinition);
@@ -440,8 +442,22 @@ internal sealed class Emitter {
                     ilProcessor.Emit(OpCodes.Mul);
                     break;
                 }
+            case BoundBinaryOperatorKind.Exponentiation: {
+                    ilProcessor.Emit(OpCodes.Call, _mathPowerReference);
+                    ilProcessor.Emit(OpCodes.Box, _knownTypes[node.Op.ResultType]);
+                    if (node.Left.Type == TypeSymbol.Int) {
+                        ilProcessor.Emit(OpCodes.Call, _convertToInt32Reference);
+                    } else {
+                        ilProcessor.Emit(OpCodes.Call, _convertToSingleReference);
+                    }
+                    break;
+                }
             case BoundBinaryOperatorKind.Division: {
                     ilProcessor.Emit(OpCodes.Div);
+                    break;
+                }
+            case BoundBinaryOperatorKind.Modulo: {
+                    ilProcessor.Emit(OpCodes.Rem);
                     break;
                 }
             case BoundBinaryOperatorKind.BitwiseAnd:

@@ -224,6 +224,13 @@ internal sealed class Evaluator {
                     return (float)left * (float)right;
                 }
                 return null;
+            case BoundBinaryOperatorKind.Exponentiation:
+                if (b.Type == TypeSymbol.Int) {
+                    return (int)Math.Pow((int)left, (int)right);
+                } else if (b.Type == TypeSymbol.Float) {
+                    return (float)Math.Pow((float)left, (float)right);
+                }
+                return null;
             case BoundBinaryOperatorKind.Division:
                 if (b.Type == TypeSymbol.Int) {
                     return (int)left / (int)right;
@@ -231,6 +238,8 @@ internal sealed class Evaluator {
                     return (float)left / (float)right;
                 }
                 return null;
+            case BoundBinaryOperatorKind.Modulo:
+                return (int)left % (int)right;
             case BoundBinaryOperatorKind.BitwiseAnd: {
                     if (b.Type == TypeSymbol.Int) {
                         return (int)left & (int)right;

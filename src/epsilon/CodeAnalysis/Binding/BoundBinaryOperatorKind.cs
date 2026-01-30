@@ -4,7 +4,9 @@ internal enum BoundBinaryOperatorKind {
     Addition,
     Subtraction,
     Multiplication,
+    Exponentiation,
     Division,
+    Modulo,
     BitwiseAnd,
     LogicalAnd,
     BitwiseOr,
@@ -15,5 +17,5 @@ internal enum BoundBinaryOperatorKind {
     Less,
     LessOrEquals,
     Greater,
-    GreaterOrEquals
+    GreaterOrEquals,
 }
