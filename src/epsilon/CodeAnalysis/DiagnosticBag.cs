@@ -50,6 +50,16 @@ internal sealed class DiagnosticBag : IEnumerable<Diagnostic> {
         ReportError(location, message);
     }
 
+    public void ReportInvalidEscapeCharacter(TextLocation location) {
+        var message = $"Invalid escape character.";
+        ReportError(location, message);
+    }
+
+    public void ReportOutUnicodeRange(TextLocation location, int unicode) {
+        var message = $"U{unicode} is out of Unicode's range. (0x0 ~ 0xFFFF)";
+        ReportError(location, message);
+    }
+
     public void ReportUnterminatedMultiLineComment(TextLocation location) {
         var message = $"Unterminated multi-line comment.";
         ReportError(location, message);

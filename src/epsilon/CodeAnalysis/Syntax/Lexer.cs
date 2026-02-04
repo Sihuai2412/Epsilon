@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Globalization;
 using System.Text;
 using epsilon.CodeAnalysis.Symbols;
 using epsilon.CodeAnalysis.Text;
@@ -418,7 +419,7 @@ internal sealed class Lexer {
         _kind = SyntaxKind.MultiLineCommentTrivia;
     }
 
-    private void ReadString() {
+    private void ReadString(bool multiline = false) {
         _position++;
 
         var sb = new StringBuilder();
@@ -426,13 +427,28 @@ internal sealed class Lexer {
 
         while (!done) {
             switch (Current) {
-                case '\0':
-                case '\r':
-                case '\n': {
+                case '\0': {
                         var span = new TextSpan(_start, 1);
                         var location = new TextLocation(_text, span);
                         _diagnostics.ReportUnterminatedString(location);
                         done = true;
+                        break;
+                    }
+                case '\r':
+                case '\n': {
+                        if (!multiline) {
+                            var span = new TextSpan(_start, 1);
+                            var location = new TextLocation(_text, span);
+                            _diagnostics.ReportUnterminatedString(location);
+                            done = true;
+                        } else {
+                            sb.Append(Current);
+                            _position++;
+                        }
+                        break;
+                    }
+                case '\\': {
+                        done = ReadEscapeCharacter(sb, done);
                         break;
                     }
                 case '"': {
@@ -456,12 +472,112 @@ internal sealed class Lexer {
         _kind = SyntaxKind.StringToken;
         _value = sb.ToString();
     }
+
+    private bool ReadEscapeCharacter(StringBuilder sb, bool done) {
+        switch (Lookahead) {
+            case '\\': {
+                    sb.Append('\\');
+                    _position += 2;
+                    break;
+                }
+            case '"': {
+                    sb.Append('"');
+                    _position += 2;
+                    break;
+                }
+            case 'n': {
+                    sb.Append('\n');
+                    _position += 2;
+                    break;
+                }
+            case 'r': {
+                    sb.Append('\r');
+                    _position += 2;
+                    break;
+                }
+            case 't': {
+                    sb.Append('\t');
+                    _position += 2;
+                    break;
+                }
+            case 'b': {
+                    sb.Append('\b');
+                    _position += 2;
+                    break;
+                }
+            case 'a': {
+                    sb.Append('\a');
+                    _position += 2;
+                    break;
+                }
+            case 'u': {
+                    _position += 2;
+                    var start = _position;
+                    var fail = false;
+                    for (int i = 0; i < 4; i++) {
+                        if (char.IsDigit(Current) || (char.ToLower(Current) >= 'a' && char.ToLower(Current) <= 'f')) {
+                            _position++;
+                        } else {
+                            var span = new TextSpan(start, _position - start);
+                            var location = new TextLocation(_text, span);
+                            _diagnostics.ReportInvalidEscapeCharacter(location);
+                            fail = true;
+                            break;
+                        }
+                    }
+                    if (!fail) {
+                        var length = _position - start;
+                        var text = _text.ToString(start, length);
+                        if (!int.TryParse(text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var unicode)) {
+                            var span = new TextSpan(start, length);
+                            var location = new TextLocation(_text, span);
+                            _diagnostics.ReportInvalidNumber(location, text, TypeSymbol.Int);
+                        }
+                        sb.Append((char)unicode);
+                    }
+                    break;
+                }
+            default: {
+                    var span = new TextSpan(_position, 2);
+                    var location = new TextLocation(_text, span);
+                    _diagnostics.ReportInvalidEscapeCharacter(location);
+                    done = true;
+                    break;
+                }
+        }
+
+        return done;
+    }
+
     private void ReadNumberToken() {
         var isFloat = false;
-        var hasF = false;
         object value;
+        var baseNumber = 10;
 
-        while (char.IsDigit(Current)) {
+        if (Current == '0') {
+            switch (char.ToLower(Lookahead)) {
+                case 'b': {
+                        baseNumber = 2;
+                        _position += 2;
+                        break;
+                    }
+                case 'o': {
+                        baseNumber = 8;
+                        _position += 2;
+                        break;
+                    }
+                case 'x': {
+                        baseNumber = 16;
+                        _position += 2;
+                        break;
+                    }
+                default: {
+                        break;
+                    }
+            }
+        }
+
+        while (char.IsDigit(Current) || (baseNumber == 16 && char.ToLower(Current) >= 'a' && char.ToLower(Current) <= 'f')) {
             _position++;
         }
 
@@ -473,25 +589,31 @@ internal sealed class Lexer {
             }
         }
 
-        if (Current == 'f' || Current == 'F') {
-            hasF = true;
+        if (char.ToLower(Current) == 'e') {
+            isFloat = true;
+            _position++;
+            if (Current == '-') {
+                _position++;
+            }
+            while (char.IsDigit(Current)) {
+                _position++;
+            }
+        } else if (char.ToLower(Current) == 'f') {
+            isFloat = true;
             _position++;
         }
 
         var length = _position - _start;
         var text = _text.ToString(_start, length);
-        if (isFloat || hasF) {
-            if (hasF) {
-                text = text[..^1];
-            }
-            if (!float.TryParse(text, out var floatValue)) {
+        if (isFloat && baseNumber == 10) {
+            if (!float.TryParse(text.TrimEnd('f', 'F'), out var floatValue)) {
                 var span = new TextSpan(_start, length);
                 var location = new TextLocation(_text, span);
                 _diagnostics.ReportInvalidNumber(location, text, TypeSymbol.Float);
             }
             value = floatValue;
         } else {
-            if (!int.TryParse(text, out var intValue)) {
+            if (!TryParseInteger(text, baseNumber, out var intValue)) {
                 var span = new TextSpan(_start, length);
                 var location = new TextLocation(_text, span);
                 _diagnostics.ReportInvalidNumber(location, text, TypeSymbol.Int);
@@ -502,7 +624,28 @@ internal sealed class Lexer {
         _kind = SyntaxKind.NumberToken;
     }
 
+    private static bool TryParseInteger(string text, int baseNumber, out int intValue) {
+        try {
+            if (baseNumber != 10) {
+                intValue = Convert.ToInt32(text[2..], baseNumber);
+            } else {
+                intValue = Convert.ToInt32(text);
+            }
+            return true;
+        }
+        catch (Exception) {
+            intValue = 0;
+            return false;
+        }
+    }
+
     private void ReadIdentifierOrKeyword() {
+        if (Current == 'm' && Lookahead == '"') {
+            _position++;
+            ReadString(multiline: true);
+            return;
+        }
+
         while (char.IsLetterOrDigit(Current) || Current == '_') {
             _position++;
         }

@@ -152,7 +152,7 @@ internal sealed class EpsilonRepl : Repl {
 
         var lastTwoLinesAreBlank = text.Split(Environment.NewLine)
                                        .Reverse()
-                                       .TakeWhile(s => string.IsNullOrEmpty(s))
+                                       .TakeWhile(string.IsNullOrEmpty)
                                        .Take(2)
                                        .Count() == 2;
         if (lastTwoLinesAreBlank) {
