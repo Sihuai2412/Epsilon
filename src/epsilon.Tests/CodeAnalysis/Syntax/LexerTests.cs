@@ -201,6 +201,10 @@ public class LexerTests {
             return true;
         }
 
+        if (t1Kind == SyntaxKind.NumberToken && t2Kind == SyntaxKind.ElseKeyword) {
+            return true;
+        }
+
         if (t1Kind == SyntaxKind.NumberToken && t2Kind == SyntaxKind.ForKeyword) {
             return true;
         }
